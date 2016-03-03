@@ -1,0 +1,39 @@
+{
+  "Database": {
+    "Type": "MySQL",
+    "MySQL": {
+        "Username": "pasar",
+        "Password": "pasar",
+        "Name": "pasar",
+        "Hostname": "192.168.0.105",
+        "Port": "3306",
+        "DBParam:": "/pasar?charset=utf8&timeout=3s"
+    }
+  },
+  "Server:": {
+    "Port":":8080",
+    "Mode":"Development",
+    "TemplateFolder":"./templates"
+  },
+  "Static": {
+    "StaticAssets":"./assets",
+    "AssetsURI":"/assets",
+    "StaticPage":"./staticpage",
+    "PageURI":"/static"
+  },
+  "Session": {
+    "SecretKey":"",
+    "Name":"pasar",
+    "Options": {
+      "Path":"/",
+      "Domain":"",
+      "MaxAge":28800,
+      "Secure":false,
+      "HttpOnly":true
+    }
+  },
+  "Token": {
+    "SecretKey":"albertwidi",
+    "ExpiredMin":360
+  }
+}

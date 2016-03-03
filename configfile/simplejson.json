@@ -1,0 +1,10 @@
+{
+  "templates":[
+    { "Index":{"Validation":true,
+        "Filename":"Index.tmpl",
+        "Title":"Login",
+        "LevelMin":1,
+        "LevelMax":99}
+    }
+  ]
+}

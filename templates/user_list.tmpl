@@ -1,0 +1,31 @@
+<html>
+<head>
+<title>{{.title}}</title>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+
+<script>
+
+    $(function(){
+
+        $.get("/api/user_list", function(data,status){
+            var div = document.getElementById ("display");
+            var tables = "<table><tr><th>Username</th><th>Role</th><th>Description</th><th>Action</th></tr>";
+            for (var i=0; i<data.length; i++){
+                tables += "<tr><td>" + data[i].Username + "</td> <td>" + data[i].Role + "</td> <td>" + data[i].Description +  "<td><a>Edit</a></td></tr>";
+            }
+            tables += "</table>"
+            div.innerHTML = tables;
+        });
+
+    });
+</script>
+
+
+</head>
+
+<body>
+
+<div id="display"> </div>
+
+</body>
+</html>

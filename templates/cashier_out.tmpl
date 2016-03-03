@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no" />
+      <title>Out</title>
+      <!-- CSS -->
+      <link media="screen,projection" rel="stylesheet" type="text/css" href="css/materialize.css"></link>
+      <link media="screen,projection" rel="stylesheet" type="text/css" href="css/your_custom_css.css"></link>
+
+           <script>
+              $(function(){
+                  $("button").click(function(){
+
+                  ticketnum = $("ticketnum").val();
+                  vehiclenum = $("vehiclenum").val();
+                  totalprice = $("totalprice").val();
+
+
+                      $.post(
+                          "testing",
+                          {
+                              ticketnum:ticketnum,
+                              vehiclenum:vehiclenum,
+                              totalprice:totalprice
+
+                          },
+
+                          func(data, status) {
+                              alert("Data: ", +data,"Status : " +status);
+
+                          }
+
+                      )
+
+
+
+
+
+
+
+                  });
+
+              };
+
+
+
+
+
+           </script>
+</head>
+
+<body>
+
+   Ticket_Number: <input id= "ticketnum" type= "" placeholder= ""></input></br>
+   Vehicle_Number: <input id= "vehiclenum" type= "" placeholder= ""></input></br>
+
+   <button>Check</button></br>
+   Total_Price: <label id= "totalprice">TOTAL</label>
+
+
+
+   </form>
+
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script src="js/materialize.js"></script>
+    <script src="js/your_custom_js.js"></script>
+</body>
+</html>
+
+
+

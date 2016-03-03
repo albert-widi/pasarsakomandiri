@@ -1,0 +1,67 @@
+Progress:
+- Authentication system and library in final state (production ready)
+- Framework in final state (production ready)
+- Code review is undergo
+- Code reviewed
+- Rewrite project (finished)
+- Prevent brute force (complete, using ipban)
+- Better token authentication (in progress, need a review and new method)
+- Prevent redundant ticket number (finished)
+- Performance boost (in review)
+- Password fully encrypted using bcrypt
+- Router restructure (in progress)
+
+Jan 29 2016
+- Will soon re-baseline the code and focused in the UI
+- Framework considered as proper and good for production, improvement will always be there tough (in framework branch).
+
+Jan 31 2016
+- Parking API will be finalized and reviewed
+- Framework security review
+- Code bootstrapping start
+
+Feb 02 2016
+- Simplified gate device to group device
+- Parking API final review
+
+Feb 04 2016
+- Time consistency update between Go and MySQL
+
+Feb 05 2016
+- Code cleanups and router naming update
+- Memory leak test
+
+Feb 06 2016
+- Finalize Raspberry API
+- Memory leak test
+- Print out test from raspberry
+- Parking transactions page
+
+Feb 07 2016
+- Code documentation
+- Sincia Time!
+
+Feb 12 2016
+- Camera Test
+- Convert DB MustExec to Exec
+
+Feb 26 2016
+- Finalize Camera API
+- Gouroutines to delete picture
+
+Mar 1 2016
+- Test all API for production
+- Add Log module for server log
+- Add channel to capture picture from camera
+
+Mar 2 2016
+- Add better middleware chaining into router
+- Security audit
+
+Mar 3 2016
+- Router code cleanups and improvement
+- Add a better way to handle picture by adding picture controller
+
+Mar 7 2016
+- Feature freeze
+- Production ready phase 1

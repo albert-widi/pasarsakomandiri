@@ -1,0 +1,61 @@
+<html>
+	<head>
+		<title>{{.title}}</title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+        <script>
+            $(document).ready(function(){
+                $("button").click(function(){
+
+
+                user_name = $("#username").val();
+                pass = $("#password").val();
+
+                var form_data = {
+                    username: user_name,
+                    password: pass
+                }
+                
+                if (user_name=='' ||pass=='')
+                {
+                    alert ("Username or Password Can't be empty");
+                    exit();
+                }
+
+
+                else{
+                    $.post("api/login",
+                    {
+                        username:user_name,
+                        password:pass,
+                    },
+                function(data,status){
+                        //alert("Data: " + data + "\nStatus: " + status);
+                        alert(data.Message);
+                        if (data.Status) {
+                            window.location.replace("user_auth");
+                        }
+
+
+                        //alert(data.Username);
+                        //var json = JSON.parse(data);
+
+                        /*if (status == "success" && data != "Failed") {
+                            obj = JSON.parse(data)
+                            alert("name: " + obj[0].Name + " token: " + obj[0].Token)
+                            alert("redirect");
+                            window.location.replace("/redirect");
+                        }*/
+                    
+                    });       
+                                        
+                    };
+                });
+            });
+            </script>
+	</head>
+	<body>
+        Username: <input type="text" name="username" id="username"></input> <br>
+        Password: <input type="text" name="password" id="password"></input> <br>
+		<button>Send an HTTP POST request to a page and get the result back</button>
+	</body>
+</html>

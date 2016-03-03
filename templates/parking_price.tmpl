@@ -1,0 +1,196 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no" />
+<link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<link media="screen,projection" rel="stylesheet" type="text/css" href="/assets/css/materialize.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+<script src="/assets/js/jquery-2.2.0.min.js"></script>
+<script src="/assets/js/materialize.js"></script>
+<title>{{.title}}</title>
+<!-- CSS -->
+<title>{{.title}}</title>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+
+
+<script>
+    $(function(){
+        $.get("/api/parking/price_list", function(data, status){
+           var div = document.getElementById ("display");
+           var tables = "";
+
+           for (var n=0; n<data.length; n++){
+               tables += "<tr><td>" +data[n].Vehicle_id+ "</td> <td>" +data[n].Vehicle_type+ "</td> <td>" +data[n].First_hour_price+ "</td> <td>" +data[n].Next_hour_price+ "</td> <td>" +data[n].Maximum_price+ "</td></tr>";
+           }
+
+           tables += "";
+           div.innerHTML = tables;
+
+        });
+    });
+</script>
+
+
+<script>
+    $(function(){
+        $.get("/api/parking/vehicleAll", function(data, status){
+            var vehicle = document.getElementById("vehicle_type");
+            var content = "";
+            for (var i=0; i<data.length; i++) {
+                content += "<option value="+data[i].Id+">" + data[i].Vehicle_type + "</option>";
+            }
+            vehicle.innerHTML = content;
+        });
+    });
+</script>
+
+<script>
+    $(function(){
+        $("#createPrice").click(function(){
+            var kendaraanId = document.getElementById("vehicle_type").value;
+            var satuJam = $("#satuJam").val();
+            var duaJam = $("#duaJam").val();
+            var maxJam = $("#maxJam").val();
+
+            $.post("/api/parking_price",
+                {
+                    vehicle_id: kendaraanId,
+                    jam_pertama: satuJam,
+                    jam_berikutnya: duaJam,
+                    biaya_max: maxJam
+                }, function(data,status){
+                alert(data.Message);
+                if(data.Status == 'Success'){
+                    $.get("/api/parking/price_list", function(data, status){
+                        var div = document.getElementById ("display");
+                        var tables = "";
+
+                        for (var n=0; n<data.length; n++){
+                           tables += "<tr><td>" +data[n].Vehicle_id+ "</td> <td>" +data[n].Vehicle_type+ "</td> <td>" +data[n].First_hour_price+ "</td> <td>" +data[n].Next_hour_price+ "</td> <td>" +data[n].Maximum_price+ "</td></tr>";
+                        }
+
+                        tables += "";
+                        div.innerHTML = tables;
+
+                    });
+                }
+
+            });
+
+        });
+
+    });
+
+
+</script>
+
+
+</head>
+
+<body>
+
+
+<!-- navbar -->
+   <!-- for fixed top <div class="navbar-fixed"> -->
+        <nav class="#0097a7 cyan darken-2">
+          <div class="nav-wrapper container">
+            <a href="#!" class="brand-logo">Pasar Sako Mandiri</a>
+            <ul class="right hide-on-med-and-down">
+              <li><a href="/device">Device List</a></li>
+              <li><a href="/device/device_group">Device Group</a></li>
+              <li><a href="/user/register">User Register</a></li>
+              <li class="active"><a href="/parking_price">Parking Price</a></li>
+              <li><a href="parking/transactions">Parking Transaction</a></li>
+              <li><a href="/api/user/logout">Logout</a></li>
+            </ul>
+          </div>
+        </nav>
+   <!-- end of fixed  </div> -->
+<!-- end of navbar -->
+
+
+<div class="row">
+    <div class="col s4" style="margin-top:7px">
+
+        <div class="card hoverable">
+
+            <div class="card-panel #0097a7 cyan darken-2">
+                <h3 class="center" style="color: white"><b>Create Parking Price</b></h3>
+            </div>
+
+            <div class="card-content">
+                <div class="row section">
+                    <div id= "dropdown2" class="input-field col s10 offset-s1" style="margin-top:-20px">
+                         <label>Vehicle Type</label>
+                         <br><br>
+                         <select class="btn dropdown- button" id="vehicle_type" data-activates="dropdown2">
+
+                         </select>
+                    </div>
+                    <div class="input-field col s10 offset-s1" style="margin-top:30px">
+                      <input id="satuJam" type="text">
+                      <label>Biaya Jam Pertama</label>
+                    </div>
+                    <div class="input-field col s10 offset-s1" style="margin-top:20px">
+                      <input id="duaJam" type="text">
+                      <label>Biaya Jam Berikutnya</label>
+                    </div>
+                    <div class="input-field col s10 offset-s1" style="margin-top:20px">
+                      <input id="maxJam" type="text">
+                      <label>Biaya Maximal</label>
+                    </div>
+                    <div class="col s10 offset-s1" style="margin-top:10px">
+                        <button id="createPrice" class="right waves-effect waves-light btn">Create Group</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-action #0097a7 cyan darken-2">
+                <p class="center" style="color:white">Pasar Sako Mandiri</p>
+            </div>
+
+    </div>
+</div>
+
+
+
+<!--<div class="bungkus">
+    <div>
+       <div>
+           <div>Vehicle Type: <select id="vehicle_type"></select></div>
+       </div>
+       <br>
+       <div>
+           <button id= "createPrice">Input Biaya</button>
+       </div>
+</div>-->
+
+
+
+<div class="col s8">
+    <div class="section">
+         <nav class="#0097a7 cyan darken-2">
+            <div class="nav-wrapper">
+              <a href="#" class="brand-logo center">Parking Price List</a>
+            </div>
+         </nav>
+
+         <div id="page-content">
+             <table class="striped centered">
+                <thead>
+                <tr><th>Vehicle Id</th> <th>Vehicle Type</th> <th>Biaya Jam Pertama</th> <th>Biaya Jam Berikutnya</th> <th>Biaya Max</th></tr>
+                </thead>
+                <tbody id="display">
+
+                </tbody>
+             </table>
+         </div>
+
+            <ul id="pagenav" class="pagination right">
+            </ul>
+
+    </div>
+
+
+</body>
+</html>

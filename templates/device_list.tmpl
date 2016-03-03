@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+    <script src="/assets/js/jquery-2.1.1.min.js"></script>
+    <script src="/assets/js/jquery.simplePagination.js"></script>
+    <script src="/assets/js/materialize.js"></script>
+    <title>Materialize</title>
+    <!-- CSS -->
+    <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link media="screen,projection" rel="stylesheet" type="text/css" href="/assets/css/materialize.css"></link>
+
+    <script>
+        $(function(){
+
+        $.get("/formval",function(data, status){
+            
+            //alert("Data: " + data + "\nStatus: " + status);
+            var kluar = document.getElementById("type");
+            var ica = "";
+                 for (var i=0; i<data.length; i++) {
+                    //alert("oke gan");
+                    //alert(data[i].Device_type;
+                    ica += "<option value="+data[i].Device_type+">" + data[i].Device_type + "</option>";
+                   }
+            kluar.innerHTML = ica;
+            
+                });
+            
+           });
+    </script>
+
+    <script>
+        $(function(){
+            $.get("/api/device/device_list", function(data, status){
+
+
+
+
+          var div = document.getElementById("out");
+          var odong = "";
+          //alert("Data length: " + data.length)
+            for (var i=0; i<data.length; i++) {
+
+                id = data[i].Id;
+                odong += "<tr><td>" + data[i].Device_type + "</td><td>" + data[i].Device_name + "</td><td>" + data[i].Host + "</td><td>" + data[i].Token + "</td><td>" + data[i].Description + "</td><td><button class='waves-effect waves-light btn' onclick='passFunc("+id+")'>Delete</button></td></tr>";
+            }
+            odong += ""
+            div.innerHTML = odong;
+
+           });
+
+        });
+
+    </script>
+
+    <script>
+        $(function(){
+            
+        $("button").click(function(){
+
+           if (confirm("Anda Yakin???") == true) {
+                  Utype = document.getElementById("type").value;//$("type").val();
+                  Uname = $("#name").val();
+                  Uhost = $("#host").val();
+                  Utoken = $("#token").val();
+                  Udescription = $("#description").val();
+
+                       $.post("/api/device/create_device",
+                            {
+                               type: Utype,
+                               name: Uname,
+                               host: Uhost,
+                               token: Utoken,
+                               description: Udescription
+                            },
+                           function(data,status){
+                            //alert("Data: " + data + "\nStatus: " + status);
+                            //alert("Status" + data.Status + ", Message: " + data.Message);
+
+                                if(data.Status === 'Success') {
+                                    $.get("/api/device/device_list", function(data, status) {
+
+                                         var div = document.getElementById("out");
+                                         var odong = "<table>";
+                                         //alert("Data length: " + data.length)
+                                           for (var i=0; i<data.length; i++) {
+
+                                               id = data[i].Id;
+                                               odong += "<tr><td>" + data[i].Device_type + "</td><td>" + data[i].Device_name + "</td><td>" + data[i].Host + "</td><td>" + data[i].Token + "</td><td>" + data[i].Description + "</td><td><button class='waves-effect waves-light btn' onclick='passFunc("+id+")'>Delete</button></td></tr>";
+                                           }
+                                           odong += "</table>"
+                                           div.innerHTML = odong;
+
+                                          });
+
+                                 }
+                            });
+               } else {
+
+               }
+
+
+
+
+
+            });
+            
+        });
+    </script>
+    <script>
+        function passFunc(id){
+
+            var oper = id;
+
+            $.post("/api/device/delete",
+            {
+                id:oper
+            },function(data, status){
+                //alert(data);
+                alert(data.Status + " " + data.Message);
+                //alert("Data: " + data + "\nStatus: " + status);
+                //alert(data.status + data.Message);
+
+            });
+        };
+    </script>
+    <script>
+     $(function(){
+
+     //alert("icacaacacacacac");
+
+        var items = $("#out");
+
+        var numItems = items.length;
+        var perPage = 5;
+
+        // only show the first 2 (or "first per_page") items initially
+        items.slice(perPage).hide();
+
+        // now setup your pagination
+        // you need that .pagination-page div before/after your table
+        $("#pagenav").pagination({
+            items: numItems,
+            itemsOnPage: perPage,
+            prevText: "<li class='waves-effect'><a href='#'><i class='material-icons'>chevron_left</i></a></li>",
+            nextText: "<li class='waves-effect'><a href='#'><i class='material-icons'>chevron_right</i></a></li>",
+            onPageClick: function(pageNumber) { // this is where the magic happens
+                // someone changed page, lets hide/show trs appropriately
+                var showFrom = perPage * (pageNumber - 1);
+                var showTo = showFrom + perPage;
+
+                items.hide() // first hide everything, then show for the new page
+                     .slice(showFrom, showTo).show();
+            }
+        });
+
+
+        var checkFragment = function() {
+            // if there's no hash, make sure we go to page 1
+            var hash = window.location.hash || "#page-1";
+
+            // we'll use regex to check the hash string
+            hash = hash.match(/^#page-(\d+)$/);
+
+            if(hash)
+                // the selectPage function is described in the documentation
+                // we've captured the page number in a regex group: (\d+)
+                $("#pagination").pagination("selectPage", parseInt(hash[1]));
+        };
+
+        // we'll call this function whenever the back/forward is pressed
+        $(window).bind("popstate", checkFragment);
+
+        // and we'll also call it to check right now!
+        checkFragment();
+
+
+
+    });
+    </script>
+</head>
+
+<body>
+
+
+<!-- navbar -->
+   <!-- for fixed top <div class="navbar-fixed"> -->
+        <nav class="#0097a7 cyan darken-2">
+          <div class="nav-wrapper container">
+            <a href="#!" class="brand-logo">Pasar Sako Mandiri</a>
+            <ul class="right hide-on-med-and-down">
+              <li class="active"><a href="device">Device List</a></li>
+              <li><a href="device/device_group">Device Group</a></li>
+              <li><a href="/user/register">User Register</a></li>
+              <li><a href="/parking_price">Parking Price</a></li>
+              <li><a href="parking/transactions">Parking Transaction</a></li>
+              <li><a href="/api/user/logout">Logout</a></li>
+            </ul>
+          </div>
+        </nav>
+   <!-- end of fixed  </div> -->
+<!-- end of navbar -->
+
+
+    <div class="row">
+
+        <div class="col s4" style="margin-top:7px">
+
+            <div class="card hoverable">
+                <div class="card-panel #0097a7 cyan darken-2">
+                    <h3 class="center" style="color: white"><b>Register Device List</b></h3>
+                </div>
+                <div class="card-content">
+                    <div class="row section">
+                        <div class="input-field col s10 offset-s1">
+                            <label>Device Type</label>
+                            <br><br>
+                            <select class="browser-default" id="type">
+                            </select>
+                        </div>
+                         <div class="input-field col s10 offset-s1" style="margin-top:30px">
+                          <input id="name" type="text">
+                          <label>Device Name</label>
+                        </div>
+                        <div class="input-field col s10 offset-s1" style="margin-top:20px">
+                          <input id="host" type="text">
+                          <label>Host</label>
+                        </div>
+                        <div class="input-field col s10 offset-s1" style="margin-top:20px">
+                          <input id="token" type="text">
+                          <label>Token</label>
+                        </div>
+                        <div class="input-field col s10 offset-s1" style="margin-top:20px">
+                          <input id="description" type="text">
+                          <label>Description</label>
+                        </div>
+                        <div class="col s10 offset-s1" style="margin-top:30px">
+                            <button class="right waves-effect waves-light btn">Input</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-action #0097a7 cyan darken-2">
+                    <p class="center" style="color:white">Pasar Sako Mandiri</p>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="col s8">
+            <div class="section">
+             <nav class="#0097a7 cyan darken-2">
+                <div class="nav-wrapper">
+                  <a href="#" class="brand-logo center">Device List Table</a>
+                </div>
+              </nav>
+
+              <div id="page-content">
+                 <table class="bordered centered">
+                    <thead>
+                    <tr>
+                        <th>Device Type</th>
+                        <th>Device Name</th>
+                        <th>Host</th>
+                        <th>Token</th>
+                        <th>Description</th>
+                        <th>Action</th>
+                    </tr>
+                    </thead>
+                    <tbody id="out">
+
+                    </tbody>
+                 </table>
+
+                </div>
+
+                    <ul id="pagenav" class="pagination right">
+                    </ul>
+
+                </div>
+
+             </div><!-- end of page content -->
+
+               </div><!-- card -->
+
+        </div><!--row -->
+
+
+
+
+    
+
+
+
+
+</body>
+</html>
+

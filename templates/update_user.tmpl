@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="assets/js/jquery-2.1.1.min.js"></script>
+    <script src="assets/js/materialize.js"></script>
+    <title>Update User</title>
+    <!-- CSS -->
+    <link media="screen,projection" rel="stylesheet" type="text/css" href="/assets/css/materialize.css"></link>
+    <!-- SCRIPT -->
+    <script>
+        $(function(){
+            //alert(id);
+            var ambilid = id;
+            $.get("/get_id",
+            {
+                id:ambilid
+            },function(data, status){
+              //alert("Data: " + data + "\nStatus: " + status);
+               document.getElementById("username").value = data.Username;
+               document.getElementById("password").value = null;
+               document.getElementById("description").value = data.Description;
+
+                 $.get ("/api/user/role_list", function (data_role, status){
+                       var div = document.getElementById("role");
+                       var options = "";
+                       options += "<option value= "+data.Role+">" +data.Role+ "</option>";
+                       for (i=0; i<data_role.length; i++){
+                           if(data.Role == data_role[i].Role_name) {
+                                continue;
+                           }
+                           options += "<option value= "+data_role[i].Role_name+">" +data_role[i].Role_name+ "</option>";
+                       }
+                       div.innerHTML = options;
+                   });
+
+                $("#edit").click(function(){
+
+                        iduser = id;
+                        username = $("#username").val();
+                        password = $("#password").val();
+                        role = document.getElementById("role").value;
+                        description = $("#description").val();
+
+                        //alert(username);
+
+                        $.post("/api/user/update",
+                        {
+                          id: iduser,
+                          username: username,
+                          password: password,
+                          role: role,
+                          description: description
+                        },
+                        function(data,status){
+                            //alert(data);
+                            alert(data.Status + " " + data.Message);
+                            //alert("Data: " + data + "\nStatus: " + status);
+                            //alert(data.status + data.Message);
+                        });
+
+
+                    });
+            });
+        });
+    </script>
+
+    <script>
+        $(function(){
+
+
+
+
+        });
+    </script>
+</head>
+<body>
+
+<div class="row">
+
+           <div class="col s4">
+
+               <div class="card hoverable">
+                   <div class="card-panel #0097a7 cyan darken-2">
+                       <h3 class="center" style="color: white"><b>User Edit</b></h3>
+                   </div>
+                   <div class="card-content">
+                       <div class="row section">
+                           <div class="input-field col s10 offset-s1" style="margin-top:30px">
+                               Username <input id="username" type="text" class="validate">
+                           </div>
+                            <div class="input-field col s10 offset-s1" style="margin-top:30px">
+                             Password <input id="password" type="text" class="validate">
+                           </div>
+                           <div class="input-field col s10 offset-s1" style="margin-top:30px">
+                            Confirm Password <input id="con_password" type="text" class="validate">
+                           </div>
+                           <div class="input-field col s10 offset-s1" style="margin-top:30px">
+                             <label>Role</label>
+                             <br><br>
+                             <select class="browser-default" id="role">
+
+                             </select>
+                           </div>
+                           <div class="input-field col s10 offset-s1" style="margin-top:50px">
+                             Description <input id="description" type="text" class="validate">
+                           </div>
+                           <div class="col s10 offset-s1" style="margin-top:30px">
+                               <button id="edit" class="right waves-effect waves-light btn">Edit</button>
+                           </div>
+                       </div>
+                   </div>
+                   <div class="card-action #0097a7 cyan darken-2">
+                       <p class="center" style="color:white">Pasar Sako Mandiri</p>
+                       </div>
+
+                   </div>
+               </div>
+</div>
+
+
+
+
+
+
+</body>
+
+</html>

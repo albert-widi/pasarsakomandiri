@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>{{.title}}</title>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no" />
+    <script src="/assets/js/jquery-2.1.1.min.js"></script>
+    <script src="/assets/js/jquery.simplePagination.js"></script>
+    <script src="/assets/js/materialize.js"></script>
+    <!-- CSS -->
+    <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link media="screen,projection" rel="stylesheet" type="text/css" href="/assets/css/materialize.css"></link>
+
+
+
+    <script>
+
+        $(function(){
+
+            $.get("/api/user/all_user", function(data,status){
+
+                var div = document.getElementById ("display");
+                var tables = "";
+                for (var i=0; i<data.length; i++){
+                    var id = data[i].Id;
+                    tables += "<tr><td>" + data[i].Username + "</td> <td>" + data[i].Role + "</td> <td>" + data[i].Description +  "</td><td><button class='waves-effect waves-light btn' onclick='passFunc("+id+")'>Edit</button></td></tr>";
+                }
+                tables += ""
+                div.innerHTML = tables;
+            });
+
+        });
+    </script>
+
+         <script>
+
+            $(function(){
+
+               $.get ("/api/user/role_list", function (data, status){
+                    var div = document.getElementById("slctRole");
+                    var options = "";
+                    for (i=0; i<data.length; i++){
+                        options += "<option value= "+data[i].Role_name+">" +data[i].Role_name+ "</option>";
+                    }
+                    div.innerHTML = options;
+                });
+
+
+            });
+         </script>
+
+        <script>
+            $(function(){
+                $("#create").click(function(){
+                username = $("#username").val();
+                password = $("#password").val();
+                role = document.getElementById("slctRole").value;
+                desc = $("#description").val();
+
+                    $.post("/api/user/register",
+                        {
+                            username: username,
+                            password: password,
+                            role: role,
+                            description: desc
+                        },
+
+                        function(data, status) {
+                            alert(data.Message);
+
+                            if(data.Status == "Success") {
+                                $.get("/api/user/all_user", function(data,status){
+                                    var div = document.getElementById ("display");
+                                    var tables = "";
+                                    for (var i=0; i<data.length; i++){
+                                        var id = data[i].Id;
+                                        tables += "<tr><td>" + data[i].Username + "</td> <td>" + data[i].Role + "</td> <td>" + data[i].Description +  "</td><td><button class='waves-effect waves-light btn' onclick='passFunc("+id+")'>Edit</button></td></tr>";
+                                    }
+                                    tables += ""
+                                    div.innerHTML = tables;
+                                });
+                            }
+                    });
+                });
+            });
+         </script>
+
+         <script>
+             function passFunc(id){
+                //alert(id);
+                var open =  window.open("/update_user");
+                open.id = id;
+            }
+         </script>
+</head>
+
+
+<body>
+
+<!-- navbar -->
+   <!-- for fixed top <div class="navbar-fixed"> -->
+        <nav class="#0097a7 cyan darken-2">
+          <div class="nav-wrapper container">
+            <a href="#!" class="brand-logo">Pasar Sako Mandiri</a>
+            <ul class="right hide-on-med-and-down">
+              <li><a href="/device">Device List</a></li>
+              <li><a href="/device/device_group">Device Group</a></li>
+              <li class="active"><a href="/user/register">User Register</a></li>
+              <li><a href="/parking_price">Parking Price</a></li>
+              <li><a href="/parking/transactions">Parking Transaction</a></li>
+              <li><a href="/api/user/logout">Logout</a></li>
+            </ul>
+          </div>
+        </nav>
+   <!-- end of fixed  </div> -->
+<!-- end of navbar -->
+
+
+<div class="row">
+
+        <div class="col s4" style="margin-top:7px">
+
+            <div class="card hoverable">
+                <div class="card-panel #0097a7 cyan darken-2">
+                    <h3 class="center" style="color: white"><b>User Register</b></h3>
+                </div>
+                <div class="card-content">
+                    <div class="row section">
+                        <div class="input-field col s10 offset-s1" style="margin-top:30px">
+                            <input id="username" type="text">
+                            <label>Username</label>
+                        </div>
+                         <div class="input-field col s10 offset-s1" style="margin-top:30px">
+                          <input id="password" type="text">
+                          <label>Password</label>
+                        </div>
+                        <div class="input-field col s10 offset-s1" style="margin-top:30px">
+                          <label>Role</label>
+                          <br><br>
+                          <select class="browser-default" id="slctRole">
+
+                          </select>
+                        </div>
+                        <div class="input-field col s10 offset-s1" style="margin-top:50px">
+                          <input id="description" type="text">
+                          <label>Description</label>
+                        </div>
+                        <div class="col s10 offset-s1" style="margin-top:30px">
+                            <button id="create" class="right waves-effect waves-light btn">Create</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-action #0097a7 cyan darken-2">
+                    <p class="center" style="color:white">Pasar Sako Mandiri</p>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="col s8">
+            <div class="section">
+             <nav class="#0097a7 cyan darken-2">
+                <div class="nav-wrapper">
+                  <a href="#" class="brand-logo center">User List</a>
+                </div>
+              </nav>
+
+              <div id="page-content">
+                 <table class="striped centered">
+                    <thead>
+                    <tr>
+                        <th>Username</th>
+                        <th>Role</th>
+                        <th>Description</th>
+                        <th>Action</th>
+                    </tr>
+                    </thead>
+                    <tbody id="display">
+
+                    </tbody>
+                 </table>
+
+                </div>
+
+                    <ul id="pagenav" class="pagination right">
+                    </ul>
+
+                </div>
+
+             </div><!-- end of page content -->
+
+               </div><!-- card -->
+
+</div><!--row -->
+
+
+
+<!-- modal -->
+<div id="modal1" class="modal">
+    <div class="modal-content">
+      <h4>Modal Header</h4>
+      <p>A bunch of text</p>
+    </div>
+    <div class="modal-footer">
+      <a href="#!" class=" modal-action modal-close waves-effect waves-green btn-flat">Agree</a>
+    </div>
+  </div>
+
+
+
+
+
+
+
+
+
+<!--
+Username:
+<input id= "username" type= "text"></input><br><br>
+Password:
+<input id= "password" type= "text"></input><br><br>
+Role:
+<select id="slctRole"></select><br><br>
+Description:
+<input id= "description" type= "text"></input><br><br>
+
+<button id="create">Create</button> <button id="userList" onclick = "location.href='/user_list';">User List</button>
+-->
+
+<!-- script for select -->
+<script>
+    $(document).ready(function() {
+        $('select').material_select();
+      });
+</script>
+
+
+
+</body>
+</html>
+

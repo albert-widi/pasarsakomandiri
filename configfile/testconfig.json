@@ -1,0 +1,41 @@
+{
+  "Database": {
+    "Type": "MySQL",
+    "MySQL": {
+      "Username": "root",
+      "Password": "root",
+      "Name": "pasar",
+      "Hostname": "192.168.0.100",
+      "Port": "3306",
+      "DBParam": "/pasar?charset=utf8&timeout=3s"
+    }
+  },
+  "Server": {
+    "Port": ":8080",
+    "Mode": "Development",
+    "TemplateFolder": "templates/*"
+  },
+  "Static": {
+    "StaticAssets": "/assets",
+    "AssetsURI": "assets",
+    "StaticPage": "staticpage",
+    "PageURI": "static",
+    "CameraFile":"/campicture",
+    "CameraURI": "campicture"
+  },
+  "Session": {
+    "SecretKey": "albertwidi",
+    "Name": "pasar",
+    "Options": {
+      "Path": "/",
+      "Domain": "",
+      "MaxAge": 28800,
+      "Secure": false,
+      "HttpOnly": true
+    }
+  },
+  "Token": {
+    "SecretKey": "albertwidi",
+    "ExpiredMin": 28800
+  }
+}
