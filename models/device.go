@@ -141,3 +141,7 @@ func DeviceDeleteByID(db *sqlx.DB, device Device) bool {
 	return true
 }
 
+func DeleteDeviceById(device Device) error {
+	_, err := database.Db.Exec("DELETE FROM device_list WHERE id=?", device.Id)
+	return err
+}

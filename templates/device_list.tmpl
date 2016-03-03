@@ -113,11 +113,9 @@
     <script>
         function passFunc(id){
 
-            var oper = id;
-
             $.post("/api/device/delete",
             {
-                id:oper
+                device_id:id
             },function(data, status){
                 //alert(data);
                 alert(data.Status + " " + data.Message);

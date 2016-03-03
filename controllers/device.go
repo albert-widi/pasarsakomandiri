@@ -147,18 +147,29 @@ func DeviceContactCheckOut(c *gin.Context) {
 //DELETE
 func DeleteDeviceList(c *gin.Context)  {
 
-	/*/devid, err := strconv.ParseInt(c.PostForm("device_id"), 10, 64)
+	devid, err := strconv.ParseInt(c.PostForm("device_id"), 10, 64)
 
 	if err != nil {
 		log.Println(err)
 		c.JSON(http.StatusOK, response.NewSimpleResponse("Failed", "Invalid get of ID"))
-		return
 	}
 
-	//err = models.DeviceDeleteByID(devid)
+	_, err = models.DeviceGetByID(devid)
 
+	if err != nil {
+		log.Println(err)
+		c.JSON(http.StatusOK, response.NewSimpleResponse("Failed", "Invalid get of ID"))
+	}
 
+	devlistid := models.Device{}
+	devlistid.Id = devid
 
+	err = models.DeleteDeviceById(devlistid)
 
-	c.JSON(http.StatusOK, response.NewSimpleResponse("Success", "Delete Success"))*/
+	if err != nil {
+		log.Println(err)
+		c.JSON(http.StatusOK, response.NewSimpleResponse("Failed", "Invalid get of ID"))
+	}
+
+	c.JSON(http.StatusOK, response.NewSimpleResponse("Success", "Delete Success"))
 }
