@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>{{.title}}</title>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no" />
+    <script src="/assets/js/jquery-2.1.1.min.js"></script>
+    <script src="/assets/js/jquery.simplePagination.js"></script>
+    <script src="/assets/js/materialize.js"></script>
+    <!-- CSS -->
+    <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link media="screen,projection" rel="stylesheet" type="text/css" href="/assets/css/materialize.css"></link>
+
+<script>
+    $(function (){
+
+        var getId = id;
+        alert(id);
+        $.get("/price_get_id",
+            {
+                id:getId
+            }, function(data, status){
+
+                $.get("/api/parking/vehicleAll", function(data_vehicle, status){
+                    var vehicle = document.getElementById("vehicle_type");
+                    var content = "";
+                    content += "<option value= "+data.Vehicle_id+">"+data.Vehicle_type+"</option>"
+                    for (var i=0; i<data_vehicle.length; i++) {
+                        if (data.Vehicle_id == data_vehicle[i].Vehicle_type) {
+                           continue;
+                        }
+                       content += "<option value="+data_vehicle[i].Vehicle_id+">" + data_vehicle[i].Vehicle_type + "</option>";
+                    }
+                    vehicle.innerHTML = content;
+               });
+
+               document.getElementById("first_hour_price").value= null;
+               document.getElementById("next_hour_price").value= null;
+               document.getElementById("maximum_price").value= null;
+
+                $("#edit").click(function(){
+                    idPrice = id;
+                    vehicle_id = document.getElementById ("vehicle_type").value;
+                    first_hour_price = $("#first_hour_price").val();
+                    next_hour_price = $("#next_hour_price").val();
+                    maximum_price = $("#maximum_price").val();
+
+                    $.post("/api/price_parking/update",
+                        {
+                            id: idPrice,
+                            vehicle_id: vehicle_id,
+                            first_hour_price: first_hour_price,
+                            next_hour_price: next_hour_price,
+                            maximum_price: maximum_price
+                        }, function(data, status){
+                            alert(data.Status + " " + data.Message);
+alert(first_hour_price);
+alert(next_hour_price);
+alert(maximum_price);
+                    });
+
+                });
+
+        });
+    });
+</script>
+
+
+</head>
+
+<body>
+
+<div class="row">
+
+           <div class="col s4">
+
+               <div class="card hoverable">
+                   <div class="card-panel #0097a7 cyan darken-2">
+                       <h3 class="center" style="color: white"><b>Edit Parking Price</b></h3>
+                   </div>
+                   <div class="card-content">
+                       <div class="row section">
+                           <div class="input-field col s10 offset-s1" style="margin-top:30px">
+                            <label>Vehicle Type</label>
+                            <br><br>
+                            <select class="browser-default" id="vehicle_type">
+
+                            </select>
+                          </div>
+                            <div class="input-field col s10 offset-s1" style="margin-top:30px">
+                             Biaya Jam Pertama <input id="first_hour_price" type="text" class="validate">
+                           </div>
+                           <div class="input-field col s10 offset-s1" style="margin-top:30px">
+                            Biaya Jam Berikutnya <input id="next_hour_price" type="text" class="validate">
+                           </div>
+                           <div class="input-field col s10 offset-s1" style="margin-top:30px">
+                           Biaya Max <input id="maximum_price" type="text" class="validate">
+                           </div>
+                           <div class="col s10 offset-s1" style="margin-top:30px">
+                               <button id="edit" class="right waves-effect waves-light btn">Edit</button>
+                           </div>
+                       </div>
+                   </div>
+                   <div class="card-action #0097a7 cyan darken-2">
+                       <p class="center" style="color:white">Pasar Sako Mandiri</p>
+                       </div>
+
+                   </div>
+               </div>
+</div>
+
+
+</body>

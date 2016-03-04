@@ -5,7 +5,7 @@ import (
 )
 
 type ParkingPrice struct {
-	Id int
+	Id int64
 	Vehicle_id int
 	Vehicle_type string
 	First_hour_price int
@@ -15,6 +15,11 @@ type ParkingPrice struct {
 	Created_date string
 }
 
+func ParkingPriceGetById (id int64)(ParkingPrice, error){
+	parkingPrice := ParkingPrice{}
+	err := database.Db.Get(&parkingPrice, "SELECT id, vehicle_id, vehicle_type, first_hour_price, next_hour_price, maximum_price FROM parking_price WHERE id=?", id)
+	return parkingPrice, err
+}
 
 func ParkingPriceGetAllAPI ()([]ParkingPrice, error){
 	parkingPrice := []ParkingPrice{}
@@ -31,4 +36,9 @@ func ParkingPriceGetByVehicleId (vehicleId int) (ParkingPrice, error){
 	parkingPrice := ParkingPrice{}
 	err := database.Db.Get(&parkingPrice, "SELECT id, vehicle_type, first_hour_price, next_hour_price, maximum_price FROM parking_price WHERE vehicle_id=?", vehicleId)
 	return parkingPrice, err
+}
+
+func ParkingPriceUpdate(parkingPrice ParkingPrice) error{
+	_, err := database.Db.Exec("UPDATE parking_price SET first_hour_price=?, next_hour_price=?, maximum_price=? WHERE id=?", parkingPrice.First_hour_price, parkingPrice.Next_hour_price, parkingPrice.Maximum_price, parkingPrice.Id)
+	return err
 }

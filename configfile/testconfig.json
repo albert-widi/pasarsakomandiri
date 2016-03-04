@@ -5,7 +5,7 @@
       "Username": "root",
       "Password": "root",
       "Name": "pasar",
-      "Hostname": "192.168.0.100",
+      "Hostname": "localhost",
       "Port": "3306",
       "DBParam": "/pasar?charset=utf8&timeout=3s"
     }

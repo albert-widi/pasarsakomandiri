@@ -10,11 +10,37 @@ import (
 	"log"
 	"github.com/pasarsakomandiri/shared/response"
 	"time"
+	"fmt"
 )
 
 func PriceConfigPage (c *gin.Context){
 	session := session.Instance(c)
 	c.HTML(http.StatusFound, "parking_price.tmpl", gin.H{"title" : "Parking Price", "token":session.Get("token")})
+}
+
+func PriceUpdateConfigPage (c *gin.Context){
+	session := session.Instance(c)
+	c.HTML(http.StatusFound, "update_parking_price.tmpl", gin.H{"title": "Update Parking Price", "token":session.Get("token")})
+}
+
+func PriceGetInfoAPI (c *gin.Context){
+	priceId, err := strconv.ParseInt(c.Query("id"), 10, 64)
+
+	fmt.Println(priceId)
+	if err != nil {
+		log.Println(err)
+		c.JSON(http.StatusOK, response.NewSimpleResponse("Failed", "Invalid Price ID"))
+	}
+	price, err := models.ParkingPriceGetById(priceId)
+
+	if err != nil {
+		log.Println(err)
+		if err == sql.ErrNoRows{
+			c.JSON(http.StatusOK, response.NewSimpleResponse("Failed", "Parking Price Not Found"))
+			return
+		}
+	}
+	c.JSON(http.StatusOK, price)
 }
 
 func PriceGetAll(c *gin.Context) {
@@ -83,4 +109,52 @@ func PriceRegister(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, response.NewSimpleResponse("Success", "Parking price created"))
+}
+
+func PriceUpdateAPI (c *gin.Context){
+	priceId, err := strconv.ParseInt(c.PostForm("id"), 10, 64)
+	log.Println(priceId)
+
+	if err != nil {
+		log.Println(err)
+		c.JSON(http.StatusOK, response.NewSimpleResponse("Failed", "Invalid Price ID"))
+	}
+
+	_, err = models.ParkingPriceGetById(priceId)
+
+	if err != nil {
+		log.Println(err)
+		c.JSON(http.StatusOK, response.NewSimpleResponse("Failed", "Failed Get Price ID"))
+	}
+
+	vehicleId, err := strconv.Atoi(c.PostForm("vehicle_id"))
+	first_hour_price, err := strconv.Atoi(c.PostForm("first_hour_price"))
+	next_hour_price, err := strconv.Atoi(c.PostForm("next_hour_price"))
+	maximum_price, err := strconv.Atoi(c.PostForm("maximum_price"))
+
+	price := models.ParkingPrice{}
+	price.Id = priceId
+	price.Vehicle_id = vehicleId
+	price.First_hour_price = first_hour_price
+	price.Next_hour_price = next_hour_price
+	price.Maximum_price = maximum_price
+
+	log.Println(price.First_hour_price)
+	fmt.Println(next_hour_price)
+	fmt.Println(maximum_price)
+
+	if price.First_hour_price == 0 || price.Next_hour_price == 0 {
+		c.JSON(http.StatusOK, response.NewSimpleResponse("Failed", "Required items cannot be empty"))
+		return
+	}
+
+	err = models.ParkingPriceUpdate(price)
+
+	if err != nil {
+		log.Println(err)
+		c.JSON(http.StatusOK, response.NewSimpleResponse("Failed", "Failed Updating Parking Price"))
+		return
+	}
+
+	c.JSON(http.StatusOK, response.NewSimpleResponse("Success", "Parking price Updated"))
 }
