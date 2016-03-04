@@ -125,6 +125,11 @@ func DeviceCreateNew(device Device) error {
 	return err
 }
 
+//EDIT
+func DeviceEdit(device Device) error {
+	_, err := database.Db.Exec("UPDATE device_list SET device_type=?, device_name=?, host=?, token=?, description=? WHERE id=?", device.Device_type, device.Device_name, device.Host, device.Token, device.Description, device.Id)
+	return err
+}
 
 //DELETE
 func DeviceDeleteByID(db *sqlx.DB, device Device) bool {

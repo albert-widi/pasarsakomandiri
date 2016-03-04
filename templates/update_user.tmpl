@@ -23,6 +23,7 @@
                document.getElementById("description").value = data.Description;
 
                  $.get ("/api/user/role_list", function (data_role, status){
+
                        var div = document.getElementById("role");
                        var options = "";
                        options += "<option value= "+data.Role+">" +data.Role+ "</option>";

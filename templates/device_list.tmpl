@@ -45,7 +45,7 @@
             for (var i=0; i<data.length; i++) {
 
                 id = data[i].Id;
-                odong += "<tr><td>" + data[i].Device_type + "</td><td>" + data[i].Device_name + "</td><td>" + data[i].Host + "</td><td>" + data[i].Token + "</td><td>" + data[i].Description + "</td><td><button class='waves-effect waves-light btn' onclick='passFunc("+id+")'>Delete</button></td></tr>";
+                odong += "<tr><td>" + data[i].Device_type + "</td><td>" + data[i].Device_name + "</td><td>" + data[i].Host + "</td><td>" + data[i].Token + "</td><td>" + data[i].Description + "</td><td><button class='waves-effect waves-light btn' onclick='editFunc("+id+")'>Edit</button></td><td><button class='waves-effect waves-light btn' onclick='passFunc("+id+")'>Delete</button></td></tr>";
             }
             odong += ""
             div.innerHTML = odong;
@@ -89,7 +89,7 @@
                                            for (var i=0; i<data.length; i++) {
 
                                                id = data[i].Id;
-                                               odong += "<tr><td>" + data[i].Device_type + "</td><td>" + data[i].Device_name + "</td><td>" + data[i].Host + "</td><td>" + data[i].Token + "</td><td>" + data[i].Description + "</td><td><button class='waves-effect waves-light btn' onclick='passFunc("+id+")'>Delete</button></td></tr>";
+                                               odong += "<tr><td>" + data[i].Device_type + "</td><td>" + data[i].Device_name + "</td><td>" + data[i].Host + "</td><td>" + data[i].Token + "</td><td>" + data[i].Description + "</td><td><button class='waves-effect waves-light btn' onclick='editFunc("+id+")'>Edit</button></td><td><button class='waves-effect waves-light btn' onclick='passFunc("+id+")'>Delete</button></td></tr>";
                                            }
                                            odong += "</table>"
                                            div.innerHTML = odong;
@@ -110,6 +110,7 @@
             
         });
     </script>
+
     <script>
         function passFunc(id){
 
@@ -119,12 +120,23 @@
             },function(data, status){
                 //alert(data);
                 alert(data.Status + " " + data.Message);
+                location.reload();
                 //alert("Data: " + data + "\nStatus: " + status);
                 //alert(data.status + data.Message);
 
             });
         };
     </script>
+
+    <script>
+        function editFunc(id){
+            //alert(id);
+            var open = window.open("/edit_devicelist");
+            open.id = id;
+
+        };
+    </script>
+
     <script>
      $(function(){
 
@@ -264,7 +276,8 @@
                         <th>Host</th>
                         <th>Token</th>
                         <th>Description</th>
-                        <th>Action</th>
+                        <th>Edit</th>
+                        <th>Delete</th>
                     </tr>
                     </thead>
                     <tbody id="out">

@@ -19,6 +19,10 @@ func DeviceListPages(c *gin.Context)  {
 	c.HTML(http.StatusFound, "device_list.tmpl", gin.H{"title":"Cahiser", "token":session.Get("token")})
 }
 
+func DeviceListEditPages(c *gin.Context)  {
+	session := session.Instance(c)
+	c.HTML(http.StatusFound, "edit_devicelist.tmpl", gin.H{"tittle":"Edit Device List", "token":session.Get("token")})
+}
 func GetDeviceListAPI(c *gin.Context) {
 	devices, err := models.DeviceGetAll()
 
@@ -67,6 +71,7 @@ func DeviceGetFromTypeAPI(c *gin.Context) {
 
 //device information
 func DeviceGetDeviceInfoAPI(c *gin.Context) {
+
 	deviceID, err := strconv.ParseInt(c.Query("device_id"), 10, 64)
 
 	if err != nil {
@@ -75,7 +80,7 @@ func DeviceGetDeviceInfoAPI(c *gin.Context) {
 		return
 	}
 
-	device, err := models.DeviceGetByID( deviceID)
+	device, err := models.DeviceGetByID(deviceID)
 
 	if err != nil {
 		if err == sql.ErrNoRows {
@@ -172,4 +177,46 @@ func DeleteDeviceList(c *gin.Context)  {
 	}
 
 	c.JSON(http.StatusOK, response.NewSimpleResponse("Success", "Delete Success"))
+}
+
+//EDIT
+func EditDeviceList(c *gin.Context)  {
+
+	iddev, err := strconv.ParseInt(c.PostForm("device_id"), 10, 64)
+
+	if err != nil {
+		log.Println(err)
+		c.JSON(http.StatusOK, response.NewSimpleResponse("Failed", "Invalid get of ID"))
+	}
+
+	_, err = models.DeviceGetByID(iddev)
+
+	if err != nil {
+		log.Println(err)
+		c.JSON(http.StatusOK, response.NewSimpleResponse("Failed", "Invalid get of ID"))
+	}
+
+	deviceType := c.PostForm("device_type")
+	deviceName := c.PostForm("device_name")
+	deviceHost := c.PostForm("host")
+	deviceToken := c.PostForm("token")
+	deviceDescription := c.PostForm("description")
+
+	devlist := models.Device{}
+	devlist.Id = iddev
+	devlist.Device_type = deviceType
+	devlist.Device_name = deviceName
+	devlist.Host = deviceHost
+	devlist.Token = deviceToken
+	devlist.Description = deviceDescription
+
+	err = models.DeviceEdit(devlist)
+
+	if err != nil {
+		log.Println(err)
+		c.JSON(http.StatusOK, response.NewSimpleResponse("Failed", "Invalid get of ID"))
+	}
+
+	c.JSON(http.StatusOK, response.NewSimpleResponse("Success", "Edit Success"))
+
 }
