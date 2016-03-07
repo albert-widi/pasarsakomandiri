@@ -28,15 +28,12 @@ func Configure(r *gin.Engine, s Static) {
 	r.StaticFS(s.CameraFile, http.Dir(s.CameraURI))
 }
 
-func SaveFileToStaticFS(fileType string, file []byte, fileName string) error {
-	switch fileType {
-		case "camera":
-			var err error
-			err = ioutil.WriteFile(stat.CameraURI+string(os.PathSeparator)+fileName, file, 0666)
+func SaveFileToStaticFS(file []byte, fileFullPath string) error {
+	var err error
+	err = ioutil.WriteFile(fileFullPath, file, 0666)
 
-			if err != nil {
-				log.Println(err)
-			}
-			return err
+	if err != nil {
+		log.Println(err)
 	}
+	return err
 }

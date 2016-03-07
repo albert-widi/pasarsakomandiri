@@ -3,6 +3,7 @@ package models
 import (
 	"database/sql"
 	"github.com/pasarsakomandiri/shared/database"
+	"os"
 )
 
 type Picture struct {
@@ -13,6 +14,7 @@ type Picture struct {
 	Expired_date string
 	Created_by int64
 	Created_date string
+    	PictureFullPath string
 }
 
 func PictureGetAll(condition string) ([]Picture, error) {
@@ -41,4 +43,8 @@ func PictureSave(pic Picture) (sql.Result, error) {
 func PictureDelete(picId int64) error {
 	_, err := database.Db.Exec("DELETE FROM pictures WHERE id = ?", picId)
 	return err
+}
+
+func (pic *Picture) PictureGetFullPath() string {
+	return pic.Filepath+string(os.PathSeparator)+pic.Filename+"."+pic.Format
 }

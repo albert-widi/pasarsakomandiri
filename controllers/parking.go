@@ -27,8 +27,6 @@ type ParkingResponse struct {
 	Picture_path_out string
 }
 
-const parking_base  = 3000
-
 func ParkingTransTgl(c *gin.Context)  {
 
 	created_date := c.Query("created_date")
@@ -91,6 +89,7 @@ func ParkingCheckIn(c *gin.Context) {
 		return
 	}
 	//set ipcamera param
+	camChan := make(chan []byte)
 	ipCamera := api.IpCamera{}
 	ipCamera.Protocol = "http"
 	ipCamera.Param = "Streaming/channels/1/picture"
@@ -98,7 +97,7 @@ func ParkingCheckIn(c *gin.Context) {
 	ipCamera.Username = "admin"
 	ipCamera.Password = "12345"
 	ipCamera.Picture = make(chan []byte)
-	go ipCamera.GetPicture()
+	go ipCamera.GetPictureWithChannel(camChan)
 
 	//parking ticket struct
 	parkingTicket := models.ParkingTicket{}
@@ -136,7 +135,7 @@ func ParkingCheckIn(c *gin.Context) {
 
 	c.JSON(http.StatusOK, parkingResponse)
 	//taking picture from camera with goroutines, reducing latency
-	go saveCameraPicture(<-ipCamera.Picture, date,parkingTicket.Id)
+	go saveCameraPicture(<-camChan, date,parkingTicket.Id)
 	return
 }
 

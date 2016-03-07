@@ -29,7 +29,7 @@ func InitPicturesDaemon() {
 					err = models.PictureDelete(elem.Id)
 
 					if err != nil {
-						log.Println(err)
+						log.Println(err)            
 					}
 				}
 			} else {
