@@ -3,9 +3,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"io/ioutil"
-"log"
-	"os"
-	"errors"
+	"log"
 )
 
 type Static struct {

@@ -75,7 +75,7 @@ func ipCamGetPicture(ipcam *IpCamera) ([]byte, error) {
 }
 
 //call this function with goroutines
-func (cam *IpCamera) GetPicture() []byte {
+func (cam *IpCamera) GetPicture() {
 	picture, err := ipCamGetPicture(cam)
 
 	if err != nil {
@@ -91,7 +91,7 @@ func (cam *IpCamera) GetPicture() []byte {
 }
 
 //call this function with goroutines
-func (cam *IpCamera) GetPictureWithChannel(c chan []byte) []byte {
+func (cam *IpCamera) GetPictureWithChannel(c chan []byte) {
 	picture, err := ipCamGetPicture(cam)
 
 	if err != nil {

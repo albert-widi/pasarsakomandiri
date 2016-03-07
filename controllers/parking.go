@@ -96,7 +96,6 @@ func ParkingCheckIn(c *gin.Context) {
 	ipCamera.Host = deviceGroup.Camera_ip
 	ipCamera.Username = "admin"
 	ipCamera.Password = "12345"
-	ipCamera.Picture = make(chan []byte)
 	go ipCamera.GetPictureWithChannel(camChan)
 
 	//parking ticket struct
@@ -157,7 +156,7 @@ func pictureFullPath(pic models.Picture) string {
 func saveCameraPicture(picture []byte, date time.Time, ticketId int64) {
 	//saving picture
 	dateTimeName := date.Format("2006-01-02 03:04:05 PM")
-	pictureName := strings.Replace(dateTimeName, ":", "", 10) + "-" + strconv.FormatInt(ticketId, 10)//+ "-" + string(ticketId)
+	pictureName := strings.Replace(dateTimeName, ":", "", 10) + "-T" + strconv.FormatInt(ticketId, 10)//+ "-" + string(ticketId)
 	//save picture path to database
 	pic := models.Picture{}
 	pic.Filepath = "campicture"
