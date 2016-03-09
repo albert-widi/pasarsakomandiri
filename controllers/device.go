@@ -1,17 +1,17 @@
 package controllers
 
 import (
-"github.com/gin-gonic/gin"
-"github.com/pasarsakomandiri/models"
-"net/http"
-"github.com/pasarsakomandiri/shared/response"
-"database/sql"
-"strconv"
-"github.com/pasarsakomandiri/shared/session"
-"log"
-_"fmt"
-"time"
-"github.com/pasarsakomandiri/api"
+	"github.com/gin-gonic/gin"
+	"github.com/pasarsakomandiri/models"
+	"net/http"
+	"github.com/pasarsakomandiri/shared/response"
+	"database/sql"
+	"strconv"
+	"github.com/pasarsakomandiri/shared/session"
+	"log"
+	_"fmt"
+	"time"
+	"github.com/pasarsakomandiri/api"
 )
 
 func DeviceListPages(c *gin.Context)  {

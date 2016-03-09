@@ -27,8 +27,6 @@ type ParkingResponse struct {
 	Picture_path_out string
 }
 
-const parking_base  = 3000
-
 func ParkingTransTgl(c *gin.Context)  {
 
 	created_date := c.Query("created_date")
@@ -91,14 +89,14 @@ func ParkingCheckIn(c *gin.Context) {
 		return
 	}
 	//set ipcamera param
+	camChan := make(chan []byte)
 	ipCamera := api.IpCamera{}
 	ipCamera.Protocol = "http"
 	ipCamera.Param = "Streaming/channels/1/picture"
 	ipCamera.Host = deviceGroup.Camera_ip
 	ipCamera.Username = "admin"
 	ipCamera.Password = "12345"
-	ipCamera.Picture = make(chan []byte)
-	go ipCamera.GetPicture()
+	go ipCamera.GetPictureWithChannel(camChan)
 
 	//parking ticket struct
 	parkingTicket := models.ParkingTicket{}
@@ -136,7 +134,7 @@ func ParkingCheckIn(c *gin.Context) {
 
 	c.JSON(http.StatusOK, parkingResponse)
 	//taking picture from camera with goroutines, reducing latency
-	go saveCameraPicture(<-ipCamera.Picture, date,parkingTicket.Id)
+	go saveCameraPicture(<-camChan, date,parkingTicket.Id)
 	return
 }
 
@@ -158,7 +156,7 @@ func pictureFullPath(pic models.Picture) string {
 func saveCameraPicture(picture []byte, date time.Time, ticketId int64) {
 	//saving picture
 	dateTimeName := date.Format("2006-01-02 03:04:05 PM")
-	pictureName := strings.Replace(dateTimeName, ":", "", 10) + "-" + strconv.FormatInt(ticketId, 10)//+ "-" + string(ticketId)
+	pictureName := strings.Replace(dateTimeName, ":", "", 10) + "-T" + strconv.FormatInt(ticketId, 10)//+ "-" + string(ticketId)
 	//save picture path to database
 	pic := models.Picture{}
 	pic.Filepath = "campicture"
@@ -258,10 +256,12 @@ func ParkingGetTicketInfo(c *gin.Context) {
 }
 
 func ParkingCheckOut(c *gin.Context) {
+	ticketId, err := strconv.ParseInt(c.PostForm("id"), 10, 64)
 	ticketNumber := c.PostForm("ticket_number")
 	vehicleNumber := c.PostForm("vehicle_number")
 	dateOut := c.PostForm("ticket_date_out")
 	parkingCost, err := strconv.Atoi(c.PostForm(("parking_cost")))
+	//pictureOutId, err := strconv.ParseInt(c.PostForm("picture_out_id"), 10, 64)
 
 	response := new(response.SimpleResponse)
 	parkingResponse := ParkingResponse{}
@@ -270,6 +270,9 @@ func ParkingCheckOut(c *gin.Context) {
 	//session
 	session := session.Instance(c)
 	executor := session.Get("id").(int64)
+
+	//var
+	//var nilMap map[string]interface{}
 
 	/*iscashier, err := hostIsCashier(c, c.ClientIP())
 
@@ -290,7 +293,7 @@ func ParkingCheckOut(c *gin.Context) {
 		return
 	}*/
 
-	parkingTicket, err := models.ParkingGetTicketByTicketNumber(ticketNumber)
+	parkingTicket, err := models.ParkingGetTicketByNumberAndId(ticketId, ticketNumber)
 
 	if err == sql.ErrNoRows {
 		response.Status = "Failed"; response.Message = "Ticket number not found"
@@ -304,6 +307,11 @@ func ParkingCheckOut(c *gin.Context) {
 		return
 	}
 
+	//picture, err := models.PictureGetById(pictureOutId)
+
+	if err != nil {
+		log.Println(err)
+	}
 
 	parkingTicket.Parking_cost = parkingCost
 	parkingTicket.Vehicle_number = vehicleNumber

@@ -38,6 +38,14 @@ func ParkingGetTicketByTicketNumber(ticketNumber string) (ParkingTicket, error) 
 	return parkingTicket, err
 }
 
+func ParkingGetTicketByNumberAndId(ticketId int64, ticketNumber string) (ParkingTicket, error) {
+	parkingTicket := ParkingTicket{}
+
+	err := database.Db.Get(&parkingTicket, "SELECT id, ticket_number, vehicle_id, vehicle_type, created_date, created_by, picture_in_id, picture_out_id FROM parking_transactions WHERE id=? AND ticket_number=?", ticketId, ticketNumber)
+	//err := db.Get(&parkingTicket, "SELECT id, ticket_number, vehicle_number, out_date, parking_cost, verified_by, created_date, created_by, last_update_date, updated_by FROM parking_transactions WHERE ticket_number=?", ticketNumber)
+	return parkingTicket, err
+}
+
 func ParkingGetTicketByTicketID(Id string) (ParkingTicket, error) {
 	parkingTicket := ParkingTicket{}
 
