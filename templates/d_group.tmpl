@@ -178,7 +178,25 @@
 
     </script>
 
+    <script>
+       $(function(){
 
+        $('#munc').on('click', function(){
+            $('#ilang').removeClass('active');
+            $('#munc').addClass('active');
+            $('#devreg').css('display', 'none');
+            $('#gatereg').css({'display': 'block', 'margin-top': '-5px'});
+        });
+
+        $('#ilang').on('click', function(){
+            $('#munc').removeClass('active');
+            $('#ilang').addClass('active');
+            $('#gatereg').css('display', 'none');
+            $('#devreg').css({'display': 'block', 'margin-top': '-5px'});
+        });
+
+       });
+    </script>
 </head>
 
 <body>
@@ -203,12 +221,22 @@
 
 
 <div class="row">
-        <div class="col s4" style="margin-top:7px">
+        <div class="col s4">
+           <div class="section">
+            <nav class="#0097a7 cyan darken-2">
+                <div class="nav-wrapper">
+                  <ul class="hide-on-med-and-down">
+                    <li id="ilang" class="active"><a href="#devreg">Register Gate</a></li>
+                    <li id="munc"><a href="#gatereg">Register Kasir</a></li>
+                  </ul>
+                </div>
+            </nav>
+           </div>
 
-            <div class="card hoverable">
+            <div id="devreg" class="card hoverable" style="margin-top:-5px">
 
                 <div class="card-panel #0097a7 cyan darken-2">
-                    <h3 class="center" style="color: white"><b>Register Device Group</b></h3>
+                    <h3 class="center" style="color: white"><b>Register Gate</b></h3>
                 </div>
 
                 <div class="card-content">
@@ -253,7 +281,60 @@
                 </div>
 
         </div>
+
+        <!-- register GAte -->
+
+        <div id="gatereg" class="card hoverable" style="display:none">
+
+                        <div class="card-panel #0097a7 cyan darken-2">
+                            <h3 class="center" style="color: white"><b>Register Cashier</b></h3>
+                        </div>
+
+                        <div class="card-content">
+                            <div class="row section">
+                                <div class="input-field col s10 offset-s1">
+                                    <label>Raspberry Name</label>
+                                    <br><br>
+                                    <select class="browser-default" id="device_raspberry">
+
+                                    </select>
+                                    <table class="bordered centered" id="raspberry_info">
+                                    </table>
+                                </div>
+                                 <div class="input-field col s10 offset-s1" style="margin-top:30px">
+                                     <label>Camera Name</label>
+                                     <br><br>
+                                     <select class="browser-default" id="device_camera">
+
+                                     </select>
+                                     <table class="bordered centered" id="camera_info">
+                                     </table>
+                                </div>
+                                <div class="input-field col s10 offset-s1" style="margin-top:20px">
+                                     <label>Vehicle Type</label>
+                                     <br><br>
+                                     <select class="browser-default" id="vehicle_type">
+
+                                     </select>
+                                </div>
+                                <div class="input-field col s10 offset-s1" style="margin-top:40px">
+                                  <input id="gate_name" type="text">
+                                  <label>Gate Name</label>
+                                </div>
+                                <div class="col s10 offset-s1" style="margin-top:30px">
+                                    <button id="create_group" class="right waves-effect waves-light btn">Create Group</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card-action #0097a7 cyan darken-2">
+                            <p class="center" style="color:white">Pasar Sako Mandiri</p>
+                        </div>
+
+                </div>
 </div>
+
+
 
 <!--<div class="bungkus">
         <div>
