@@ -19,7 +19,7 @@
 
             for (var n=0; n<data.length; n++){
                 var id = data[n].Id;
-                tables += "<tr><td>" +data[n].Raspberry_id+ "</td> <td>" +data[n].Raspberry_ip+ "</td> <td>" +data[n].Camera_id+ "</td> <td>" +data[n].Camera_ip+ "</td> <td>" +data[n].Vehicle_id+ "</td> <td>" +data[n].Vehicle_type+ "</td> <td>" +data[n].Gate_name+ "</td><td><button class='waves-effect waves-light btn' onclick= 'passFunc("+id+")'>Delete</button></td></tr>";
+                tables += "<tr><td>" +data[n].Raspberry_id+ "</td> <td>" +data[n].Raspberry_ip+ "</td> <td>" +data[n].Group_type+ "</td> <td>" +data[n].Camera_id+ "</td> <td>" +data[n].Camera_ip+ "</td> <td>" +data[n].Vehicle_id+ "</td> <td>" +data[n].Vehicle_type+ "</td> <td>" +data[n].Group_name+ "</td><td><button class='waves-effect waves-light btn' onclick= 'passFunc("+id+")'>Delete</button></td></tr>";
             }
 
             tables += "";
@@ -123,7 +123,8 @@
                     raspberry_id:raspberryid,
                     camera_id:cameraid,
                     vehicle_id:vehicleid,
-                    gate_name:gatename
+                    gate_name:gatename,
+                    group_type:"Gate"
                 },function(data, status) {
                     alert(data.Message);
 
@@ -134,7 +135,7 @@
 
                            for (var n=0; n<data.length; n++){
                                var id = data[n].Id;
-                               tables += "<tr><td>" +data[n].Raspberry_id+ "</td> <td>" +data[n].Raspberry_ip+ "</td> <td>" +data[n].Camera_id+ "</td> <td>" +data[n].Camera_ip+ "</td> <td>" +data[n].Vehicle_id+ "</td> <td>" +data[n].Vehicle_type+ "</td> <td>" +data[n].Gate_name+ "</td><td><button class='waves-effect waves-light btn' onclick= 'passFunc("+id+")'>Delete</button></td></tr>";
+                               tables += "<tr><td>" +data[n].Raspberry_id+ "</td><td>" +data[n].Raspberry_ip+ "</td><td>" + "</td><td>" +data[n].Group_type+ "</td><td>" +data[n].Camera_id+ "</td> <td>" +data[n].Camera_ip+ "</td><td>" +data[n].Vehicle_id+ "</td> <td>" +data[n].Vehicle_type+ "</td><td>" +data[n].Group_name+ "</td><td><button class='waves-effect waves-light btn' onclick= 'passFunc("+id+")'>Delete</button></td></tr>";
                            }
 
                            tables += "";
@@ -164,7 +165,7 @@
 
                    for (var n=0; n<data.length; n++){
                        var id = data[n].Id;
-                       tables += "<tr><td>" +data[n].Raspberry_id+ "</td> <td>" +data[n].Raspberry_ip+ "</td> <td>" +data[n].Camera_id+ "</td> <td>" +data[n].Camera_ip+ "</td> <td>" +data[n].Vehicle_id+ "</td> <td>" +data[n].Vehicle_type+ "</td> <td>" +data[n].Gate_name+ "</td><td><button class='waves-effect waves-light btn' onclick= 'passFunc("+id+")'>Delete</button></td></tr>";
+                       tables += "<tr><td>" +data[n].Raspberry_id+ "</td><td>" +data[n].Raspberry_ip+ "</td> <td>" +data[n].Camera_id+ "</td> <td>" +data[n].Camera_ip+ "</td> <td>" +data[n].Vehicle_id+ "</td> <td>" +data[n].Vehicle_type+ "</td> <td>" +data[n].Gate_name+ "</td><td><button class='waves-effect waves-light btn' onclick= 'passFunc("+id+")'>Delete</button></td></tr>";
                    }
 
                    tables += "";
@@ -196,6 +197,99 @@
         });
 
        });
+    </script>
+
+    <script>
+        $(function(){
+
+                //get value cashier name
+                $.get("/api/device/devices_by_type", {
+                    device_type:"Cashier"
+                        },function(data, status){
+
+                        var raspberry = document.getElementById("cashier_name");
+                       var content = "";
+                         for (var i=0; i<data.length; i++) {
+                            content += "<option value="+data[i].Id+">" + data[i].Device_name + "</option>";
+                            }
+                        raspberry.innerHTML = content;
+                });
+
+                //get value cashier camera
+                $.get("/api/device/devices_by_type", {
+                    device_type:"Camera"
+                        },function(data, status){
+
+                        var raspberry = document.getElementById("cashier_camera");
+                       var content = "";
+                         for (var i=0; i<data.length; i++) {
+                            content += "<option value="+data[i].Id+">" + data[i].Device_name + "</option>";
+                            }
+                        raspberry.innerHTML = content;
+                });
+
+                //click func on cashier name
+                $('#cashier_name').on('click', function(){
+
+                    var deviceId = document.getElementById("cashier_name").value;
+                    $.get("/api/device/device_info", {
+                                    device_id:deviceId
+                                },function(data, status){
+                                       var raspberry = document.getElementById("cashier_info");
+                                       var content = "<tr><td><b>Host</b></td><td><b>Device Type</b></td><td><b>Description</b></td></tr><tr><td>" + data.Host + "</td><td>" + data.Device_type + "</td><td>" + data.Description + "</td></tr>";
+                                        raspberry.innerHTML = content;
+                     });
+
+                });
+
+
+                //click func on camera cashier name
+                $('#cashier_camera').on('click', function(){
+
+                    var deviceId = document.getElementById("cashier_camera").value;
+                    $.get("/api/device/device_info", {
+                                    device_id:deviceId
+                                },function(data, status){
+                                       var raspberry = document.getElementById("cashier_camera_info");
+                                       var content = "<tr><td><b>Host</b></td><td><b>Device Type</b></td><td><b>Description</b></td></tr><tr><td>" + data.Host + "</td><td>" + data.Device_type + "</td><td>" + data.Description + "</td></tr>";
+                                        raspberry.innerHTML = content;
+                     });
+
+                });
+
+                //create group button cashier
+                 $("#create_group_cashier").on('click', function() {
+                    var raspberryid = document.getElementById("cashier_name").value;
+                    var cameraid = document.getElementById("cashier_camera").value;
+                    var gatename = document.getElementById("gate_name_cashier").value;
+                    $.post("/api/device/create_device_group",
+                    {
+                        raspberry_id:raspberryid,
+                        camera_id:cameraid,
+                        gate_name:gatename,
+                        group_type:"Cashier"
+                    },function(data, status) {
+                        alert(data.Message);
+
+                        if(data.Status == 'Success'){
+                           $.get("/api/device/device_group_list", function(data, status){
+                               var div = document.getElementById ("display");
+                               var tables = "";
+
+                               for (var n=0; n<data.length; n++){
+                                   var id = data[n].Id;
+                                   tables += "<tr><td>" +data[n].Raspberry_id+ "</td><td>" +data[n].Raspberry_ip+ "</td><td>" + "</td><td>" +data[n].Group_type+ "</td><td>" +data[n].Camera_id+ "</td> <td>" +data[n].Camera_ip+ "</td><td>" +data[n].Vehicle_id+ "</td> <td>" +data[n].Vehicle_type+ "</td><td>" +data[n].Group_name+ "</td><td><button class='waves-effect waves-light btn' onclick= 'passFunc("+id+")'>Delete</button></td></tr>";
+                               }
+
+                               tables += "";
+                               div.innerHTML = tables;
+
+                           });
+                       }
+                    });
+                });
+
+        });
     </script>
 </head>
 
@@ -268,10 +362,10 @@
                         </div>
                         <div class="input-field col s10 offset-s1" style="margin-top:40px">
                           <input id="gate_name" type="text">
-                          <label>Gate Name</label>
+                          <label>Group Name</label>
                         </div>
                         <div class="col s10 offset-s1" style="margin-top:30px">
-                            <button id="create_group" class="right waves-effect waves-light btn">Create Group</button>
+                            <button id="create_group" class="right waves-effect waves-light btn">Create Gate</button>
                         </div>
                     </div>
                 </div>
@@ -293,36 +387,29 @@
                         <div class="card-content">
                             <div class="row section">
                                 <div class="input-field col s10 offset-s1">
-                                    <label>Raspberry Name</label>
+                                    <label>Cashier Name</label>
                                     <br><br>
-                                    <select class="browser-default" id="device_raspberry">
+                                    <select class="browser-default" id="cashier_name">
 
                                     </select>
-                                    <table class="bordered centered" id="raspberry_info">
+                                    <table class="bordered centered" id="cashier_info">
                                     </table>
                                 </div>
                                  <div class="input-field col s10 offset-s1" style="margin-top:30px">
                                      <label>Camera Name</label>
                                      <br><br>
-                                     <select class="browser-default" id="device_camera">
+                                     <select class="browser-default" id="cashier_camera">
 
                                      </select>
-                                     <table class="bordered centered" id="camera_info">
+                                     <table class="bordered centered" id="cashier_camera_info">
                                      </table>
                                 </div>
-                                <div class="input-field col s10 offset-s1" style="margin-top:20px">
-                                     <label>Vehicle Type</label>
-                                     <br><br>
-                                     <select class="browser-default" id="vehicle_type">
-
-                                     </select>
-                                </div>
                                 <div class="input-field col s10 offset-s1" style="margin-top:40px">
-                                  <input id="gate_name" type="text">
-                                  <label>Gate Name</label>
+                                  <input id="gate_name_cashier" type="text">
+                                  <label>Group Name</label>
                                 </div>
                                 <div class="col s10 offset-s1" style="margin-top:30px">
-                                    <button id="create_group" class="right waves-effect waves-light btn">Create Group</button>
+                                    <button id="create_group_cashier" class="right waves-effect waves-light btn">Create Cashier</button>
                                 </div>
                             </div>
                         </div>
@@ -375,7 +462,7 @@
                  <div id="page-content">
                      <table class="striped centered">
                         <thead>
-                        <tr> <th>Raspberry Id</th> <th>Raspberry Ip</th> <th>Camera Id</th> <th>Camera Ip</th> <th>Vehicle Id</th> <th>Vehicle Type</th> <th>Gate Name</th></tr>
+                        <tr> <th>Raspberry Id</th> <th>Raspberry Ip</th> <th>Group Type</th> <th>Camera Id</th> <th>Camera Ip</th> <th>Vehicle Id</th> <th>Vehicle Type</th> <th>Group Name</th></tr>
                         </thead>
                         <tbody id="display">
 

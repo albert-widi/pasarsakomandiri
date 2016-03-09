@@ -9,6 +9,7 @@ import (
 	"github.com/pasarsakomandiri/shared/response"
 	"log"
 	"github.com/pasarsakomandiri/shared/session"
+	"strings"
 )
 
 func DeviceGroupPage(c *gin.Context) {
@@ -45,8 +46,13 @@ func DeviceGroupRegisterAPI(c *gin.Context) {
 		return
 	}
 
-	if raspberry.Device_type != "Raspberry" {
-		c.JSON(http.StatusOK, response.NewSimpleResponse("Failed", "Device type of Raspberry is not Raspberry"))
+	//log.Println("Device type: ", raspberry.Device_type)
+	log.Println("Compare, ", strings.Compare("Raspberry", raspberry.Device_type))
+	log.Println("Compare, ", strings.Compare("Cashier", raspberry.Device_type))
+
+	if raspberry.Device_type != "Raspberry" && raspberry.Device_type != "Cashier"  {
+	//if strings.Compare("Cashier", raspberry.Device_type) != 0 && strings.Compare("Raspberry", raspberry.Device_type) != 0 {
+		c.JSON(http.StatusOK, response.NewSimpleResponse("Failed", "Device type is not Raspberry or Cashier"))
 		return
 	}
 
@@ -68,17 +74,30 @@ func DeviceGroupRegisterAPI(c *gin.Context) {
 		return
 	}
 
-	vehicle, err := models.ParkingVehicleGetByID(vehicleId)
+	deviceGroup := models.DeviceGroup{}
+	deviceGroup.Raspberry_id = raspberryId
+	deviceGroup.Raspberry_ip = raspberry.Host
+	deviceGroup.Camera_id = cameraId
+	deviceGroup.Camera_ip = camera.Host
+	deviceGroup.Group_name = groupName
+	deviceGroup.Group_type = groupType
 
-	if err != nil {
-		if err == sql.ErrNoRows {
-			c.JSON(http.StatusOK, response.NewSimpleResponse("Failed", "Vehicle not found"))
+	if raspberry.Device_type == "Raspberry" {
+		vehicle, err := models.ParkingVehicleGetByID(vehicleId)
+
+		if err != nil {
+			if err == sql.ErrNoRows {
+				c.JSON(http.StatusOK, response.NewSimpleResponse("Failed", "Vehicle not found"))
+				return
+			}
+
+			log.Println(err)
+			c.JSON(http.StatusOK, response.NewSimpleResponse("Failed", "System fatal error"))
 			return
 		}
 
-		log.Println(err)
-		c.JSON(http.StatusOK, response.NewSimpleResponse("Failed", "System fatal error"))
-		return
+		deviceGroup.Vehicle_id = vehicle.Id
+		deviceGroup.Vehicle_type = vehicle.Vehicle_type
 	}
 
 	_, err = models.DeviceGroupGetByHost("raspberry_ip", raspberry.Host)
@@ -117,16 +136,6 @@ func DeviceGroupRegisterAPI(c *gin.Context) {
 		c.JSON(http.StatusOK, response.NewSimpleResponse("Failed", "Camera already grouped in another group"))
 		return
 	}*/
-
-	deviceGroup := models.DeviceGroup{}
-	deviceGroup.Raspberry_id = raspberryId
-	deviceGroup.Raspberry_ip = raspberry.Host
-	deviceGroup.Camera_id = cameraId
-	deviceGroup.Camera_ip = camera.Host
-	deviceGroup.Vehicle_id = vehicle.Id
-	deviceGroup.Vehicle_type = vehicle.Vehicle_type
-	deviceGroup.Group_name = groupName
-	deviceGroup.Group_type = groupType
 
 	err = models.DeviceGroupCreateNew(session.Instance(c).Get("id").(int64), deviceGroup)
 
