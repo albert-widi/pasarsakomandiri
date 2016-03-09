@@ -11,9 +11,12 @@ import (
 	"net/http"
 	"github.com/pasarsakomandiri/shared/response"
 	"github.com/pasarsakomandiri/shared/static"
+	"strconv"
+	"github.com/fatih/structs"
 )
 
 var timeSaveStandard time.Duration = time.Duration(24)
+var nilInterface map[string]interface{}
 
 func getIpCamPicture(ipcamhost string) api.IpCamera {
 	ipCamera := api.IpCamera{}
@@ -27,7 +30,7 @@ func getIpCamPicture(ipcamhost string) api.IpCamera {
 	return ipCamera
 }
 
-func saveIpCamPicture(date time.Time, ipCamera api.IpCamera) (string, error) {
+func saveIpCamPicture(date time.Time, ipCamera api.IpCamera) (models.Picture, error) {
 	dateTimeName := date.Format("2006-01-02 03:04:05 PM")
 	var err error
 	pic := models.Picture{}
@@ -39,22 +42,32 @@ func saveIpCamPicture(date time.Time, ipCamera api.IpCamera) (string, error) {
 	pic.Created_date = date.String()
 	pic.PictureFullPath = pic.GetFullPath()
 
+	//save filepath to db
+	result, dbErr := models.PictureSave(pic)
+	err = dbErr
+
+	if err != nil {
+		return pic, err
+	}
+
+	pictureId, _ := result.LastInsertId()
+
+	//append picture id to filaname
+	pic.Filename = "P" + strconv.FormatInt(pictureId, 10)
+	//update picture name
+	err = models.PictureUpdateName(pic.Filename, pic.Id)
+	if err != nil {
+		log.Println("Update picture name error, ", err)
+	}
+
 	//save file to filesystem
 	fsErr := static.SaveFileToStaticFS(ipCamera.Picture, pic.PictureFullPath)
 	err = fsErr
 	if err != nil {
-		return "", fsErr
+		return pic, fsErr
 	}
 
-	//save filepath to db
-	_, dbErr := models.PictureSave(pic)
-	err = dbErr
-
-	if err != nil {
-		return "", err
-	}
-
-	return pic.PictureFullPath, err
+	return pic, err
 }
 
 //taking picture by ip
@@ -62,15 +75,17 @@ func IpCamTakePictureByIP(c *gin.Context) {
 	date := time.Now()
 	camIp := c.Query("camip")
 	ipCamera := getIpCamPicture(camIp)
-	filePath, err := saveIpCamPicture(date, ipCamera)
+	picture, err := saveIpCamPicture(date, ipCamera)
+
+	pictureMap := structs.Map(picture)
 
 	if err != nil {
 		log.Println(err)
-		c.JSON(http.StatusOK, response.NewSimpleResponse("Failed", "System Error: "+err.Error()))
+		c.JSON(http.StatusOK, response.NewSimpleResponse("Failed", "Error: "+err.Error()))
 		return
 	}
 
-	c.JSON(http.StatusOK, response.NewSimpleResponse("Success", filePath))
+	c.JSON(http.StatusOK, response.NewDataResponse("Success", "Here is your picture", pictureMap))
 	return
 }
 
@@ -93,7 +108,9 @@ func IpCamTakePictureFromDevice(c *gin.Context) {
 	deviceGroup, err := models.DeviceGroupGetByHost(condition, device.Host)
 	//get picture from ipcamera
 	ipCamera := getIpCamPicture(deviceGroup.Camera_ip)
-	filePath, err := saveIpCamPicture(date, ipCamera)
+	picture, err := saveIpCamPicture(date, ipCamera)
+
+	pictureMap := structs.Map(picture)
 
 	if err != nil {
 		log.Println(err)
@@ -101,6 +118,6 @@ func IpCamTakePictureFromDevice(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, response.NewSimpleResponse("Success", filePath))
+	c.JSON(http.StatusOK, response.NewDataResponse("Success", "Here is your picture", pictureMap))
 	return
 }

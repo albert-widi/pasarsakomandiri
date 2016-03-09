@@ -67,7 +67,7 @@ func ParkingCreateNewTicket(parkingTicket ParkingTicket) (sql.Result, error) {
 }
 
 func ParkingUpdateTicket(parkingTicket ParkingTicket) error {
-	_, err := database.Db.Exec("UPDATE parking_transactions SET vehicle_number=?, out_date=?, parking_cost=?, verified_by=?, last_update_date=?, updated_by=? WHERE id=?", parkingTicket.Vehicle_number, parkingTicket.Out_date, parkingTicket.Parking_cost, parkingTicket.Verified_by, parkingTicket.Last_update_date, parkingTicket.Updated_by, parkingTicket.Id)
+	_, err := database.Db.Exec("UPDATE parking_transactions SET vehicle_number=?, out_date=?, parking_cost=?, verified_by=?, last_update_date=?, updated_by=?, picture_out_id=? WHERE id=?", parkingTicket.Vehicle_number, parkingTicket.Out_date, parkingTicket.Parking_cost, parkingTicket.Verified_by, parkingTicket.Last_update_date, parkingTicket.Updated_by, parkingTicket.Picture_out_id, parkingTicket.Id)
 	return err
 }
 

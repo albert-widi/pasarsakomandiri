@@ -34,6 +34,11 @@ func PictureGetById(pictureId int64) (Picture, error) {
 	return picture, err
 }
 
+func PictureUpdateName(pictureName string, pictureId int64) error {
+	_, err := database.Db.Exec("UPDATE pictures SET filename=? WHERE id=?", pictureName, pictureId)
+	return err
+}
+
 func PictureSave(pic Picture) (sql.Result, error) {
 	result , err := database.Db.Exec("INSERT INTO pictures(filepath, filename, format, expired_date, created_by, created_date) VALUES(?, ?, ?, ?, ?, ?)", pic.Filepath, pic.Filename, pic.Format, pic.Expired_date, pic.Created_by, pic.Created_date)
 	return result, err

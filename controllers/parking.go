@@ -261,7 +261,7 @@ func ParkingCheckOut(c *gin.Context) {
 	vehicleNumber := c.PostForm("vehicle_number")
 	dateOut := c.PostForm("ticket_date_out")
 	parkingCost, err := strconv.Atoi(c.PostForm(("parking_cost")))
-	//pictureOutId, err := strconv.ParseInt(c.PostForm("picture_out_id"), 10, 64)
+	pictureOutId, err := strconv.ParseInt(c.PostForm("picture_out_id"), 10, 64)
 
 	response := new(response.SimpleResponse)
 	parkingResponse := ParkingResponse{}
@@ -271,10 +271,13 @@ func ParkingCheckOut(c *gin.Context) {
 	session := session.Instance(c)
 	executor := session.Get("id").(int64)
 
-	//var
-	//var nilMap map[string]interface{}
+	_, err = models.PictureGetById(pictureOutId)
 
-	/*iscashier, err := hostIsCashier(c, c.ClientIP())
+	if err != nil {
+		log.Println("Invalid picture, err: ", err)
+	}
+
+	iscashier, err := hostIsCashier(c, c.ClientIP())
 
 	if err != nil {
 		if err == sql.ErrNoRows {
@@ -285,13 +288,14 @@ func ParkingCheckOut(c *gin.Context) {
 
 		response.Status = "Failed"; response.Message = "System fatal error"
 		c.JSON(http.StatusOK, parkingResponse)
+		return
 	}
 
 	if !iscashier {
 		response.Status = "Failed"; response.Message = "Not a cashier host"
 		c.JSON(http.StatusOK, parkingResponse)
 		return
-	}*/
+	}
 
 	parkingTicket, err := models.ParkingGetTicketByNumberAndId(ticketId, ticketNumber)
 
@@ -319,6 +323,7 @@ func ParkingCheckOut(c *gin.Context) {
 	parkingTicket.Out_date = dateOut
 	parkingTicket.Last_update_date = dateOut
 	parkingTicket.Updated_by = executor
+	parkingTicket.Picture_out_id = pictureOutId
 
 	err = models.ParkingUpdateTicket(parkingTicket)
 
@@ -332,6 +337,11 @@ func ParkingCheckOut(c *gin.Context) {
 	response.Status = "Failed"; response.Message = "Thank you"
 	parkingResponse.Data = parkingTicket
 	c.JSON(http.StatusOK, parkingResponse)
+}
+
+//update picture after out
+func updatePictureOut(pictureId int64, ticketId int64) {
+
 }
 
 func hostIsCashier(c *gin.Context, ip string) (bool, error) {
