@@ -24,6 +24,7 @@ func Initialize(r *gin.Engine)  {
 	r.GET("/device/device_group", middleware.AllowOnlyAdministrator(), controllers.DeviceGroupPage)
 	r.GET("/formval", middleware.DisAllowAnon(), controllers.GetDeviceType)
 	r.GET("/device", middleware.DisAllowAnon(), controllers.DeviceListPages)
+	r.GET("/edit_devicelist", middleware.DisAllowAnon(), controllers.DeviceListEditPages)
 
 	//user register
 	r.GET("/user_list", middleware.DisAllowAnon(), controllers.UserListPages)
@@ -51,6 +52,7 @@ func Initialize(r *gin.Engine)  {
 	r.GET("/api/device/check_out_device", controllers.DeviceContactCheckOut)
 	r.POST("/api/device/delete_device_group",middleware.DisAllowAnon(), controllers.DeviceGroupDeleteAPI)
 	r.POST("/api/device/delete", middleware.DisAllowAnon(), controllers.DeleteDeviceList)
+	r.POST("/api/device/edit", middleware.DisAllowAnon(), controllers.EditDeviceList)
 
 	//PARKING API
 	r.GET("/api/parking/checkIn", controllers.ParkingCheckIn) //authenticated in controllers
