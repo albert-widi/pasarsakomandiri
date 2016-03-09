@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="assets/js/jquery-2.1.1.min.js"></script>
+    <script src="assets/js/materialize.js"></script>
+    <title>Update Device</title>
+    <!-- CSS -->
+    <link media="screen,projection" rel="stylesheet" type="text/css" href="/assets/css/materialize.css"></link>
+    <!-- SCRIPT -->
+    <script>
+        $(function(){
+            //alert(id);
+            var ambilid = id;
+            $.get("/api/device/device_info",
+            {
+                device_id:ambilid
+            },function(data, status){
+                //alert("Data: " + data + "\nStatus: " + status);
+
+               document.getElementById("name").value = data.Device_name;
+               document.getElementById("host").value = data.Host;
+               document.getElementById("token").value = data.Token;
+               document.getElementById("description").value = data.Description;
+
+                 $.get("/formval", function(data_device, status){
+
+                       var div = document.getElementById("type");
+                       var options = "";
+                       options += "<option value= "+data.Device_type+">" +data.Device_type+ "</option>";
+                       for (i=0; i<data_device.length; i++){
+                           if(data.Device_type == data_device[i].Device_type) {
+                                continue;
+                           }
+                           options += "<option value= "+data_device[i].Device_type+">" +data_device[i].Device_type+ "</option>";
+                       }
+                       div.innerHTML = options;
+                   });
+            });
+
+            $("#edit").click(function(){
+
+                iddevice = ambilid;
+                Utype = document.getElementById("type").value;
+                Uname = $("#name").val();
+                Uhost = $("#host").val();
+                Utoken = $("#token").val();
+                Udescription = $("#description").val();
+
+                $.post("/api/device/edit",
+                {
+                  device_id: ambilid,
+                  device_type: Utype,
+                  device_name: Uname,
+                  host: Uhost,
+                  token: Utoken,
+                  description: Udescription
+                },
+                function(data,status){
+                    //alert(data);
+                    alert(data.Status + " " + data.Message);
+                    //alert("Data: " + data + "\nStatus: " + status);
+                    //alert(data.status + data.Message);
+                });
+
+
+            });
+        });
+    </script>
+</head>
+<body>
+
+<div class="row">
+    <div class="col s4" style="margin-top:7px">
+
+    <div class="card hoverable">
+        <div class="card-panel #0097a7 cyan darken-2">
+            <h3 class="center" style="color: white"><b>Edit Device List</b></h3>
+        </div>
+        <div class="card-content">
+            <div class="row section">
+                <div class="input-field col s10 offset-s1">
+                    <label>Device Type</label>
+                    <br><br>
+                    <select class="browser-default" id="type">
+                    </select>
+                </div>
+                 <div class="input-field col s10 offset-s1" style="margin-top:30px">
+                  Device Name
+                  <input id="name" type="text">
+                </div>
+                <div class="input-field col s10 offset-s1" style="margin-top:20px">
+                  Host
+                  <input id="host" type="text">
+                </div>
+                <div class="input-field col s10 offset-s1" style="margin-top:20px">
+                  Token
+                  <input id="token" type="text">
+                </div>
+                <div class="input-field col s10 offset-s1" style="margin-top:20px">
+                  Description
+                  <input id="description" type="text">
+                </div>
+                <div class="col s10 offset-s1" style="margin-top:30px">
+                    <button id="edit" class="right waves-effect waves-light btn">Edit</button>
+                </div>
+            </div>
+        </div>
+        <div class="card-action #0097a7 cyan darken-2">
+            <p class="center" style="color:white">Pasar Sako Mandiri</p>
+            </div>
+
+        </div>
+</div>
+
+
+
+
+
+
+</body>
+
+</html>
