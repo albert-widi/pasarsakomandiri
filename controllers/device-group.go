@@ -30,7 +30,8 @@ func DeviceGroupRegisterAPI(c *gin.Context) {
 	raspberryId, err := strconv.ParseInt(c.PostForm("raspberry_id"), 10, 64)
 	cameraId, err := strconv.ParseInt(c.PostForm("camera_id"), 10, 64)
 	vehicleId, err := strconv.Atoi(c.PostForm("vehicle_id"))
-	gateName := c.PostForm("gate_name")
+	groupName := c.PostForm("gate_name")
+	groupType := c.PostForm("group_type")
 
 	raspberry, err := models.DeviceGetByID(raspberryId)
 
@@ -118,14 +119,14 @@ func DeviceGroupRegisterAPI(c *gin.Context) {
 	}*/
 
 	deviceGroup := models.DeviceGroup{}
-	deviceGroup.Id = 0
 	deviceGroup.Raspberry_id = raspberryId
 	deviceGroup.Raspberry_ip = raspberry.Host
 	deviceGroup.Camera_id = cameraId
 	deviceGroup.Camera_ip = camera.Host
 	deviceGroup.Vehicle_id = vehicle.Id
 	deviceGroup.Vehicle_type = vehicle.Vehicle_type
-	deviceGroup.Gate_name = gateName
+	deviceGroup.Group_name = groupName
+	deviceGroup.Group_type = groupType
 
 	err = models.DeviceGroupCreateNew(session.Instance(c).Get("id").(int64), deviceGroup)
 

@@ -45,6 +45,6 @@ func PictureDelete(picId int64) error {
 	return err
 }
 
-func (pic *Picture) PictureGetFullPath() string {
+func (pic *Picture) GetFullPath() string {
 	return pic.Filepath+string(os.PathSeparator)+pic.Filename+"."+pic.Format
 }

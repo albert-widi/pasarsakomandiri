@@ -256,10 +256,12 @@ func ParkingGetTicketInfo(c *gin.Context) {
 }
 
 func ParkingCheckOut(c *gin.Context) {
+	ticketId, err := strconv.ParseInt(c.PostForm("id"), 10, 64)
 	ticketNumber := c.PostForm("ticket_number")
 	vehicleNumber := c.PostForm("vehicle_number")
 	dateOut := c.PostForm("ticket_date_out")
 	parkingCost, err := strconv.Atoi(c.PostForm(("parking_cost")))
+	//pictureOutId, err := strconv.ParseInt(c.PostForm("picture_out_id"), 10, 64)
 
 	response := new(response.SimpleResponse)
 	parkingResponse := ParkingResponse{}
@@ -268,6 +270,9 @@ func ParkingCheckOut(c *gin.Context) {
 	//session
 	session := session.Instance(c)
 	executor := session.Get("id").(int64)
+
+	//var
+	//var nilMap map[string]interface{}
 
 	/*iscashier, err := hostIsCashier(c, c.ClientIP())
 
@@ -288,7 +293,7 @@ func ParkingCheckOut(c *gin.Context) {
 		return
 	}*/
 
-	parkingTicket, err := models.ParkingGetTicketByTicketNumber(ticketNumber)
+	parkingTicket, err := models.ParkingGetTicketByNumberAndId(ticketId, ticketNumber)
 
 	if err == sql.ErrNoRows {
 		response.Status = "Failed"; response.Message = "Ticket number not found"
@@ -302,6 +307,11 @@ func ParkingCheckOut(c *gin.Context) {
 		return
 	}
 
+	//picture, err := models.PictureGetById(pictureOutId)
+
+	if err != nil {
+		log.Println(err)
+	}
 
 	parkingTicket.Parking_cost = parkingCost
 	parkingTicket.Vehicle_number = vehicleNumber

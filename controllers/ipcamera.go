@@ -37,9 +37,10 @@ func saveIpCamPicture(date time.Time, ipCamera api.IpCamera) (string, error) {
 	pic.Expired_date = date.Add(time.Hour * timeSaveStandard).String()
 	pic.Created_by = -1
 	pic.Created_date = date.String()
+	pic.PictureFullPath = pic.GetFullPath()
 
 	//save file to filesystem
-	fsErr := static.SaveFileToStaticFS(ipCamera.Picture, pic.PictureGetFullPath())
+	fsErr := static.SaveFileToStaticFS(ipCamera.Picture, pic.PictureFullPath)
 	err = fsErr
 	if err != nil {
 		return "", fsErr
@@ -53,7 +54,7 @@ func saveIpCamPicture(date time.Time, ipCamera api.IpCamera) (string, error) {
 		return "", err
 	}
 
-	return pic.PictureGetFullPath(), err
+	return pic.PictureFullPath, err
 }
 
 //taking picture by ip

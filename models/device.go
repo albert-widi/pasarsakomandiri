@@ -5,17 +5,6 @@ import (
 	"github.com/pasarsakomandiri/shared/database"
 )
 
-type DeviceGroup struct {
-	Id int64
-	Raspberry_id int64
-	Raspberry_ip string
-	Camera_id int64
-	Camera_ip string
-	Vehicle_id int
-	Vehicle_type string
-	Gate_name string
-}
-
 type Device struct {
 	Id int64
 	Device_type_id int64
