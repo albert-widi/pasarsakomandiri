@@ -95,7 +95,7 @@ func ParkingCheckIn(c *gin.Context) {
 	ipCamera.Param = "Streaming/channels/1/picture"
 	ipCamera.Host = deviceGroup.Camera_ip
 	ipCamera.Username = "admin"
-	ipCamera.Password = "12345"
+	ipCamera.Password = "sakomandiri1"
 	go ipCamera.GetPictureWithChannel(camChan)
 
 	//parking ticket struct

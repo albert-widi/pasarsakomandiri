@@ -25,7 +25,7 @@ func getIpCamPicture(ipcamhost string) api.IpCamera {
 	ipCamera.Param = "Streaming/channels/1/picture"
 	ipCamera.Host = ipcamhost
 	ipCamera.Username = "admin"
-	ipCamera.Password = "12345"
+	ipCamera.Password = "sakomandiri1"
 	ipCamera.GetPicture()
 
 	return ipCamera
