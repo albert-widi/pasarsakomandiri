@@ -1,6 +1,5 @@
 package models
 import (
-	"github.com/jmoiron/sqlx"
 	"github.com/pasarsakomandiri/shared/database"
 )
 
@@ -19,17 +18,19 @@ func MemberCreateNew(member Member) error {
 	return err
 }
 
-func MemberGetAll()([]Member, error)  {
-	member := []Member{}
-	err := database.Db.Select(&member, "SELECT id, vehicle_id, vehicle_type, police_number, description, created_by, created_date FROM members ORDER BY id")
+func MemberGetByPoliceNumber(policeNumber string) (Member, error) {
+	member := Member{}
+	err := database.Db.Get(&member, "SELECT id, vehicle_id, vehicle_type, police_number, description, created_by, created_date FROM members WHHERE police_number=?", policeNumber)
 	return member, err
+}
+
+func MemberGetAll()([]Member, error)  {
+	members := []Member{}
+	err := database.Db.Select(&members, "SELECT id, vehicle_id, vehicle_type, police_number, description, created_by, created_date FROM members ORDER BY id")
+	return members, err
 }
 
 func MemberDelete(memberId int) error {
 	_, err := database.Db.Exec("DELETE FROM members WHERE id=?", memberId)
 	return err
-}
-
-func MemberUpdate(db *sqlx.DB) {
-
 }

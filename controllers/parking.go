@@ -28,7 +28,6 @@ type ParkingResponse struct {
 }
 
 func ParkingTransTgl(c *gin.Context)  {
-
 	created_date := c.Query("created_date")
 
 	tglparking, err := models.ParkingTransGetByTgl(created_date)
@@ -41,7 +40,6 @@ func ParkingTransTgl(c *gin.Context)  {
 
 	c.JSON(http.StatusOK, tglparking)
 	return
-
 }
 
 func ParkingCheckIn(c *gin.Context) {
@@ -190,6 +188,7 @@ func saveCameraPicture(picture []byte, date time.Time, ticketId int64) {
 //parking ticket info API can only be retrieved from cashier computer
 func ParkingGetTicketInfo(c *gin.Context) {
 	//var
+	var isMember bool
 	currentTime := time.Now()
 	parkingResponse := ParkingResponse{}
 	response := new(response.SimpleResponse)
@@ -197,6 +196,7 @@ func ParkingGetTicketInfo(c *gin.Context) {
 	parkingResponse.Response = response
 
 	ticketNumber := c.Query("ticket_number")
+	vehicleNumber := c.Query("vehicle_number")
 
 	parkingTicket, err := models.ParkingGetTicketByTicketNumber(ticketNumber)
 
@@ -222,6 +222,18 @@ func ParkingGetTicketInfo(c *gin.Context) {
 	pictureInPath := pictureFullPath(pictureIn)
 	parkingResponse.Picture_path_in = pictureInPath
 
+	//get member
+	isMember = true
+	_, err = models.MemberGetByPoliceNumber(vehicleNumber)
+
+	if err != nil {
+		isMember = false
+
+		if err != sql.ErrNoRows {
+			log.Println(err)
+		}
+	}
+
 	//get parking price
 	parkingPrice, err := models.ParkingPriceGetByVehicleId(parkingTicket.Vehicle_id)
 	if err != nil {
@@ -241,6 +253,11 @@ func ParkingGetTicketInfo(c *gin.Context) {
 		}
 	}
 	parkingCost := totalCost
+	//set to zero if member
+	if isMember {
+		parkingCost = 0
+	}
+
 	//------------
 	parkingTicket.Parking_cost = int(parkingCost)
 	parkingTicket.Out_date = currentTime.Format("2006-01-02 15:04:05")
