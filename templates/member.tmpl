@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <title>Member</title>
+    <title>Member</title>
+    <!-- CSS -->
+    <link media="screen,projection" rel="stylesheet" type="text/css" href="/assets/css/materialize.css"></link>
+    <!-- Script -->
+    <script>
+        $(function(){
+        //get vehicle type
+        $.get("/api/parking/vehicleAll", {
+            },function(data, status){
+                //alert(data);
+                var raspberry = document.getElementById("vehicle_type");
+               var content = "";
+                 for (var i=0; i<data.length; i++) {
+                    content += "<option value="+data[i].Id+">" + data[i].Vehicle_type + "</option>";
+                    }
+                raspberry.innerHTML = content;
+            });
+       });
+    </script>
+    <script>
+        $(function(){
+
+            $("#createmember").on('click', function(){
+
+                var nopolisi = $("#no_polisi").val();
+                var vehicletype = document.getElementById("vehicle_type").value;
+                var des = $("#description").val();
+
+
+                $.post("/api/member/insertdb", {
+
+                    police_number:nopolisi,
+                    vehicle_id:vehicletype,
+                    description:des
+
+                },function(data, status){
+
+                    alert("Data: " + data + "\nStatus: " + status);
+
+                });
+
+            });
+
+        });
+    </script>
+    <script>
+        $(function(){
+        //get member table
+        $.get("/api/get/allmember", {
+            },function(data, status){
+                //alert(data);
+                var raspberry = document.getElementById("display");
+                var content = "";
+                 for (var i=0; i<data.length; i++) {
+
+                    var memberid = data[i].Id;
+                    content += "<tr><td>" +data[i].Vehicle_type+ "</td><td>" +data[i].Police_number+ "</td><td>" +data[i].Description+ "</td><td><button onclick='myFunc("+memberid+")' class='waves-effect waves-light btn'>Delete</button></td></tr>";
+                    }
+                raspberry.innerHTML = content;
+            });
+       });
+    </script>
+    <script>
+        function myFunc(id){
+
+            //alert(id);
+            var memberid = id;
+            $.post("/api/delete/member",{
+
+                member_id:memberid
+
+            },function(data, status){
+
+                //alert("Data: " + data + "\nStatus: " + status);
+
+                if(data.Status == 'Success'){
+
+                    $.get("/api/get/allmember", {
+                    },function(data, status){
+                        //alert(data);
+                        var raspberry = document.getElementById("display");
+                        var content = "";
+                         for (var i=0; i<data.length; i++) {
+
+                            var memberid = data[i].Id;
+                            content += "<tr><td>" +data[i].Vehicle_type+ "</td><td>" +data[i].Police_number+ "</td><td>" +data[i].Description+ "</td><td><button onclick='myFunc("+memberid+")' class='waves-effect waves-light btn'>Delete</button></td></tr>";
+                            }
+                        raspberry.innerHTML = content;
+                    });
+
+                };
+
+            });
+
+        };
+    </script>
+</head>
+
+<body>
+
+    <div class="navbar-fixed">
+        <nav class="#0097a7 cyan darken-2">
+          <div class="nav-wrapper container">
+            <a href="#!" class="brand-logo">Pasar Sako Mandiri</a>
+            <ul class="right hide-on-med-and-down">
+              <li><a href="device">Device List</a></li>
+              <li><a href="device/device_group">Device Group</a></li>
+              <li><a href="/user/register">User Register</a></li>
+              <li><a href="/parking_price">Parking Price</a></li>
+              <li><a href="parking/transactions">Parking Transaction</a></li>
+              <li class="active"><a href="/member">Member</a></li>
+              <li><a href="/api/user/logout">Logout</a></li>
+            </ul>
+          </div>
+        </nav>
+      </div>
+
+
+      <div class="row">
+
+              <div class="col s4" style="margin-top:7px">
+
+                  <div class="card hoverable">
+                      <div class="card-panel #0097a7 cyan darken-2">
+                          <h3 class="center" style="color: white"><b>Member Register</b></h3>
+                      </div>
+                      <div class="card-content">
+                          <div class="row section">
+                              <div class="input-field col s10 offset-s1" style="margin-top:30px">
+                                  <input id="no_polisi" type="text">
+                                  <label>No Polisi</label>
+                              </div>
+                               <!--<div class="input-field col s10 offset-s1" style="margin-top:30px">
+                                <input id="password" type="text">
+                                <label>Password</label>
+                              </div>-->
+                              <div class="input-field col s10 offset-s1" style="margin-top:30px">
+                                <label>Vehicle Type</label>
+                                <br><br>
+                                <select class="browser-default" id="vehicle_type">
+
+                                </select>
+                              </div>
+                              <div class="input-field col s10 offset-s1" style="margin-top:50px">
+                                <input id="description" type="text">
+                                <label>Description</label>
+                              </div>
+                              <div class="col s10 offset-s1" style="margin-top:30px">
+                                  <button id="createmember" class="right waves-effect waves-light btn">Create</button>
+                              </div>
+                          </div>
+                      </div>
+                      <div class="card-action #0097a7 cyan darken-2">
+                          <p class="center" style="color:white">Pasar Sako Mandiri</p>
+                          </div>
+
+                      </div>
+                  </div>
+
+                  <div class="col s8">
+                  <div class="section">
+                   <nav class="#0097a7 cyan darken-2">
+                      <div class="nav-wrapper">
+                        <a href="#" class="brand-logo center">Member List</a>
+                      </div>
+                    </nav>
+
+                    <div id="page-content">
+                       <table class="striped centered">
+                          <thead>
+                          <tr>
+                              <th>Vehicle Type</th>
+                              <th>No Polisi</th>
+                              <th>Description</th>
+                              <th>Action</th>
+                          </tr>
+                          </thead>
+                          <tbody id="display">
+
+                          </tbody>
+                       </table>
+
+                      </div>
+
+                          <ul id="pagenav" class="pagination right">
+                          </ul>
+
+                      </div>
+
+                   </div><!-- end of page content -->
+
+                     </div><!-- card -->
+
+      </div><!--row -->
+
+    <!-- Scripts -->
+    <script src="assets/js/jquery-2.2.0.min.js"></script>
+    <script src="assets/js/materialize.js"></script>
+</body>
+</html>

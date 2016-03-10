@@ -72,6 +72,12 @@ func Initialize(r *gin.Engine)  {
 	r.GET("/api/ipcamera/getPictureFromDevice", middleware.DisAllowAnon(), controllers.IpCamTakePictureFromDevice)
 	r.GET("/api/ipcamera/getPictureByIp", middleware.DisAllowAnon(), controllers.IpCamTakePictureByIP)
 
+	//MEMBER API
+	r.GET("/member", middleware.DisAllowAnon(), controllers.MemberPages)
+	r.POST("/api/member/insertdb", middleware.DisAllowAnon(), controllers.MemberCreateNew)
+	r.GET("/api/get/allmember", middleware.DisAllowAnon(), controllers.MemberGetAll)
+	r.POST("/api/delete/member", middleware.DisAllowAnon(), controllers.MemberDelete)
+
 	//CAMERA API
 	//r.GET("/camera/takepicture", controllers.IpCamTakePicture)
 
