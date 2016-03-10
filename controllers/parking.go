@@ -155,7 +155,7 @@ func pictureFullPath(pic models.Picture) string {
 
 func saveCameraPicture(picture []byte, date time.Time, ticketId int64) {
 	//saving picture
-	dateTimeName := date.Format("2006-01-02 03:04:05 PM")
+	dateTimeName := date.Format("2006-01-02 15:04:05 PM")
 	pictureName := strings.Replace(dateTimeName, ":", "", 10) + "-T" + strconv.FormatInt(ticketId, 10)//+ "-" + string(ticketId)
 	//save picture path to database
 	pic := models.Picture{}
@@ -243,7 +243,7 @@ func ParkingGetTicketInfo(c *gin.Context) {
 	parkingCost := totalCost
 	//------------
 	parkingTicket.Parking_cost = int(parkingCost)
-	parkingTicket.Out_date = currentTime.Format("2006-01-02 03:04:05")
+	parkingTicket.Out_date = currentTime.Format("2006-01-02 15:04:05")
 	deltaHours := int(deltaTime.Hours())
 	deltaMin := int(deltaTime.Minutes()) - (deltaHours * 60)
 	deltaSecs := int(deltaTime.Seconds()) - (int(deltaTime.Minutes()) * 60)
@@ -256,7 +256,7 @@ func ParkingGetTicketInfo(c *gin.Context) {
 }
 
 func ParkingCheckOut(c *gin.Context) {
-	ticketId, err := strconv.ParseInt(c.PostForm("id"), 10, 64)
+	ticketId, err := strconv.ParseInt(c.PostForm("ticket_id"), 10, 64)
 	ticketNumber := c.PostForm("ticket_number")
 	vehicleNumber := c.PostForm("vehicle_number")
 	dateOut := c.PostForm("ticket_date_out")
@@ -279,17 +279,17 @@ func ParkingCheckOut(c *gin.Context) {
 
 	iscashier, err := hostIsCashier(c, c.ClientIP())
 
-	if err != nil {
+	/*if err != errors.New("") {
 		if err == sql.ErrNoRows {
 			response.Status = "Failed"; response.Message = "Invalid host"
 			c.JSON(http.StatusOK, parkingResponse)
 			return
 		}
-
+		log.Println(err)
 		response.Status = "Failed"; response.Message = "System fatal error"
 		c.JSON(http.StatusOK, parkingResponse)
 		return
-	}
+	}*/
 
 	if !iscashier {
 		response.Status = "Failed"; response.Message = "Not a cashier host"

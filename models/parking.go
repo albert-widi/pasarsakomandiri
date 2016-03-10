@@ -33,7 +33,7 @@ type Vehicle struct {
 func ParkingGetTicketByTicketNumber(ticketNumber string) (ParkingTicket, error) {
 	parkingTicket := ParkingTicket{}
 
-	err := database.Db.Get(&parkingTicket, "SELECT id, ticket_number, vehicle_id, vehicle_type, created_date, created_by, picture_in_id, picture_out_id FROM parking_transactions WHERE ticket_number=?", ticketNumber)
+	err := database.Db.Get(&parkingTicket, "SELECT id, ticket_number, vehicle_id, vehicle_type, created_date, created_by, picture_in_id, picture_out_id FROM parking_transactions WHERE ticket_number=? AND out_date IS NULL", ticketNumber)
 	//err := db.Get(&parkingTicket, "SELECT id, ticket_number, vehicle_number, out_date, parking_cost, verified_by, created_date, created_by, last_update_date, updated_by FROM parking_transactions WHERE ticket_number=?", ticketNumber)
 	return parkingTicket, err
 }
@@ -67,7 +67,7 @@ func ParkingCreateNewTicket(parkingTicket ParkingTicket) (sql.Result, error) {
 }
 
 func ParkingUpdateTicket(parkingTicket ParkingTicket) error {
-	_, err := database.Db.Exec("UPDATE parking_transactions SET vehicle_number=?, out_date=?, parking_cost=?, verified_by=?, last_update_date=?, updated_by=?, picture_out_id=? WHERE id=?", parkingTicket.Vehicle_number, parkingTicket.Out_date, parkingTicket.Parking_cost, parkingTicket.Verified_by, parkingTicket.Last_update_date, parkingTicket.Updated_by, parkingTicket.Picture_out_id, parkingTicket.Id)
+	_, err := database.Db.Exec("UPDATE parking_transactions SET vehicle_number=?, out_date=?, parking_cost=?, verified_by=?, last_update_date=?, updated_by=?, picture_out_id=?, vehicle_number=? WHERE id=?", parkingTicket.Vehicle_number, parkingTicket.Out_date, parkingTicket.Parking_cost, parkingTicket.Verified_by, parkingTicket.Last_update_date, parkingTicket.Updated_by, parkingTicket.Picture_out_id, parkingTicket.Vehicle_number, parkingTicket.Id)
 	return err
 }
 

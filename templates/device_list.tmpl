@@ -78,7 +78,7 @@
                             },
                            function(data,status){
                             //alert("Data: " + data + "\nStatus: " + status);
-                            //alert("Status" + data.Status + ", Message: " + data.Message);
+                            alert("Status" + data.Status + ", Message: " + data.Message);
 
                                 if(data.Status === 'Success') {
                                     $.get("/api/device/device_list", function(data, status) {

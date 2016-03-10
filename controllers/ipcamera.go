@@ -51,9 +51,10 @@ func saveIpCamPicture(date time.Time, ipCamera api.IpCamera) (models.Picture, er
 	}
 
 	pictureId, _ := result.LastInsertId()
+	pic.Id = pictureId
 
 	//append picture id to filaname
-	pic.Filename = pic.Filename + " P" + strconv.FormatInt(pictureId, 10)
+	pic.Filename = pic.Filename + "-P" + strconv.FormatInt(pictureId, 10)
 	//update picture name
 	err = models.PictureUpdateName(pic.Filename, pictureId)
 	if err != nil {
