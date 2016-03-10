@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"github.com/pasarsakomandiri/shared/database"
 	"os"
+	"log"
 )
 
 type Picture struct {
@@ -35,6 +36,8 @@ func PictureGetById(pictureId int64) (Picture, error) {
 }
 
 func PictureUpdateName(pictureName string, pictureId int64) error {
+	log.Println(pictureName)
+	log.Println(pictureId)
 	_, err := database.Db.Exec("UPDATE pictures SET filename=? WHERE id=?", pictureName, pictureId)
 	return err
 }

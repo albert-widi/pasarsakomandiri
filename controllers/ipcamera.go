@@ -13,6 +13,7 @@ import (
 	"github.com/pasarsakomandiri/shared/static"
 	"strconv"
 	"github.com/fatih/structs"
+	"database/sql"
 )
 
 var timeSaveStandard time.Duration = time.Duration(24)
@@ -40,7 +41,6 @@ func saveIpCamPicture(date time.Time, ipCamera api.IpCamera) (models.Picture, er
 	pic.Expired_date = date.Add(time.Hour * timeSaveStandard).String()
 	pic.Created_by = -1
 	pic.Created_date = date.String()
-	pic.PictureFullPath = pic.GetFullPath()
 
 	//save filepath to db
 	result, dbErr := models.PictureSave(pic)
@@ -53,14 +53,15 @@ func saveIpCamPicture(date time.Time, ipCamera api.IpCamera) (models.Picture, er
 	pictureId, _ := result.LastInsertId()
 
 	//append picture id to filaname
-	pic.Filename = "P" + strconv.FormatInt(pictureId, 10)
+	pic.Filename = pic.Filename + " P" + strconv.FormatInt(pictureId, 10)
 	//update picture name
-	err = models.PictureUpdateName(pic.Filename, pic.Id)
+	err = models.PictureUpdateName(pic.Filename, pictureId)
 	if err != nil {
 		log.Println("Update picture name error, ", err)
 	}
 
 	//save file to filesystem
+	pic.PictureFullPath = pic.GetFullPath()
 	fsErr := static.SaveFileToStaticFS(ipCamera.Picture, pic.PictureFullPath)
 	err = fsErr
 	if err != nil {
@@ -106,6 +107,18 @@ func IpCamTakePictureFromDevice(c *gin.Context) {
 	//default condition is raspberry
 	condition := "raspberry_ip"
 	deviceGroup, err := models.DeviceGroupGetByHost(condition, device.Host)
+
+	if err != nil {
+		if err == sql.ErrNoRows {
+			c.JSON(http.StatusOK, response.NewSimpleResponse("Failed", "Device not in device group"))
+			return
+		}
+
+		log.Println(err)
+		c.JSON(http.StatusOK, response.NewSimpleResponse("Failed", "Please try again later"))
+		return
+	}
+
 	//get picture from ipcamera
 	ipCamera := getIpCamPicture(deviceGroup.Camera_ip)
 	picture, err := saveIpCamPicture(date, ipCamera)
