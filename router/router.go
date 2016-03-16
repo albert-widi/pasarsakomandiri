@@ -62,8 +62,11 @@ func Initialize(r *gin.Engine)  {
 	r.GET("/api/parking/test/checkIn", controllers.ParkingCheckIn)
 	//PARKING PRICE
 	r.GET("/parking_price", middleware.DisAllowAnon(), controllers.PriceConfigPage)
+	r.GET("/parking_price_update", middleware.DisAllowAnon(), controllers.PriceUpdateConfigPage)
 	r.POST("/api/parking_price", middleware.DisAllowAnon(), controllers.PriceRegister)
 	r.GET("/api/parking/price_list", middleware.DisAllowAnon(), controllers.PriceGetAll)
+	r.GET("/price_get_id", middleware.DisAllowAnon(), controllers.PriceGetInfoAPI)
+	r.POST("/api/price_parking/update", middleware.DisAllowAnon(), controllers.PriceUpdateAPI)
 	//PARKING TRANSACTIONS API
 	r.GET("/parking/transactions", middleware.DisAllowAnon(), controllers.ParkingTransactionsPage)
 	r.GET("/transactions_tabel", middleware.DisAllowAnon(), controllers.ParkingTransactionsGetAll)

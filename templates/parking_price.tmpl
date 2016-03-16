@@ -20,7 +20,8 @@
            var tables = "";
 
            for (var n=0; n<data.length; n++){
-               tables += "<tr><td>" +data[n].Vehicle_id+ "</td> <td>" +data[n].Vehicle_type+ "</td> <td>" +data[n].First_hour_price+ "</td> <td>" +data[n].Next_hour_price+ "</td> <td>" +data[n].Maximum_price+ "</td></tr>";
+               var id = data[n].Id;
+               tables += "<tr><td>" +data[n].Vehicle_id+ "</td> <td>" +data[n].Vehicle_type+ "</td> <td>" +data[n].First_hour_price+ "</td> <td>" +data[n].Next_hour_price+ "</td> <td>" +data[n].Maximum_price+ "</td><td><button class='waves-effect waves-light btn' onclick='passFunc("+id+")'>Edit</button></td></tr>";
            }
 
            tables += "";
@@ -55,9 +56,9 @@
             $.post("/api/parking_price",
                 {
                     vehicle_id: kendaraanId,
-                    jam_pertama: satuJam,
-                    jam_berikutnya: duaJam,
-                    biaya_max: maxJam
+                    first_hour_price: satuJam,
+                    next_hour_price: duaJam,
+                    maximum_price: maxJam
                 }, function(data,status){
                 alert(data.Message);
                 if(data.Status == 'Success'){
@@ -66,7 +67,8 @@
                         var tables = "";
 
                         for (var n=0; n<data.length; n++){
-                           tables += "<tr><td>" +data[n].Vehicle_id+ "</td> <td>" +data[n].Vehicle_type+ "</td> <td>" +data[n].First_hour_price+ "</td> <td>" +data[n].Next_hour_price+ "</td> <td>" +data[n].Maximum_price+ "</td></tr>";
+                           var id = data[n].Id;
+                           tables += "<tr><td>" +data[n].Vehicle_id+ "</td> <td>" +data[n].Vehicle_type+ "</td> <td>" +data[n].First_hour_price+ "</td> <td>" +data[n].Next_hour_price+ "</td> <td>" +data[n].Maximum_price+ "</td><td><button class='waves-effect waves-light btn' onclick='passFunc("+id+")'>Edit</button></td></tr>";
                         }
 
                         tables += "";
@@ -81,7 +83,14 @@
 
     });
 
+</script>
 
+<script>
+    function passFunc(id){
+        var open = window.open("/parking_price_update");
+        open.id = id;
+
+    }
 </script>
 
 
