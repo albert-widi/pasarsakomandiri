@@ -35,9 +35,9 @@
                     vehicle.innerHTML = content;
                });
 
-               document.getElementById("first_hour_price").value= null;
-               document.getElementById("next_hour_price").value= null;
-               document.getElementById("maximum_price").value= null;
+               document.getElementById("first_hour_price").value= data.First_hour_price;
+               document.getElementById("next_hour_price").value= data.Next_hour_price;
+               document.getElementById("maximum_price").value= data.Maximum_price;
 
                 $("#edit").click(function(){
                     idPrice = id;
@@ -56,7 +56,9 @@
                         }, function(data, status){
                             alert(data.Status + " " + data.Message);
 
+
                     });
+                    var openPage = window.location.replace ("/parking_price");
 
                 });
 
