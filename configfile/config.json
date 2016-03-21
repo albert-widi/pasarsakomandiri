@@ -2,38 +2,55 @@
   "Database": {
     "Type": "MySQL",
     "MySQL": {
-        "Username": "pasar",
-        "Password": "pasar",
-        "Name": "pasar",
-        "Hostname": "192.168.0.105",
-        "Port": "3306",
-        "DBParam:": "/pasar?charset=utf8&timeout=3s"
+      "Username": "pasar",
+      "Password": "pasar",
+      "Name": "pasar",
+      "Hostname": "192.168.0.104",
+      "Port": "3306",
+      "DBParam": "?charset=utf8&timeout=3s",
+      "MaxConn":20,
+      "MaxIdle":5
     }
   },
-  "Server:": {
-    "Port":":8080",
-    "Mode":"Development",
-    "TemplateFolder":"./templates"
+  "Server": {
+    "Hostname": "",
+    "HTTPPort": ":8080",
+    "Mode": "Development",
   },
   "Static": {
-    "StaticAssets":"./assets",
-    "AssetsURI":"/assets",
-    "StaticPage":"./staticpage",
-    "PageURI":"/static"
+    "StaticAssets": "/assets",
+    "AssetsURI": "assets",
+    "StaticPage": "staticpage",
+    "PageURI": "static"
   },
   "Session": {
-    "SecretKey":"",
-    "Name":"pasar",
+    "SecretKey": "albertwidi",
+    "Name": "pasar",
     "Options": {
-      "Path":"/",
-      "Domain":"",
-      "MaxAge":28800,
-      "Secure":false,
-      "HttpOnly":true
+      "Path": "/",
+      "Domain": "",
+      "MaxAge": 28800,
+      "Secure": false,
+      "HttpOnly": true
     }
   },
   "Token": {
-    "SecretKey":"albertwidi",
-    "ExpiredMin":360
+    "SecretKey": "albertwidi",
+    "ExpiredMin": 28800
+  },
+  "View": {
+    "BaseURI": "http://localhost/",
+    "Extension": "tmpl",
+    "Folder": "templates",
+    "Name": "blank",
+    "Caching": true
+  },
+  "Template": {
+    "Root": "index",
+    "Children": [
+      "part_menu",
+      "part_footer",
+      "part_about"
+    ]
   }
 }
