@@ -1,16 +1,31 @@
 package main
 
 import (
-	"time"
 	"fmt"
-	"github.com/jinzhu/now"
+	"time"
 )
 
-func main() {
-	time := time.Now()
-	format1 := time.Format("2006-01-02 15:04:05")
-	fmt.Println(format1)
+func test1(c chan int) {
+	time.Sleep(100)
+	c <- 4
+}
 
-	now.TimeFormats = append(now.TimeFormats, "2006-01-02 23:04:05")
-	//asd := now.MustParse(time)
+func test2() int {
+	time.Sleep(40)
+	return 2
+}
+
+func main() {
+	chan1 := make(chan int)
+	go test1(chan1)
+	asd := test2()
+
+	//fmt.Println(<-chan1)
+	//fmt.Println(asd)
+	fmt.Println(<-chan1, " ", asd)
+
+	shift1 := 8
+
+	fmt.Println(shift1 >> 3)
+
 }
