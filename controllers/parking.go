@@ -47,7 +47,7 @@ func ParkingCheckIn(c *gin.Context) {
 	date := time.Now()
 	slicedIp := strings.Split(c.ClientIP(), ":")
 	deviceIp := slicedIp[0]
-	deviceToken := c.Query("token")
+	deviceToken := c.PostForm("token")
 
 	//get raspberry device
 	device, err := models.DeviceGetByHost(deviceIp)
@@ -333,6 +333,14 @@ func ParkingCheckOut(c *gin.Context) {
 	if err != nil {
 		log.Println(err)
 	}
+    
+    raspberryPi := &api.RaspberryPi{}
+    raspberryPi.Protocol="http"
+    raspberryPi.Host = "192.168.0.177"
+    raspberryPi.Port = "8888"
+    raspberryPi.Token = "testing"
+    raspberryPi.Param = ""
+    raspberryPi.RaspberryPrintTicketOut()
 
 	parkingTicket.Parking_cost = parkingCost
 	parkingTicket.Vehicle_number = vehicleNumber

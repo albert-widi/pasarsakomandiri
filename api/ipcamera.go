@@ -3,9 +3,8 @@ package api
 import (
 	"net/http"
 	"io/ioutil"
-	"log"
-    	"time"
-    	"strings"
+    "time"
+    "strings"
 )
 
 type IpCamera struct {
@@ -14,8 +13,9 @@ type IpCamera struct {
 	Param string
 	Username string
 	Password string
-    	PictureName string
+	PictureName string
 	Picture []byte
+    	Error error
 }
 
 func IpCamGetPicture(ipcam IpCamera) ([]byte, error) {
@@ -77,27 +77,19 @@ func ipCamGetPicture(ipcam *IpCamera) ([]byte, error) {
 //call this function with
 func (cam *IpCamera) GetPicture() {
 	picture, err := ipCamGetPicture(cam)
-
-	if err != nil {
-		log.Println(err)
-	}
-    
+    cam.Error = err
+    cam.Picture = picture
 	//generate the name
 	dateTimeName := time.Now().Format("2006-01-02 03:04:05 PM")
 	pictureName := strings.Replace(dateTimeName, ":", "", 10)
-    	cam.PictureName = pictureName
-    	//send picture to channel
-	cam.Picture = picture
+    cam.PictureName = pictureName
 }
 
 //call this function by goroutines
 func (cam *IpCamera) GetPictureWithChannel(c chan []byte) {
 	picture, err := ipCamGetPicture(cam)
-
-	if err != nil {
-		log.Println(err)
-	}
-
+    cam.Error = err
+    cam.Picture = picture
 	//generate the name
 	dateTimeName := time.Now().Format("2006-01-02 03:04:05 PM")
 	pictureName := strings.Replace(dateTimeName, ":", "", 10)

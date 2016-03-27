@@ -21,6 +21,7 @@ func InitPicturesDaemon() {
 					//remove picture from directory
 					err :=  os.Remove(elem.Filepath+string(os.PathSeparator)+elem.Filename+"."+elem.Format)
 
+					//er files not found
 					if err != nil {
 						log.Println(err)
 						continue

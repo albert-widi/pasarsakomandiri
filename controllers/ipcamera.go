@@ -77,6 +77,13 @@ func IpCamTakePictureByIP(c *gin.Context) {
 	date := time.Now()
 	camIp := c.Query("camip")
 	ipCamera := getIpCamPicture(camIp)
+
+	if ipCamera.Error != nil {
+		log.Println(ipCamera.Error)
+		c.JSON(http.StatusOK, response.NewSimpleResponse("Failed", "Cannot get picture from ipcamera"))
+		return
+	}
+
 	picture, err := saveIpCamPicture(date, ipCamera)
 
 	pictureMap := structs.Map(picture)
@@ -122,6 +129,13 @@ func IpCamTakePictureFromDevice(c *gin.Context) {
 
 	//get picture from ipcamera
 	ipCamera := getIpCamPicture(deviceGroup.Camera_ip)
+
+	if ipCamera.Error != nil {
+		log.Println(ipCamera.Error)
+		c.JSON(http.StatusOK, response.NewSimpleResponse("Failed", "Cannot get picture from ipcamera"))
+		return
+	}
+
 	picture, err := saveIpCamPicture(date, ipCamera)
 
 	pictureMap := structs.Map(picture)

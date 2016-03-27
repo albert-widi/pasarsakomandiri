@@ -12,7 +12,7 @@ Progress:
 - Router restructure (in progress)
 
 Jan 29 2016
-- Will soon re-baseline the code and focused in the UI
+- Will soon re-baseline the code and focused on the UI
 - Framework considered as proper and good for production, improvement will always be there tough (in framework branch).
 
 Jan 31 2016
@@ -65,3 +65,6 @@ Mar 3 2016
 Mar 7 2016
 - Feature freeze
 - Production ready phase 1
+
+Mar 15 2016
+- Several functions need wrapper

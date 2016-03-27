@@ -55,7 +55,7 @@ func Initialize(r *gin.Engine)  {
 	r.POST("/api/device/edit", middleware.DisAllowAnon(), controllers.EditDeviceList)
 
 	//PARKING API
-	r.GET("/api/parking/checkIn", controllers.ParkingCheckIn) //authenticated in controllers
+	r.POST("/api/parking/checkIn", controllers.ParkingCheckIn) //authenticated in controllers
 	r.POST("/api/parking/checkOut", controllers.ParkingCheckOut) //authenticated in controllers
 	r.GET("/api/parking/getTicketInfo", middleware.DisAllowAnon(), controllers.ParkingGetTicketInfo)
 	r.GET("/api/parking/vehicleAll", middleware.DisAllowAnon(), controllers.VehicleGetAll)
@@ -74,6 +74,9 @@ func Initialize(r *gin.Engine)  {
 	//IPCAM API
 	r.GET("/api/ipcamera/getPictureFromDevice", middleware.DisAllowAnon(), controllers.IpCamTakePictureFromDevice)
 	r.GET("/api/ipcamera/getPictureByIp", middleware.DisAllowAnon(), controllers.IpCamTakePictureByIP)
+    
+    //RASPBERRY PI
+    r.GET("api/raspberry/checkOut", controllers.RaspberryPrintCheckOut)
 
 	//MEMBER API
 	r.GET("/member", middleware.DisAllowAnon(), controllers.MemberPages)
