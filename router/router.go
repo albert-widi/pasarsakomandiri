@@ -86,6 +86,9 @@ func Initialize(r *gin.Engine)  {
 
 	//CAMERA API
 	//r.GET("/camera/takepicture", controllers.IpCamTakePicture)
+    
+    //TEST API
+    r.GET("/parking/testTicket", controllers.ParkingTicketPage)
 
 	//API
 	r.GET("/api/create_super_user", controllers.SecretCreateSuperUser)

@@ -17,6 +17,7 @@ import (
 	"io/ioutil"
 	"math"
 	"os"
+    "sync"
 )
 
 type ParkingResponse struct {
@@ -25,6 +26,13 @@ type ParkingResponse struct {
 	DeltaTime string
 	Picture_path_in string
 	Picture_path_out string
+}
+
+var mux sync.Mutex
+
+func ParkingTicketPage(c *gin.Context) {
+    session := session.Instance(c)
+	c.HTML(http.StatusFound, "ticket_test.tmpl", gin.H{"title":"Ticket Test", "token":session.Get("token")})
 }
 
 func ParkingTransTgl(c *gin.Context)  {
@@ -109,30 +117,44 @@ func ParkingCheckIn(c *gin.Context) {
 
 	//generate ticket number
 	//loop until parking ticket number is not exists
+    var result sql.Result
 	ticketExists := true
 	for ticketExists {
-		parkingTicket.Ticket_number = tools.RandomString(8)
+        mux.Lock()
+		parkingTicket.Ticket_number = tools.RandomString(10)
 		parkingTicket.Ticket_number =  parkingTicket.Ticket_number
 		ticketExists = isTicketNumberExists(c, parkingTicket.Ticket_number)
+        
+        if !ticketExists {
+            result, err = models.ParkingCreateNewTicket(parkingTicket)
+            
+            if err != nil {
+                response.Status = "Failed"; response.Message = "Cannot create ticket to db"
+                c.JSON(http.StatusOK, parkingResponse)
+                return
+            }
+        }
+        
+        mux.Unlock()
 	}
 
 	//save ticket and picture to database
 	//ticket saved to db = print, esle don't print
-	result, err := models.ParkingCreateNewTicket(parkingTicket)
+	/*result, err := models.ParkingCreateNewTicket(parkingTicket)
 
 	if err != nil {
 		response.Status = "Failed"; response.Message = "Cannot create ticket to db"
 		c.JSON(http.StatusOK, parkingResponse)
 		return
-	}
+	}*/
 
 	parkingTicket.Id, _ = result.LastInsertId()
+    //taking picture from camera with goroutines, reducing latency
+	go saveCameraPicture(<-camChan, date,parkingTicket.Id)
 	parkingTicket.Ticket_number = "*" + parkingTicket.Ticket_number + "*"
 	parkingResponse.Data = parkingTicket
 
 	c.JSON(http.StatusOK, parkingResponse)
-	//taking picture from camera with goroutines, reducing latency
-	go saveCameraPicture(<-camChan, date,parkingTicket.Id)
 	return
 }
 

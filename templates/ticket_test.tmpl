@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no" />
+    <script src="/assets/js/jquery-2.2.0.min.js"></script>
+    <title>Login</title>
+    <!-- CSS -->
+    <link media="screen,projection" rel="stylesheet" type="text/css" href="/assets/css/materialize.css"></link>
+    <script>
+        $(document).ready(function(){
+                        while(true) {
+                            test();
+                            sleep(2000);
+                        }
+                    });
+    function test() {
+        $.post("/api/parking/checkIn",
+                {
+                    token:"testing",
+                },
+                function(data,status){
+                        
+                });
+    }
+    
+    function sleep(milliseconds) {
+        var start = new Date().getTime();
+        for (var i = 0; i < 1e7; i++) {
+            if ((new Date().getTime() - start) > milliseconds){
+            break;
+            }
+        }
+    }
+    
+    </script>
+   
+</head>
+
+<body>
+
+<div class="container">
+    Holla!
+</div>
+    
+    <!-- script -->
+    <script src="assets/js/jquery-2.2.0.min.js"></script>
+    <script src="assets/js/materialize.js"></script>
+</body>
+</html>
+

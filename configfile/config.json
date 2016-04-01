@@ -5,7 +5,7 @@
       "Username": "pasar",
       "Password": "pasar",
       "Name": "pasar",
-      "Hostname": "192.168.0.104",
+      "Hostname": "192.168.0.100",
       "Port": "3306",
       "DBParam": "?charset=utf8&timeout=3s",
       "MaxConn":20,

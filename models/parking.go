@@ -60,7 +60,6 @@ func ParkingTicketExistsByNumber(ticketNumber string) (ParkingTicket, error) {
 	return parkingTicket, err
 }
 
-
 func ParkingCreateNewTicket(parkingTicket ParkingTicket) (sql.Result, error) {
 	result, err := database.Db.Exec("INSERT INTO parking_transactions(ticket_number, vehicle_id, vehicle_type, created_by, created_date, picture_in_id) VALUES(?, ?, ?, ?, ?, ?)", parkingTicket.Ticket_number, parkingTicket.Vehicle_id, parkingTicket.Vehicle_type, parkingTicket.Created_by, parkingTicket.Created_date, parkingTicket.Picture_in_id)
 	return result, err

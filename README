@@ -1,27 +1,10 @@
 Pasar Sako Mandiri Backend System
 Created and Maintained By Albert Widiatmoko.
-Current Version: 1.0.1
 
 Featuring:
 - Ardiola
 - Freycool
 - Gabeaventh
-
-Project Timelines:
-Alpha 1 = 7 Feb 2016
-Beta 1 = 1 Mar 2016
-
-Alpha 1
-- Alpha 1 will be our baseline for this project, all features will be done in this release
-
-Beta 1
-- Beta 1 will bring some consistency across the code, variable, profiling, etc.
-
-Beta 2
-- Code cleanups and performance boost
-
-Production 1
-- Stable release 1. Version: 1.0
 
 Why using gin for this project?
 - Gin was simple yet fast, it's not the idiomatic Go, but still good enough for this project. I'll rewrite this project to pure "net/http" and "httprouter" later.
@@ -37,19 +20,4 @@ Current Features:
 - Parking vehicle registration
 - Parking price per-vehicle registration
 - Ticketing
-- IPCamera
-
-Project Development Guidelines:
-
-To Create a Web Page using template:
-1. Create template file in templates folder, using *.tmpl extension. Ex: index.tmpl
-2. Create controllers to load the page.
-    Ex: func IndexPage(c *gin.Context) {
-        	session := session.Instance(c)
-        	c.HTML(http.StatusFound, "index.tmpl", gin.H{"title":"Index", "token":session.Get("token")})
-        }
-3. Create router in router.go.
-    Ex: r.GET("/index", middleware.DisAllowAnon(), controllers.IndexPage)
-   *You can use middlewares to activate automatic authentication.
-
-Don't use time.Now() to input time to Database, this could bring inconsistentcy between your Go system and your Database system. Use time.Now().string() instead.
+- IPCamera 
