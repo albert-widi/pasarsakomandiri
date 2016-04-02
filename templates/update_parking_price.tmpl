@@ -38,6 +38,8 @@
                document.getElementById("first_hour_price").value= data.First_hour_price;
                document.getElementById("next_hour_price").value= data.Next_hour_price;
                document.getElementById("maximum_price").value= data.Maximum_price;
+               document.getElementById("promo_jam_pertama").value= data.Promo_jam_pertama;
+               document.getElementById("promo_jam_berikutnya").value= data.Promo_jam_berikutnya;
 
                 $("#edit").click(function(){
                     idPrice = id;
@@ -45,6 +47,8 @@
                     first_hour_price = $("#first_hour_price").val();
                     next_hour_price = $("#next_hour_price").val();
                     maximum_price = $("#maximum_price").val();
+                    promo_jam_pertama = $("#promo_jam_pertama").val();
+                    promo_jam_berikutnya = $("#promo_jam_berikutnya").val();
 
                     $.post("/api/price_parking/update",
                         {
@@ -52,7 +56,9 @@
                             vehicle_id: vehicle_id,
                             first_hour_price: first_hour_price,
                             next_hour_price: next_hour_price,
-                            maximum_price: maximum_price
+                            maximum_price: maximum_price,
+                            promo_jam_pertama: promo_jam_pertama,
+                            promo_jam_berikutnya: promo_jam_berikutnya
                         }, function(data, status){
                             alert(data.Status + " " + data.Message);
 
@@ -108,7 +114,33 @@
 
                    </div>
                </div>
+
+
+               <div class="col s4">
+
+                              <div class="card hoverable">
+                                  <div class="card-panel #0097a7 cyan darken-2">
+                                      <h3 class="center" style="color: white"><b>Edit Harga Promo</b></h3>
+                                  </div>
+                                  <div class="card-content">
+                                      <div class="row section">
+                                           <div class="input-field col s10 offset-s1" style="margin-top:30px">
+                                            Promo Jam Pertama <input id="promo_jam_pertama" type="text" class="validate">
+                                          </div>
+                                          <div class="input-field col s10 offset-s1" style="margin-top:30px">
+                                           Promo Jam Berikutnya <input id="promo_jam_berikutnya" type="text" class="validate">
+                                          </div>
+                                      </div>
+                                  </div>
+                                  <div class="card-action #0097a7 cyan darken-2">
+                                      <p class="center" style="color:white">Pasar Sako Mandiri</p>
+                                      </div>
+
+                                  </div>
+                              </div>
+
 </div>
+
 
 
 </body>

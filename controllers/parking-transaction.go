@@ -51,3 +51,24 @@ func ParkingTransactionsGetAll(c *gin.Context) {
 	c.JSON(http.StatusOK, transactionparking)
 	return
 }
+
+
+func UserParkingTransaction(c *gin.Context)  {
+	tanggal := c.Query("tanggal")
+	queryParam := ""
+
+	if tanggal != "" {
+		tanggal = strings.Replace(tanggal, ",", "", 1)
+		queryParam += "DATE_FORMAT(created_date, '%e %M %Y') = " + "'" + tanggal + "'"
+
+		userTransactions, err := models.UserParkingTransactions(queryParam)
+
+		if err != nil {
+			log.Println(err)
+			c.JSON(http.StatusOK, response.NewSimpleResponse("failed", err.Error()))
+			return
+		}
+
+		c.JSON(http.StatusOK, userTransactions)
+	}
+}

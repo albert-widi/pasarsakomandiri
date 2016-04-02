@@ -57,6 +57,8 @@ func PriceRegister(c *gin.Context) {
 	vehicleId, err := strconv.Atoi(c.PostForm("vehicle_id"))
 	jamPertama, err := strconv.Atoi(c.PostForm("jam_pertama"))
 	jamBerikutnya, err := strconv.Atoi(c.PostForm("jam_berikutnya"))
+	promoJamPertama, err := strconv.Atoi(c.PostForm("promo_jam_pertama"))
+	promoJamBerikutnya, err := strconv.Atoi(c.PostForm("promo_jam_berikutnya"))
 	biayaMax, err := strconv.Atoi(c.PostForm("biaya_max"))
 
 	vehicle, err := models.ParkingVehicleGetByID(vehicleId)
@@ -91,6 +93,8 @@ func PriceRegister(c *gin.Context) {
 	price.Vehicle_id = vehicle.Id
 	price.Vehicle_type = vehicle.Vehicle_type
 	price.First_hour_price = jamPertama
+	price.Promo_jam_pertama = promoJamPertama
+	price.Promo_jam_berikutnya = promoJamBerikutnya
 	price.Next_hour_price = jamBerikutnya
 	price.Maximum_price = biayaMax
 	price.Created_by = session.Instance(c).Get("id").(int64)
@@ -129,14 +133,18 @@ func PriceUpdateAPI (c *gin.Context){
 
 	vehicleId, err := strconv.Atoi(c.PostForm("vehicle_id"))
 	first_hour_price, err := strconv.Atoi(c.PostForm("first_hour_price"))
+	promoJamPertama, err := strconv.Atoi(c.PostForm("promo_jam_pertama"))
 	next_hour_price, err := strconv.Atoi(c.PostForm("next_hour_price"))
+	promoJamBerikutnya, err := strconv.Atoi(c.PostForm("promo_jam_berikutnya"))
 	maximum_price, err := strconv.Atoi(c.PostForm("maximum_price"))
 
 	price := models.ParkingPrice{}
 	price.Id = priceId
 	price.Vehicle_id = vehicleId
 	price.First_hour_price = first_hour_price
+	price.Promo_jam_pertama = promoJamPertama
 	price.Next_hour_price = next_hour_price
+	price.Promo_jam_berikutnya = promoJamBerikutnya
 	price.Maximum_price = maximum_price
 
 	log.Println(price.First_hour_price)

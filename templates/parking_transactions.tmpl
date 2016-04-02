@@ -8,6 +8,11 @@
     <title>Parking Transactions</title>
     <!-- CSS -->
     <link media="screen,projection" rel="stylesheet" type="text/css" href="/assets/css/materialize.css"></link>
+    <style>
+        .gone li>a.hover{
+            background-color:none;
+        }
+    </style>
     <!-- scripts -->
     <script>
         $(function(){
@@ -46,6 +51,8 @@
             //var for get
             var tanggal = document.getElementById("oke").value = get + ' ' + getMonth + ', ' + year ;
 
+            var tangs = document.getElementById("iin").value = get + ' ' + getMonth + ', ' + year ;
+
             var getVal = document.getElementById("kesatu").value;
 
             $.get("/transactions_tabel", {
@@ -73,6 +80,19 @@
 
 
             });
+
+            //table for user transactions
+           $.get("/user/transactions", {
+                tanggal:tangs
+           },
+           function(data, status){
+            //alert("Data: " + data + "\nStatus: " + status);
+            var kel = document.getElementById("keluar");
+            var table = "";
+            for (var n=0; n<data.length; n++){
+                alert(data[n].Username);
+            }
+           });
 
 
             //tabel out when date pick
@@ -109,6 +129,41 @@
                            });
 
             });
+
+            //tabel out when date pick for user transactions
+                       $('.datepicker').change(function(){
+
+                            var tnggl = document.getElementById("iin").value;
+
+                            var val = document.getElementById("sel").value;
+
+                            $.get("/transactions_tabel", {
+                                           tanggal:tnggl,
+                                           param:val
+                                       },
+                                        function(data, status){
+
+
+                                               //alert("Data: " + data + "\nStatus: " + status);
+                                               //alert("Data length: " + data.length)
+
+                                               var div = document.getElementById("out");
+
+                                               var table = "";
+
+                                               for (var i=0; i<data.length; i++){
+                                                   table += "<tr><td>" + data[i].Ticket_number + "</td><td>" + data[i].Vehicle_type + "</td><td>" + data[i].Vehicle_number + "</td><td>" + data[i].Out_date + "</td><td>" + data[i].Parking_cost + "</td><td>" +
+                                                    data[i].Verified_by + "</td><td>" + data[i].Created_date + "</td><td>" + data[i].Created_by + "</td><td>" + data[i].Last_update_date + "</td><td>" + data[i].Updated_by + "</td></tr>";
+                                               }
+
+                                               table += ""
+
+                                               div.innerHTML = table;
+
+
+                                       });
+
+                        });
 
             //Select function
 
@@ -152,9 +207,52 @@
     </script>
     <script>
         $(function(){
+            $('.button-collapse').sideNav({
+                  menuWidth: 240, // Default is 240
+                  edge: 'left', // Choose the horizontal origin
+                  closeOnClick: false // Closes side-nav on <a> clicks, useful for Angular/Meteor
+                }
+              );
+        });
+    </script>
+    <script>
+        $(function(){
+
+            $('#munc').on('click', function(){
+                        $('#ilang').removeClass('active');
+                        $('#munc').addClass('active');
+                        $('#parkingtrans').css('display', 'none');
+                        $('#usertrans').css({'display': 'block'});
+                    });
+
+                    $('#ilang').on('click', function(){
+                        $('#munc').removeClass('active');
+                        $('#ilang').addClass('active');
+                        $('#usertrans').css('display', 'none');
+                        $('#parkingtrans').css({'display': 'block'});
+                    });
+
+        });
+    </script>
+
+
+    <script>
+        $(function(){
 
 
 
+
+            var d = new Date();
+            var hour = d.getHours();
+            var minute = d.getMinutes();
+            minute = minute + "";
+            if(minute.length == 1){
+
+                minute = "0" + minute;
+
+            }
+
+            document.getElementById("times").value = hour + ":" + minute;
 
         });
     </script>
@@ -166,43 +264,55 @@
    <!-- navbar -->
       <!-- for fixed top <div class="navbar-fixed"> -->
            <nav class="#0097a7 cyan darken-2">
-             <div class="nav-wrapper container">
-               <a href="#!" class="brand-logo">Pasar Sako Mandiri</a>
-               <ul class="right hide-on-med-and-down">
-                 <li><a href="/device">Device List</a></li>
-                 <li><a href="/device/device_group">Device Group</a></li>
-                 <li><a href="/user/register">User Register</a></li>
-                 <li><a href="/parking_price">Parking Price</a></li>
-                 <li class="active"><a href="/parking/transactions">Parking Transaction</a></li>
-                 <li><a href="/member">Member</a></li>
-                 <li><a href="/api/user/logout">Logout</a></li>
-               </ul>
+             <div class="container">
+                <div class="nav-wrapper">
+                   <a href="#!" class="brand-logo">Pasar Sako Mandiri</a>
+                   <ul class="right hide-on-med-and-down">
+                     <li><a href="/device">Device List</a></li>
+                     <li><a href="/device/device_group">Device Group</a></li>
+                     <li><a href="/user/register">User Register</a></li>
+                     <li><a href="/parking_price">Parking Price</a></li>
+                     <li class="active"><a href="/parking/transactions">Parking Transaction</a></li>
+                     <li><a href="/member">Member</a></li>
+                     <li><a href="/api/user/logout">Logout</a></li>
+                   </ul>
              </div>
            </nav>
-      <!-- end of fixed  </div> -->
-   <!-- end of navbar -->
+
+           <ul id="slide-out" class="side-nav fixed">
+               <li class="#0097a7 cyan darken-2"><a href="#!"></a></li>
+               <li id="ilang" class="active"><a href="#!">Parking Transactions</a></li>
+               <li id="munc"><a href="#usertrans">User Transactions</a></li>
+           </ul>
+           <a href="#" data-activates="slide-out" class="button-collapse"><i class="mdi-navigation-menu"></i></a>
 </header>
 
-    <div class="section container" style="margin-top:20px; margin-bottom:30px;">
-        <div class="row">
-            <div class="input-field col s12 m4 push-m1">
-                <p>Pilih Tanggal Transaksi</p>
-                  <input id="oke" type="text" class="datepicker">
-            </div>
+<main style="padding-left:240px">
 
-             <div class="input-field col s12 m4 push-m2">
-                            <p>Browser Select</p>
-                              <select id="sel" class="browser-default">
-                                 <--<option id="kesatu">All</option>
-                                 <option id="kedua">Sudah Keluar</option>
-                                 <option>Belum Beluar</option>-->
-                              </select>
-                        </div>
+<div class="container">
+
+<div class="row">
+
+<div class="s12 m12 l12">
+
+<div id="parkingtrans" class="section" style="margin-left:50px">
+
+    <div class="row">
+        <div class="input-field col s12 m4 push-m1">
+            <p>Pilih Tanggal Transaksi</p>
+              <input id="oke" type="text" class="datepicker">
         </div>
-    </div>
 
-
-    <div class="container">
+         <div class="input-field col s12 m4 push-m2">
+            <p>Browser Select</p>
+              <select id="sel" class="browser-default">
+                 <--<option id="kesatu">All</option>
+                 <option id="kedua">Sudah Keluar</option>
+                 <option>Belum Beluar</option>-->
+              </select>
+         </div>
+         </div>
+    </div><!-- end of row -->
 
             <nav>
                 <div class="nav-wrapper container">
@@ -212,6 +322,8 @@
 
         <!--- TABLE START --->
 
+    <div class="row">
+        <div class="col s12">
             <table class="responsive-table centered highlight bordered">
                 <thead>
                     <tr>
@@ -230,11 +342,58 @@
                 <tbody id="out">
                 </tbody>
             </table>
+        </div>
+    </div><!-- END OF ROW TABLE-->
 
-    <div><!-- END OF CONTAINER -->
+</div>
 
-    <!-- Scripts -->
 
-    <!-- Date Picker Script -->
+<!-- USER TRANSACTIONS PAGES -->
+
+<div id="usertrans" style="display:none">
+
+    <div class="row">
+        <div class="input-field col s12 m4 push-m1">
+            <p>Pilih Tanggal Transaksi</p>
+              <input id="iin" type="text" class="datepicker">
+        </div>
+
+         <div class="input-field col s12 m4 push-m2">
+            <p>Jam Sekarang</p>
+            <input value="" id="times" type="time" class="validate">
+         </div>
+    </div>
+
+            <nav>
+                <div class="nav-wrapper container">
+                  <a href="#" class="brand-logo center">User Transactions</a>
+                </div>
+            </nav>
+
+        <!--- TABLE START --->
+
+            <table class="responsive-table centered highlight bordered">
+                <thead>
+                    <tr>
+                        <th>User Id</th>
+                        <th>Username</th>
+                        <th>Number of cars</th>
+                        <th>Number of motorcycles</th>
+                        <th>Money to deposit</th>
+                    </tr>
+                </thead>
+                <tbody id="keluar">
+                </tbody>
+            </table>
+</div><!-- END OF COL L6 RIGHT-->
+
+
+</div><!-- end of row -->
+
+</div><!-- end of container -->
+
+</main>
+
+
 
 </body>

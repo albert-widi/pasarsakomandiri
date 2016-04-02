@@ -21,7 +21,7 @@
 
            for (var n=0; n<data.length; n++){
                var id = data[n].Id;
-               tables += "<tr><td>" +data[n].Vehicle_id+ "</td> <td>" +data[n].Vehicle_type+ "</td> <td>" +data[n].First_hour_price+ "</td> <td>" +data[n].Next_hour_price+ "</td> <td>" +data[n].Maximum_price+ "</td><td><button class='waves-effect waves-light btn' onclick='passFunc("+id+")'>Edit</button></td></tr>";
+               tables += "<tr><td>" +data[n].Vehicle_id+ "</td> <td>" +data[n].Vehicle_type+ "</td> <td>" +data[n].First_hour_price+ "</td> <td>" +data[n].Promo_jam_pertama+ "</td> <td>" +data[n].Next_hour_price+ "</td> <td>" +data[n].Promo_jam_berikutnya+ "</td> <td>" +data[n].Maximum_price+ "</td><td><button class='waves-effect waves-light btn' onclick='passFunc("+id+")'>Edit</button></td></tr>";
            }
 
            tables += "";
@@ -102,6 +102,7 @@
 
 <!-- navbar -->
    <!-- for fixed top <div class="navbar-fixed"> -->
+   <div class="col s12 m12 l12">
         <nav class="#0097a7 cyan darken-2">
           <div class="nav-wrapper container">
             <a href="#!" class="brand-logo">Pasar Sako Mandiri</a>
@@ -116,6 +117,7 @@
             </ul>
           </div>
         </nav>
+   </div>
    <!-- end of fixed  </div> -->
 <!-- end of navbar -->
 
@@ -189,7 +191,7 @@
          <div id="page-content">
              <table class="striped centered">
                 <thead>
-                <tr><th>Vehicle Id</th> <th>Vehicle Type</th> <th>Biaya Jam Pertama</th> <th>Biaya Jam Berikutnya</th> <th>Biaya Max</th></tr>
+                <tr><th>Vehicle Id</th> <th>Vehicle Type</th> <th>Biaya Jam Pertama</th> <th>Promo Jam Pertama</th> <th>Biaya Jam Berikutnya</th> <th>Promo Jam Berikutnya</th> <th>Biaya Max</th> <th>Action</th></tr>
                 </thead>
                 <tbody id="display">
 
