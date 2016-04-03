@@ -72,6 +72,29 @@ func AllowOnlyCashier() gin.HandlerFunc {
 	}
 }
 
+func AllowONlyOffice() gin.HandlerFunc {
+    return func (c *gin.Context)  {
+        //get sessions
+		session := sessions.Default(c)
+
+		if session.Get("id") == nil {
+			//default redirect
+			c.Redirect(http.StatusFound, "/redirected")
+			c.Next()
+			return
+		}
+
+		if session.Get("level").(int) < models.Role_level_office {
+			c.Redirect(http.StatusFound, "/redirected")
+			c.Next()
+			return
+		}
+
+		c.Next()
+		return
+    }
+}
+
 func AllowOnlyAdministrator() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		//get sessions

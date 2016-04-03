@@ -3,6 +3,7 @@ package session
 import (
 	"github.com/gin-gonic/contrib/sessions"
 	"github.com/gin-gonic/gin"
+    "time"
 )
 
 var (
@@ -16,13 +17,16 @@ type Session struct {
 }
 
 func Configure(r *gin.Engine, s Session) {
-	store := sessions.NewCookieStore([]byte(s.SecretKey))
+    //alterfnative, configure unique secret key every time server start up
+    timeKey := time.Now().String()
+	store := sessions.NewCookieStore([]byte(timeKey))
 	store.Options(s.Options)
 	r.Use(sessions.Sessions("pasarsakomandiri", store))
 }
 
 func Instance(c *gin.Context) sessions.Session {
 	session := sessions.Default(c)
+    //fmt.Printf("%+v", session)
 	return session
 }
 

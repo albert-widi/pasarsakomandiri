@@ -141,6 +141,12 @@ func LoginAPI(c *gin.Context) {
 		c.JSON(http.StatusOK, login)
 		return
 	}
+    
+    if user.Status == 1 {
+        login.Message = "User is already online, multiple login attempt failed"
+        c.JSON(http.StatusOK, login)
+        return
+    }
 
 	/*if !strings.EqualFold(password, user.Password) {
 		login.Message = "Wrong username or password"
@@ -158,6 +164,13 @@ func LoginAPI(c *gin.Context) {
 	if err != nil {
 		log.Println(err)
 	}
+    
+    //set user status to online
+    err = models.UpdateUserStatus(user.Id, 1)
+    
+    if err != nil {
+        log.Println(err)
+    }
 
 	session.Set("id", user.Id)
 	session.Set("level", user.Level)
@@ -170,6 +183,16 @@ func LoginAPI(c *gin.Context) {
 
 func LogoutAPI(c *gin.Context) {
 	s := session.Instance(c)
+    
+    id := s.Get("id").(int64)
+    
+    //set user status to offline
+    err := models.UpdateUserStatus(id, 0)
+    
+    if err != nil {
+        log.Println(err)
+    }
+    
 	token.ClearTokenSession(s.Get("token").(string))
 	session.Clear(s)
 

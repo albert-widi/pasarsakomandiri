@@ -53,7 +53,7 @@ func ParkingTransactionsGetAll(c *gin.Context) {
 }
 
 
-func UserParkingTransaction(c *gin.Context)  {
+func ParkingTransactionCashier(c *gin.Context)  {
 	tanggal := c.Query("tanggal")
 	queryParam := ""
 
