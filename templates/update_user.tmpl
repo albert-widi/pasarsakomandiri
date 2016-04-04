@@ -43,6 +43,7 @@
                         password = $("#password").val();
                         role = document.getElementById("role").value;
                         description = $("#description").val();
+                        confirmpass = $("#con_password").val();
 
                         //alert(username);
 
@@ -52,7 +53,8 @@
                           username: username,
                           password: password,
                           role: role,
-                          description: description
+                          description: description,
+                          confirmpassword: confirmpass
                         },
                         function(data,status){
                             //alert(data);

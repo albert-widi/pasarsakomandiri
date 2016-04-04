@@ -15,12 +15,19 @@ type User struct {
 	Description string
 	Created_date string
 	Created_by int64
+    Status int
 }
 
 func UserGetAll() ([]User, error) {
 	var user = []User{}
 	err := database.Db.Select(&user, "SELECT id, username, password, level, role, description, created_date FROM user")
 	return user, err
+}
+
+//UpdateUserStatus is only temporary way to block user doing multiple login
+func UpdateUserStatus(id int64, status int) error {
+    _, err := database.Db.Exec("UPDATE user SET status=? WHERE id=?", status, id)
+    return err
 }
 
 func UserGetByUsername(username string) (User, error) {

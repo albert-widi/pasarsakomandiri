@@ -118,7 +118,7 @@ func UserUpdateAPI(c *gin.Context) {
 
 	if password != "" {
 		if password != confirmpass {
-			c.JSON(http.StatusOK, response.NewSimpleResponse("Failed", "Password and confirm password is not match"))
+			c.JSON(http.StatusOK, response.NewSimpleResponse("Failed", "Password and confirm password does not match"))
 			return
 		}
 	}

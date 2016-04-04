@@ -71,7 +71,7 @@ func Initialize(r *gin.Engine)  {
 	r.GET("/parking/transactions", middleware.DisAllowAnon(), controllers.ParkingTransactionsPage)
 	r.GET("/transactions_tabel", middleware.DisAllowAnon(), controllers.ParkingTransactionsGetAll)
 	r.GET("/tglparking", middleware.DisAllowAnon(), controllers.ParkingTransTgl)
-	r.GET("/user/transactions", middleware.DisAllowAnon(), controllers.UserParkingTransaction)
+	r.GET("/parking/transactions/cashier", middleware.DisAllowAnon(), controllers.ParkingTransactionCashier)
 	//IPCAM API
 	r.GET("/api/ipcamera/getPictureFromDevice", middleware.DisAllowAnon(), controllers.IpCamTakePictureFromDevice)
 	r.GET("/api/ipcamera/getPictureByIp", middleware.DisAllowAnon(), controllers.IpCamTakePictureByIP)
