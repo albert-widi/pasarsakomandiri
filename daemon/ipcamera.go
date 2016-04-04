@@ -24,7 +24,6 @@ func InitPicturesDaemon() {
 					//er files not found
 					if err != nil {
 						log.Println(err)
-						continue
 					}
 					//remove picture path from database
 					err = models.PictureDelete(elem.Id)
