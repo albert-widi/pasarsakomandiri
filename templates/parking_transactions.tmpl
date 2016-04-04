@@ -8,9 +8,11 @@
     <title>Parking Transactions</title>
     <!-- CSS -->
     <link media="screen,projection" rel="stylesheet" type="text/css" href="/assets/css/materialize.css"></link>
+    <link media="screen,projection" rel="stylesheet" type="text/css" href="/assets/css/style.css"></link>
+    <link media="screen,projection" rel="stylesheet" type="text/css" href="/assets/icons/iconfont/material-icons.css"></link>
     <style>
-        .gone li>a.hover{
-            background-color:none;
+        .nav-wrapper ul li a:hover{
+            background:none;
         }
     </style>
     <!-- scripts -->
@@ -261,138 +263,165 @@
 <body>
 
 <header>
-   <!-- navbar -->
-      <!-- for fixed top <div class="navbar-fixed"> -->
-           <nav class="#0097a7 cyan darken-2">
-             <div class="container">
-                <div class="nav-wrapper">
-                   <a href="#!" class="brand-logo">Pasar Sako Mandiri</a>
-                   <ul class="right hide-on-med-and-down">
-                     <li><a href="/device">Device List</a></li>
-                     <li><a href="/device/device_group">Device Group</a></li>
-                     <li><a href="/user/register">User Register</a></li>
-                     <li><a href="/parking_price">Parking Price</a></li>
-                     <li class="active"><a href="/parking/transactions">Parking Transaction</a></li>
-                     <li><a href="/member">Member</a></li>
-                     <li><a href="/api/user/logout">Logout</a></li>
-                   </ul>
-             </div>
-           </nav>
 
-           <ul id="slide-out" class="side-nav fixed">
-               <li class="#0097a7 cyan darken-2"><a href="#!"></a></li>
-               <li id="ilang" class="active"><a href="#!">Parking Transactions</a></li>
-               <li id="munc"><a href="#usertrans">User Transactions</a></li>
-           </ul>
-           <a href="#" data-activates="slide-out" class="button-collapse"><i class="mdi-navigation-menu"></i></a>
+    <nav class="#0097a7 cyan darken-2">
+        <div class="nav-wrapper">
+          <a href="#!" class="cen brand-logo">Pasar Sako Mandiri</a>
+          <a href="#" data-activates="mobile-demo" class="button-collapse"><i class="material-icons">&#xE3C7;</i></a>
+          <ul class="right hide-on-med-and-down">
+             <li><a href="/device">Device List</a></li>
+             <li><a href="/device/device_group">Device Group</a></li>
+             <li><a href="/user/register">User Register</a></li>
+             <li><a href="/parking_price">Parking Price</a></li>
+             <li class="active"><a href="/parking/transactions">Parking Transaction</a></li>
+             <li><a href="/member">Member</a></li>
+             <li><a href="/api/user/logout">Logout</a></li>
+          </ul>
+          <ul class="side-nav fixed" id="mobile-demo">
+            <li class="#0097a7 cyan darken-2"><a href="#!"></a></li>
+            <li id="ilang" class="active"><a href="#!">Parking Transactions</a></li>
+            <li id="munc"><a href="#usertrans">User Transactions</a></li>
+            <div class="divider"></div>
+            <ul class="hide-on-large-only">
+             <li class="logo #0097a7 cyan darken-2">Menu</li>
+             <li><a href="/device">Device List</a></li>
+             <li><a href="/device/device_group">Device Group</a></li>
+             <li><a href="/user/register">User Register</a></li>
+             <li><a href="/parking_price">Parking Price</a></li>
+             <li class="active"><a href="/parking/transactions">Parking Transaction</a></li>
+             <li><a href="/member">Member</a></li>
+             <li><a href="/api/user/logout">Logout</a></li>
+            </ul>
+          </ul>
+        </div>
+      </nav>
+
 </header>
 
-<main style="padding-left:240px">
-
-<div class="container">
-
-<div class="row">
-
-<div class="s12 m12 l12">
-
-<div id="parkingtrans" class="section" style="margin-left:50px">
+<main id="parkingtrans">
 
     <div class="row">
-        <div class="input-field col s12 m4 push-m1">
-            <p>Pilih Tanggal Transaksi</p>
-              <input id="oke" type="text" class="datepicker">
-        </div>
+        <div class="col s12 m12 l12">
 
-         <div class="input-field col s12 m4 push-m2">
-            <p>Browser Select</p>
-              <select id="sel" class="browser-default">
-                 <--<option id="kesatu">All</option>
-                 <option id="kedua">Sudah Keluar</option>
-                 <option>Belum Beluar</option>-->
-              </select>
-         </div>
-         </div>
-    </div><!-- end of row -->
+            <div class="section" style="margin-left:50px">
 
-            <nav>
-                <div class="nav-wrapper container">
-                  <a href="#" class="brand-logo center">Parking Transactions</a>
-                </div>
-            </nav>
+                <div class="row">
+                    <div class="input-field col s12 m4 push-m1">
+                        <p>Pilih Tanggal Transaksi</p>
+                          <input id="oke" type="text" class="datepicker">
+                    </div>
 
-        <!--- TABLE START --->
+                     <div class="input-field col s12 m4 push-m2">
+                        <p>Browser Select</p>
+                          <select id="sel" class="browser-default">
+                             <--<option id="kesatu">All</option>
+                             <option id="kedua">Sudah Keluar</option>
+                             <option>Belum Beluar</option>-->
+                          </select>
+                     </div>
+                     </div>
+                </div><!-- end of row -->
+
+                        <nav>
+                            <div class="nav-wrapper container">
+                              <a href="#" class="brand-logo center">Parking Transactions</a>
+                            </div>
+                        </nav>
+
+                    <!--- TABLE START --->
+
+                <div class="row">
+
+                    <div class="col s12">
+                        <table class="responsive-table centered highlight bordered">
+                            <thead>
+                                <tr>
+                                    <th>Ticket Number</th>
+                                    <th>Vehicle Type</th>
+                                    <th>Vehicle Number</th>
+                                    <th>Out Date</th>
+                                    <th>Parking Cost</th>
+                                    <th>Verified By</th>
+                                    <th>Created Date</th>
+                                    <th>Created By</th>
+                                    <th>Last Update Date</th>
+                                    <th>Update By</th>
+                                </tr>
+                            </thead>
+                            <tbody id="out">
+                            </tbody>
+                        </table>
+
+                    </div>
+                </div><!-- END OF ROW TABLE-->
+
+            </div><!-- END OF PARKING TRANS-->
+
+
+
+        </div><!-- END OF COL -->
+    </div><!-- END OF ROW -->
+
+</main>
+
+
+<main id="usertrans" style="display:none">
 
     <div class="row">
-        <div class="col s12">
-            <table class="responsive-table centered highlight bordered">
-                <thead>
-                    <tr>
-                        <th>Ticket Number</th>
-                        <th>Vehicle Type</th>
-                        <th>Vehicle Number</th>
-                        <th>Out Date</th>
-                        <th>Parking Cost</th>
-                        <th>Verified By</th>
-                        <th>Created Date</th>
-                        <th>Created By</th>
-                        <th>Last Update Date</th>
-                        <th>Update By</th>
-                    </tr>
-                </thead>
-                <tbody id="out">
-                </tbody>
-            </table>
-        </div>
-    </div><!-- END OF ROW TABLE-->
 
-</div>
-
+        <div class="col s12 m12 l12">
 
 <!-- USER TRANSACTIONS PAGES -->
 
-<div id="usertrans" style="display:none">
+            <div class="section">
 
-    <div class="row">
-        <div class="input-field col s12 m4 push-m1">
-            <p>Pilih Tanggal Transaksi</p>
-              <input id="iin" type="text" class="datepicker">
-        </div>
+                <div class="row">
+                    <div class="input-field col s12 m4 push-m1">
+                        <p>Pilih Tanggal Transaksi</p>
+                          <input id="iin" type="text" class="datepicker">
+                    </div>
 
-         <div class="input-field col s12 m4 push-m2">
-            <p>Jam Sekarang</p>
-            <input value="" id="times" type="time" class="validate">
+                     <div class="input-field col s12 m2 push-m2">
+                        <p>Jam Sekarang</p>
+                        <input value="" id="times" type="text" class="validate">
+                     </div>
+                </div><!-- END OF ROW -->
+
+                        <nav>
+                            <div class="nav-wrapper container">
+                              <a href="#" class="brand-logo center">User Transactions</a>
+                            </div>
+                        </nav>
+
+                    <!--- TABLE START --->
+
+                    <div class="row">
+
+                        <div class="col s12">
+
+                        <table class="responsive-table centered highlight bordered">
+                            <thead>
+                                <tr>
+                                    <th>User Id</th>
+                                    <th>Username</th>
+                                    <th>Number of cars</th>
+                                    <th>Number of motorcycles</th>
+                                    <th>Money to deposit</th>
+                                </tr>
+                            </thead>
+                            <tbody id="keluar">
+                            </tbody>
+                        </table>
+
+                      </div>
+            </div><!-- END OF ROW TABLE-->
+
+            </div><!-- END OF USER TRANS -->
+
          </div>
-    </div>
-
-            <nav>
-                <div class="nav-wrapper container">
-                  <a href="#" class="brand-logo center">User Transactions</a>
-                </div>
-            </nav>
-
-        <!--- TABLE START --->
-
-            <table class="responsive-table centered highlight bordered">
-                <thead>
-                    <tr>
-                        <th>User Id</th>
-                        <th>Username</th>
-                        <th>Number of cars</th>
-                        <th>Number of motorcycles</th>
-                        <th>Money to deposit</th>
-                    </tr>
-                </thead>
-                <tbody id="keluar">
-                </tbody>
-            </table>
-</div><!-- END OF COL L6 RIGHT-->
-
-
-</div><!-- end of row -->
-
-</div><!-- end of container -->
-
+     </div>
 </main>
+
 
 
 

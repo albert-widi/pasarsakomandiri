@@ -1,0 +1,32 @@
+/* LARGE SCREEN */
+@media only screen and (min-width: 993px) {
+    .nav-wrapper .cen{
+        padding-left:250px;
+    }
+
+    main{
+        padding-left:240px;
+    }
+}
+
+/* MEDIUM SCREEN */
+@media only screen and (max-width: 992px) {
+    .nav-wrapper .cen{
+        padding-left:0px;
+    }
+
+    main{
+        padding-left:0px;
+    }
+}
+
+/* SMALL SCREEN */
+@media only screen and (max-width: 600px) {
+    .nav-wrapper .cen{
+        padding-left:0px;
+    }
+
+    main{
+        padding-left:0px;
+    }
+}
