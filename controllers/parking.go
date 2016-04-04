@@ -316,7 +316,7 @@ func ParkingCheckOut(c *gin.Context) {
 		log.Println("Invalid picture, err: ", err)
 	}
 
-	iscashier, err := hostIsCashier(c, c.ClientIP())
+	cashier, err := hostIsCashier(c, c.ClientIP())
 
 	/*if err != errors.New("") {
 		if err == sql.ErrNoRows {
@@ -330,7 +330,7 @@ func ParkingCheckOut(c *gin.Context) {
 		return
 	}*/
 
-	if !iscashier {
+	if err != nil {
 		response.Status = "Failed"; response.Message = "Not a cashier host"
 		c.JSON(http.StatusOK, parkingResponse)
 		return
@@ -358,9 +358,9 @@ func ParkingCheckOut(c *gin.Context) {
     
     raspberryPi := &api.RaspberryPi{}
     raspberryPi.Protocol="http"
-    raspberryPi.Host = "192.168.0.177"
+    raspberryPi.Host = cashier.Host
     raspberryPi.Port = "8888"
-    raspberryPi.Token = "testing"
+    raspberryPi.Token = cashier.Token
     raspberryPi.Param = ""
     raspberryPi.RaspberryPrintTicketOut()
 
@@ -391,19 +391,20 @@ func updatePictureOut(pictureId int64, ticketId int64) {
 
 }
 
-func hostIsCashier(c *gin.Context, ip string) (bool, error) {
+func hostIsCashier(c *gin.Context, ip string) (models.Device, error) {
+    var err error
 	slicedIp := strings.Split(ip, ":")
 	deviceIp := slicedIp[0]
 
 	device, err := models.DeviceGetByHost(deviceIp)
 
 	if err != nil {
-		return false, err
+		return device, err
 	}
 
 	if !strings.EqualFold("Cashier", device.Device_type) {
-		return false, errors.New("Not a cashier")
+		return device, errors.New("Not a cashier")
 	}
 
-	return true, errors.New("")
+	return device, err
 }

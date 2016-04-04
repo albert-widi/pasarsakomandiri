@@ -4,6 +4,13 @@ import (
 	"github.com/pasarsakomandiri/shared/database"
 )
 
+type ParkingTransactionsCashier struct {
+    Verified_by int64
+    Username string
+    Vehicle_id int
+    Parking_cost int
+}
+
 func ParkingTransactionGetAllAPI(condition string) ([]ParkingTicket, error) {
 	parkingTicket := []ParkingTicket{}
 
@@ -42,11 +49,17 @@ func ParkingTransGetByTgl(created_date string) ([]ParkingTicket, error) {
 	return parkingtgl, err
 }
 
-func UserParkingTransactions(condition string) ([]ParkingTicket, error)  {
+func PTGetVehicleCountByDate(userID int64, date string, vehicleID int) (int, error) {
+    var result int
+    queryString := "SELECT COUNT(1) FROM parking_transactions WHERE out_date <= STR_TO_DATE('" + date + "', '%e %M %Y %H:%i') AND DATE_SUB(STR_TO_DATE('" +date+"', '%e %M %Y %H:%i'), INTERVAL 15 HOUR)" 
+    err := database.Db.Get(result, queryString + "WHERE verified_by=? AND vehicle_id=?", userID, vehicleID)
+    return result, err
+}
 
-	parkingTicket := []ParkingTicket{}
+func UserParkingTransactions(date string) ([]ParkingTransactionsCashier, error)  {
+    result := []ParkingTransactionsCashier{}
 
-	//default condition
+	/*//default condition
 	if condition == "" {
 		condition = "1=1"
 	}
@@ -67,8 +80,9 @@ func UserParkingTransactions(condition string) ([]ParkingTicket, error)  {
 					"FROM parking_transactions park"+
 					"WHERE out_date IS NOT NULL"+
 					"AND out_date <= NOW() AND out_date >= DATE_SUB(NOW(), INTERVAL 15 HOUR)"+ condition +
-					"GROUP BY verified_by, username;"
+					"GROUP BY verified_by, username;"*/
 
-	err := database.Db.Select(&parkingTicket, queryString)
-	return parkingTicket, err
+    queryString := "SELECT verified_by, username, vehicle_id, SUM(parking_cost) FROM parking_transactions_cashier WHERE out_date <= STR_TO_DATE('" + date + "', '%e %M %Y %H:%i') AND DATE_SUB(STR_TO_DATE('" +date+"', '%e %M %Y %H:%i'), INTERVAL 15 HOUR) GROUP BY verified_by, username, vehicle_id"
+	err := database.Db.Select(&result, queryString)
+	return result, err
 }
