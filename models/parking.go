@@ -4,6 +4,7 @@ import (
 	"github.com/pasarsakomandiri/shared/database"
 )
 
+//ParkingTicket data
 type ParkingTicket struct {
 	Id int64
 	Ticket_number string
@@ -21,6 +22,7 @@ type ParkingTicket struct {
 	Picture_path_in string
 	Picture_out_id int64
 	Picture_path_out string
+    Duration string
 }
 
 type Vehicle struct {

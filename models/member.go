@@ -1,6 +1,7 @@
 package models
 import (
 	"github.com/pasarsakomandiri/shared/database"
+    _"log"
 )
 
 type Member struct {
@@ -19,8 +20,9 @@ func MemberCreateNew(member Member) error {
 }
 
 func MemberGetByPoliceNumber(policeNumber string) (Member, error) {
+    //log.Println("Member get police number")
 	member := Member{}
-	err := database.Db.Get(&member, "SELECT id, vehicle_id, vehicle_type, police_number, description, created_by, created_date FROM members WHHERE police_number=?", policeNumber)
+	err := database.Db.Get(&member, "SELECT id, vehicle_id, vehicle_type, police_number, description, created_by, created_date FROM members WHERE police_number=?", policeNumber)
 	return member, err
 }
 
