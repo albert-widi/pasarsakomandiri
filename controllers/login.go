@@ -45,6 +45,10 @@ func isBanned(c *gin.Context) bool {
 
 	ban, err := models.BanGetInfoByHost(database.DbInstance(c), ipAddress)
 
+	if ban.Ban_time == "0000-00-00 00:00:00" {
+		return false
+	}
+
 	if err != nil {
 		if err == sql.ErrNoRows {
 			return false
@@ -54,6 +58,7 @@ func isBanned(c *gin.Context) bool {
 		return false
 	}
 
+	log.Println(ban.Ban_time)
 	banTime := now.MustParse(ban.Ban_time)
 
 	if time.Now().Before(banTime) {

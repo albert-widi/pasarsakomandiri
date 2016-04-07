@@ -2,6 +2,7 @@ package models
 
 import (
 	"github.com/pasarsakomandiri/shared/database"
+	_"log"
 )
 
 type ParkingTransactionsCashier struct {
@@ -33,7 +34,7 @@ func ParkingTransactionGetAllAPI(condition string) ([]ParkingTicket, error) {
 			" FROM parking_transactions WHERE " + condition*/
 	//err := database.Db.Select(&parkingTicket, "SELECT id, ticket_number, vehicle_id, vehicle_type, COALESCE(vehicle_number, ' ') vehicle_number, COALESCE(out_date, ' ') out_date, COALESCE(parking_cost, 0) parking_cost, COALESCE(verified_by, 0) verified_by, created_date, created_by, COALESCE(last_update_date, ' ') last_update_date, COALESCE(updated_by, 0) updated_by FROM parking_transactions WHERE "+condition)
 	//err := database.Db.Select(&parkingTicket, queryString)
-    err := database.Db.Select(&parkingTicket, "SELECT * FROM parking_transaction_all WHERE " + condition)
+    err := database.Db.Select(&parkingTicket, "SELECT * FROM parking_transactions_all WHERE " + condition)
 	return parkingTicket, err
 }
 
@@ -51,8 +52,9 @@ func ParkingTransGetByTgl(created_date string) ([]ParkingTicket, error) {
 
 func PTGetVehicleCountByDate(userID int64, date string, vehicleID int) (int, error) {
     var result int
-    queryString := "SELECT COUNT(1) FROM parking_transactions WHERE out_date <= STR_TO_DATE('" + date + "', '%e %M %Y %H:%i') AND DATE_SUB(STR_TO_DATE('" +date+"', '%e %M %Y %H:%i'), INTERVAL 15 HOUR)" 
-    err := database.Db.Get(result, queryString + "WHERE verified_by=? AND vehicle_id=?", userID, vehicleID)
+    queryString := "SELECT COUNT(1) result FROM parking_transactions WHERE out_date <= STR_TO_DATE('" + date + "', '%e %M %Y %H:%i') AND out_date >= DATE_SUB(STR_TO_DATE('" +date+"', '%e %M %Y %H:%i'), INTERVAL 15 HOUR)"
+    //log.Println(queryString)
+	err := database.Db.Get(&result, queryString + "AND verified_by=? AND vehicle_id=?", userID, vehicleID)
     return result, err
 }
 
@@ -82,7 +84,8 @@ func UserParkingTransactions(date string) ([]ParkingTransactionsCashier, error) 
 					"AND out_date <= NOW() AND out_date >= DATE_SUB(NOW(), INTERVAL 15 HOUR)"+ condition +
 					"GROUP BY verified_by, username;"*/
 
-    queryString := "SELECT verified_by, username, vehicle_id, SUM(parking_cost) FROM parking_transactions_cashier WHERE out_date <= STR_TO_DATE('" + date + "', '%e %M %Y %H:%i') AND DATE_SUB(STR_TO_DATE('" +date+"', '%e %M %Y %H:%i'), INTERVAL 15 HOUR) GROUP BY verified_by, username, vehicle_id"
+    queryString := "SELECT verified_by, username, vehicle_id, SUM(parking_cost) parking_cost FROM parking_transactions_cashier WHERE out_date <= STR_TO_DATE('" + date + "', '%e %M %Y %H:%i') AND out_date >= DATE_SUB(STR_TO_DATE('" +date+"', '%e %M %Y %H:%i'), INTERVAL 15 HOUR) GROUP BY verified_by, username, vehicle_id"
+	//log.Println(queryString)
 	err := database.Db.Select(&result, queryString)
 	return result, err
 }
