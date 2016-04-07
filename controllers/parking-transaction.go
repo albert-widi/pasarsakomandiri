@@ -8,6 +8,7 @@ import (
 	"github.com/pasarsakomandiri/shared/response"
 	"github.com/pasarsakomandiri/models"
 	"github.com/pasarsakomandiri/shared/session"
+	_"fmt"
 )
 
 type ParkingTransactionsPerUser struct {
@@ -64,6 +65,8 @@ func ParkingTransactionsGetAll(c *gin.Context) {
 func ParkingTransactionCashier(c *gin.Context)  {
 	date := c.Query("tanggal")
     hour := c.Query("jam")
+
+	date = strings.Replace(date, ",", "", 1)
     
     if date == "" || hour == "" {
         c.JSON(http.StatusOK, response.NewSimpleResponse("failed", "Date or hour cannot be null"))
@@ -73,6 +76,8 @@ func ParkingTransactionCashier(c *gin.Context)  {
     fixDate := date + " " + hour
     
     data, err := models.UserParkingTransactions(fixDate)
+
+	//fmt.Printf("%+v", data)
     
     if err != nil {
         log.Println(err)

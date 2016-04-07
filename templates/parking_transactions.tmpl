@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
@@ -16,6 +17,28 @@
         }
     </style>
     <!-- scripts -->
+
+    <script>
+            $(function(){
+
+
+
+
+                var d = new Date();
+                var hour = d.getHours();
+                var minute = d.getMinutes();
+                minute = minute + "";
+                if(minute.length == 1){
+
+                    minute = "0" + minute;
+
+                }
+
+                document.getElementById("times").value = hour + ":" + minute;
+
+            });
+        </script>
+
     <script>
         $(function(){
 
@@ -53,8 +76,6 @@
             //var for get
             var tanggal = document.getElementById("oke").value = get + ' ' + getMonth + ', ' + year ;
 
-            var tangs = document.getElementById("iin").value = get + ' ' + getMonth + ', ' + year ;
-
             var getVal = document.getElementById("kesatu").value;
 
             $.get("/transactions_tabel", {
@@ -83,7 +104,7 @@
 
             });
 
-            //table for user transactions
+            /*table for user transactions
            $.get("/user/transactions", {
                 tanggal:tangs
            },
@@ -94,10 +115,10 @@
             for (var n=0; n<data.length; n++){
                 alert(data[n].Username);
             }
-           });
+           });*/
 
 
-            //tabel out when date pick
+            //tabel out when date pick parking trans
            $('.datepicker').change(function(){
 
                 var tnggl = document.getElementById("oke").value;
@@ -132,77 +153,48 @@
 
             });
 
-            //tabel out when date pick for user transactions
-                       $('.datepicker').change(function(){
+            // ------------ USER TRANS ----------------------//
 
-                            var tnggl = document.getElementById("iin").value;
+            var tangs = document.getElementById("iin").value = get + ' ' + getMonth + ', ' + year ;
 
-                            var val = document.getElementById("sel").value;
-
-                            $.get("/transactions_tabel", {
-                                           tanggal:tnggl,
-                                           param:val
-                                       },
-                                        function(data, status){
+            var jams = document.getElementById("times").value;
 
 
-                                               //alert("Data: " + data + "\nStatus: " + status);
-                                               //alert("Data length: " + data.length)
-
-                                               var div = document.getElementById("out");
-
-                                               var table = "";
-
-                                               for (var i=0; i<data.length; i++){
-                                                   table += "<tr><td>" + data[i].Ticket_number + "</td><td>" + data[i].Vehicle_type + "</td><td>" + data[i].Vehicle_number + "</td><td>" + data[i].Out_date + "</td><td>" + data[i].Parking_cost + "</td><td>" +
-                                                    data[i].Verified_by + "</td><td>" + data[i].Created_date + "</td><td>" + data[i].Created_by + "</td><td>" + data[i].Last_update_date + "</td><td>" + data[i].Updated_by + "</td></tr>";
-                                               }
-
-                                               table += ""
-
-                                               div.innerHTML = table;
 
 
-                                       });
-
-                        });
-
-            //Select function
-
-            $("#sel").click(function(){
+            //get tabel when button clicked
+            $("#butt").on('click', function(){
+                    var tmpTanggal = document.getElementById("iin").value;
+                    var tmpJam = document.getElementById("times").value
 
 
-               var tnggl = document.getElementById("oke").value;
+                //alert("icacacacaca");
 
-               var sudahKeluar = document.getElementById("sel").value;
+                $.get("/parking/transactions/cashier", {
+                    tanggal:tmpTanggal,
+                    jam:tmpJam
+                    },
+                    function(data, status){
+                    //alert(data.Message);
+                    //alert("Data: " + data + "\nStatus: " + status);
+                    //alert("Data length: " + data.length);
 
-               $.get("/transactions_tabel", {
-                  tanggal:tnggl,
-                  param:sudahKeluar
-              },
-               function(data, status){
+                    var jis = document.getElementById("keluar");
 
+                    var table = "";
 
-                      //alert("Data: " + data + "\nStatus: " + status);
-                      //alert("Data length: " + data.length)
+                    for (var n=0; n<data.length; n++){
+                        table+= "<tr><td>" +data[n].Verified_by+ "</td><td>" +data[n].Username+ "</td><td>" +data[n].NOC+ "</td><td>" +data[n].NOM+ "</td><td>" +data[n].Parking_cost+ "</td></tr>"
+                    }
 
-                      var div = document.getElementById("out");
+                    table+= "";
 
-                      var table = "";
+                    jis.innerHTML = table;
 
-                      for (var i=0; i<data.length; i++){
-                          table += "<tr><td>" + data[i].Ticket_number + "</td><td>" + data[i].Vehicle_type + "</td><td>" + data[i].Vehicle_number + "</td><td>" + data[i].Out_date + "</td><td>" + data[i].Parking_cost + "</td><td>" +
-                           data[i].Verified_by + "</td><td>" + data[i].Created_date + "</td><td>" + data[i].Created_by + "</td><td>" + data[i].Last_update_date + "</td><td>" + data[i].Updated_by + "</td></tr>";
-                      }
-
-                      table += ""
-
-                      div.innerHTML = table;
-
-
-              });
+                    });
 
             });
+
 
 
         });
@@ -238,26 +230,7 @@
     </script>
 
 
-    <script>
-        $(function(){
 
-
-
-
-            var d = new Date();
-            var hour = d.getHours();
-            var minute = d.getMinutes();
-            minute = minute + "";
-            if(minute.length == 1){
-
-                minute = "0" + minute;
-
-            }
-
-            document.getElementById("times").value = hour + ":" + minute;
-
-        });
-    </script>
 </head>
 
 <body>
@@ -322,7 +295,7 @@
                      </div>
                 </div><!-- end of row -->
 
-                        <nav>
+                        <nav class="#0097a7 cyan darken-2">
                             <div class="nav-wrapper container">
                               <a href="#" class="brand-logo center">Parking Transactions</a>
                             </div>
@@ -388,12 +361,12 @@
 
                      <div class="input-field col s12 m3 push-m2">
                         <div class="section" style="margin-top:20px">
-                             <a class="waves-effect waves-light btn-large"><i class="material-icons right">search</i>Search</a>
+                             <a id="butt" class="waves-effect waves-light btn-large"><i class="material-icons right">search</i>Search</a>
                         </div>
                      </div>
                 </div><!-- END OF ROW -->
 
-                        <nav>
+                        <nav class="#0097a7 cyan darken-2">
                             <div class="nav-wrapper container">
                               <a href="#" class="brand-logo center">User Transactions</a>
                             </div>
@@ -416,6 +389,7 @@
                                 </tr>
                             </thead>
                             <tbody id="keluar">
+
                             </tbody>
                         </table>
 

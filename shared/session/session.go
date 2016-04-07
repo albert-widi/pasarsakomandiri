@@ -3,7 +3,8 @@ package session
 import (
 	"github.com/gin-gonic/contrib/sessions"
 	"github.com/gin-gonic/gin"
-    "time"
+    _"time"
+	"github.com/pasarsakomandiri/shared/tools"
 )
 
 var (
@@ -13,12 +14,12 @@ var (
 type Session struct {
 	SecretKey string		`json:"SecretKey"`
 	Name string			`json:"Name"`
-	Options sessions.Options	`json:"Options'`
+	Options sessions.Options	`json:"Options"`
 }
 
 func Configure(r *gin.Engine, s Session) {
     //alterfnative, configure unique secret key every time server start up
-    timeKey := time.Now().String()
+    timeKey := tools.RandomString(20)
 	store := sessions.NewCookieStore([]byte(timeKey))
 	store.Options(s.Options)
 	r.Use(sessions.Sessions("pasarsakomandiri", store))
