@@ -301,6 +301,7 @@ func ParkingCheckOut(c *gin.Context) {
 	dateOut := c.PostForm("ticket_date_out")
 	parkingCost, err := strconv.Atoi(c.PostForm(("parking_cost")))
 	pictureOutId, err := strconv.ParseInt(c.PostForm("picture_out_id"), 10, 64)
+    deltaTime := c.PostForm("parking_duration") 
 
 	response := new(response.SimpleResponse)
 	parkingResponse := ParkingResponse{}
@@ -381,6 +382,7 @@ func ParkingCheckOut(c *gin.Context) {
 	}
 
 	//send httppost to raspberry to print ticket
+    parkingResponse.DeltaTime = deltaTime 
 	response.Status = "Failed"; response.Message = "Thank you"
 	parkingResponse.Data = parkingTicket
 	c.JSON(http.StatusOK, parkingResponse)

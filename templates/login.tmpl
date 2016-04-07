@@ -37,6 +37,8 @@
                                 //alert("Data: " + data + "\nStatus: " + status);
                                 if (data.Status) {
                                     window.location.replace("/user/user_auth");
+                                } else {
+                                    alert(data.Message);
                                 }
 
                             });
