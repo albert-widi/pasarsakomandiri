@@ -34,6 +34,9 @@ func Initialize(r *gin.Engine)  {
 	//CASHIER PAGE
 	r.GET("/cashier", middleware.DisAllowAnon(), controllers.CashierPage)
 
+	//OFFICE PAGE
+	r.GET("/office", middleware.DisAllowAnon(), controllers.OfficePage)
+
 	//USER API
 	r.POST("/api/user/login", middleware.DisallowAuthenticated(), controllers.LoginAPI)
 	r.GET("/api/user/logout", middleware.DisAllowAnon(), controllers.LogoutAPI)
