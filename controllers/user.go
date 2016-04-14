@@ -1,41 +1,41 @@
 package controllers
 
 import (
-	"github.com/gin-gonic/gin"
-	"github.com/pasarsakomandiri/models"
 	"database/sql"
+	"fmt"
+	"log"
 	"net/http"
+	"strconv"
+	"time"
+
+	"github.com/gin-gonic/gin"
+	"github.com/jinzhu/now"
+	"github.com/pasarsakomandiri/models"
 	"github.com/pasarsakomandiri/shared/response"
 	"github.com/pasarsakomandiri/shared/session"
-	"log"
-	"github.com/jinzhu/now"
-	"time"
-	"fmt"
-	"strconv"
 	"golang.org/x/crypto/bcrypt"
 )
 
 type UserResponse struct {
 	Response response.SimpleResponse
-	Data models.User
+	Data     models.User
 }
 
-func UserRegisterPages(c *gin.Context){
+func UserRegisterPages(c *gin.Context) {
 	session := session.Instance(c)
-	c.HTML(http.StatusFound, "user_register.tmpl", gin.H{"title":"Register User", "token":session.Get("token")})
+	c.HTML(http.StatusFound, "user_register.tmpl", gin.H{"title": "Register User", "token": session.Get("token")})
 }
 
 //determine redirect of users
 
-func UserListPages(c *gin.Context){
+func UserListPages(c *gin.Context) {
 	session := session.Instance(c)
-	c.HTML(http.StatusFound, "user_list.tmpl", gin.H{"title": "User List", "token":session.Get("token")})
+	c.HTML(http.StatusFound, "user_list.tmpl", gin.H{"title": "User List", "token": session.Get("token")})
 }
-func UserEditPages(c *gin.Context){
+func UserEditPages(c *gin.Context) {
 	session := session.Instance(c)
 	c.HTML(http.StatusFound, "update_user.tmpl", gin.H{"title": "Edit User", "token": session.Get("token")})
 }
-
 
 func UserSessionRedirect(c *gin.Context) {
 	session := session.Instance(c)
@@ -52,7 +52,26 @@ func UserSessionRedirect(c *gin.Context) {
 	return
 }
 
-func UserGetAllRoleAPI (c *gin.Context){
+func UserGetAllRoleLimitLevel(c *gin.Context) {
+	session := session.Instance(c)
+	executor := session.Get("level").(int)
+
+	userRoles, err := models.RoleGetAllLimitByLevel(executor)
+
+	if err != nil {
+		if err == sql.ErrNoRows {
+			c.JSON(http.StatusOK, response.NewSimpleResponse("Failed", "Now rows returned"))
+			return
+		}
+		log.Println(err)
+		return
+	}
+
+	c.JSON(http.StatusOK, userRoles)
+	return
+}
+
+func UserGetAllRoleAPI(c *gin.Context) {
 	userRoles, err := models.RoleGetAllRole()
 
 	if err != nil {
@@ -126,7 +145,6 @@ func UserUpdateAPI(c *gin.Context) {
 	bytePass := []byte(password)
 	hashedPass, err := bcrypt.GenerateFromPassword(bytePass, bcrypt.DefaultCost)
 
-
 	user := models.User{}
 	user.Id = userId
 	user.Username = username
@@ -142,7 +160,21 @@ func UserUpdateAPI(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, response. NewSimpleResponse("Success", "Update Success"))
+	c.JSON(http.StatusOK, response.NewSimpleResponse("Success", "Update Success"))
+}
+
+func UsertGetAllLimitLevel(c *gin.Context) {
+	//session
+	session := session.Instance(c)
+	executor := session.Get("id").(int64)
+
+	users, err := models.UserGetAllLimitByLevel(executor)
+
+	if err != nil {
+		log.Println(err)
+	}
+
+	c.JSON(http.StatusOK, users)
 }
 
 func UserGetAllAPI(c *gin.Context) {

@@ -55,11 +55,11 @@ func PriceGetAll(c *gin.Context) {
 
 func PriceRegister(c *gin.Context) {
 	vehicleId, err := strconv.Atoi(c.PostForm("vehicle_id"))
-	jamPertama, err := strconv.Atoi(c.PostForm("jam_pertama"))
-	jamBerikutnya, err := strconv.Atoi(c.PostForm("jam_berikutnya"))
+	jamPertama, err := strconv.Atoi(c.PostForm("first_hour_price"))
+	jamBerikutnya, err := strconv.Atoi(c.PostForm("next_hour_price"))
 	promoJamPertama, err := strconv.Atoi(c.PostForm("promo_jam_pertama"))
 	promoJamBerikutnya, err := strconv.Atoi(c.PostForm("promo_jam_berikutnya"))
-	biayaMax, err := strconv.Atoi(c.PostForm("biaya_max"))
+	biayaMax, err := strconv.Atoi(c.PostForm("maximum_price"))
 
 	vehicle, err := models.ParkingVehicleGetByID(vehicleId)
 	if err != nil {
@@ -100,7 +100,7 @@ func PriceRegister(c *gin.Context) {
 	price.Created_by = session.Instance(c).Get("id").(int64)
 	price.Created_date = time.Now().String()
 
-	if price.First_hour_price == 0 || price.Next_hour_price == 0 {
+	if price.First_hour_price < 0 || price.Next_hour_price < 0 {
 		c.JSON(http.StatusOK, response.NewSimpleResponse("Failed", "Required items cannot be empty"))
 		return
 	}

@@ -1,49 +1,63 @@
 package controllers
 
 import (
-	"net/http"
-	_"github.com/pasarsakomandiri/models"
-	_"database/sql"
-	_"github.com/dgrijalva/jwt-go"
-	_"time"
-	"github.com/gin-gonic/gin"
-	_"encoding/json"
-	_"github.com/jmoiron/sqlx"
-	"github.com/pasarsakomandiri/models"
 	"database/sql"
+	_ "database/sql"
+	_ "encoding/json"
+	_ "fmt"
+	"log"
+	"net/http"
 	"strings"
+	"time"
+	_ "time"
+
+	_ "github.com/dgrijalva/jwt-go"
+	_ "github.com/gin-gonic/contrib/sessions"
+	"github.com/gin-gonic/gin"
+	"github.com/jinzhu/now"
+	_ "github.com/jmoiron/sqlx"
+	"github.com/pasarsakomandiri/models"
+	_ "github.com/pasarsakomandiri/models"
 	"github.com/pasarsakomandiri/shared/session"
 	"github.com/pasarsakomandiri/shared/token"
-	"log"
-	"github.com/pasarsakomandiri/shared/database"
-	_"github.com/gin-gonic/contrib/sessions"
-	_"fmt"
 	"golang.org/x/crypto/bcrypt"
-	"time"
-	"github.com/jinzhu/now"
 )
 
 type LoginReturn struct {
-	Status bool
+	Status   bool
 	Username string
-	Message string
+	Message  string
 }
 
 func Redirected(c *gin.Context) {
 	c.HTML(http.StatusFound, "dir_login.tmpl", gin.H{
-		"title":"redirected"})
+		"title": "redirected"})
 }
 
 func LoginPage(c *gin.Context) {
 	c.HTML(http.StatusFound, "login.tmpl", gin.H{
-		"title":"testing"})
+		"title": "testing"})
+}
+
+func flushBan(c *gin.Context) bool {
+	slicedIp := strings.Split(c.ClientIP(), ":")
+	ipAddress := slicedIp[0]
+
+	err := models.BanFlushAttempt(ipAddress)
+
+	if err != nil {
+		log.Println(err)
+		return false
+	}
+
+	return true
 }
 
 func isBanned(c *gin.Context) bool {
 	slicedIp := strings.Split(c.ClientIP(), ":")
 	ipAddress := slicedIp[0]
 
-	ban, err := models.BanGetInfoByHost(database.DbInstance(c), ipAddress)
+	ban, err := models.BanGetInfoByHost(ipAddress)
 
 	if ban.Ban_time == "0000-00-00 00:00:00" {
 		return false
@@ -58,7 +72,6 @@ func isBanned(c *gin.Context) bool {
 		return false
 	}
 
-	log.Println(ban.Ban_time)
 	banTime := now.MustParse(ban.Ban_time)
 
 	if time.Now().Before(banTime) {
@@ -72,12 +85,12 @@ func accumulateAttempt(c *gin.Context) {
 	slicedIp := strings.Split(c.ClientIP(), ":")
 	ipAddress := slicedIp[0]
 
-	ban, err := models.BanGetInfoByHost(database.DbInstance(c), ipAddress)
+	ban, err := models.BanGetInfoByHost(ipAddress)
 
 	if err != nil {
 		if err == sql.ErrNoRows {
 			//create ban line
-		 	if err = models.BanCreateNewAddress(database.DbInstance(c), ipAddress); err != nil {
+			if err = models.BanCreateNewAddress(ipAddress); err != nil {
 				log.Println(err)
 			}
 			return
@@ -89,7 +102,7 @@ func accumulateAttempt(c *gin.Context) {
 	ban.Attempt += 1
 	//log.Println("Delta: ",now.MustParse(ban.Ban_time).Sub(time.Now()).Seconds())
 
-	if ban.Attempt % 5 == 0 {
+	if ban.Attempt%5 == 0 {
 		ban.Ban_time = time.Now().Add(time.Minute * 5).String()
 
 		if ban.Attempt == 25 {
@@ -99,7 +112,7 @@ func accumulateAttempt(c *gin.Context) {
 		}
 	}
 
-	if err = models.BanUpdateAddress(database.DbInstance(c), ban); err != nil {
+	if err = models.BanUpdateAddress(ban); err != nil {
 		log.Println(err)
 	}
 }
@@ -146,12 +159,13 @@ func LoginAPI(c *gin.Context) {
 		c.JSON(http.StatusOK, login)
 		return
 	}
-    
-    if user.Status == 1 {
-        login.Message = "User is already online, multiple login attempt failed"
-        c.JSON(http.StatusOK, login)
-        return
-    }
+
+	if user.Status == 1 {
+		login.Status = false
+		login.Message = "User is already online, multiple login attempt failed"
+		c.JSON(http.StatusOK, login)
+		return
+	}
 
 	/*if !strings.EqualFold(password, user.Password) {
 		login.Message = "Wrong username or password"
@@ -169,13 +183,13 @@ func LoginAPI(c *gin.Context) {
 	if err != nil {
 		log.Println(err)
 	}
-    
-    //set user status to online
-    err = models.UpdateUserStatus(user.Id, 1)
-    
-    if err != nil {
-        log.Println(err)
-    }
+
+	//set user status to online
+	err = models.UpdateUserStatus(user.Id, 1)
+
+	if err != nil {
+		log.Println(err)
+	}
 
 	session.Set("id", user.Id)
 	session.Set("level", user.Level)
@@ -183,21 +197,23 @@ func LoginAPI(c *gin.Context) {
 	session.Set("token", tokenString)
 	session.Save()
 
+	go flushBan(c)
+
 	c.JSON(http.StatusOK, login)
 }
 
 func LogoutAPI(c *gin.Context) {
 	s := session.Instance(c)
-    
-    id := s.Get("id").(int64)
-    
-    //set user status to offline
-    err := models.UpdateUserStatus(id, 0)
-    
-    if err != nil {
-        log.Println(err)
-    }
-    
+
+	id := s.Get("id").(int64)
+
+	//set user status to offline
+	err := models.UpdateUserStatus(id, 0)
+
+	if err != nil {
+		log.Println(err)
+	}
+
 	token.ClearTokenSession(s.Get("token").(string))
 	session.Clear(s)
 

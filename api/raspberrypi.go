@@ -4,6 +4,8 @@ import (
 	"net/http"
 	"log"
     "io/ioutil"
+    "net/url"
+    "strings"
 )
 
 type RaspberryPi struct {
@@ -12,32 +14,42 @@ type RaspberryPi struct {
     Port string
     Token string
     Param string
+    Data map[string]string
 }
 
 //RaspberryPrintTicketOut order raspberry to print ticket out
 func (r *RaspberryPi) RaspberryPrintTicketOut() {
     path := r.fullPath()
-    param := r.fullParam()
-    completeURL := path + "/print/checkOut" + param
+    //param := r.fullParam()
+    completeURL := path + "/print/checkOut"
+    
+    data := url.Values{}
+
+    for key, value := range r.Data {
+        data.Add(key, value)
+    }
     
     client := http.Client{}
-	req, err := http.NewRequest("POST", completeURL, nil)
+	req, err := http.NewRequest("POST", completeURL, strings.NewReader(data.Encode()))
     
     if err != nil {
-        log.Println(err)
+        log.Println(err) 
+        return
     }
+    
+    req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
+    
     
     res, err := client.Do(req)
     
     if err != nil {
 		log.Println(err)
+        return
 	}
-
-	defer res.Body.Close()
     
-    responseBody, err := ioutil.ReadAll(res.Body)
-    
-    log.Println(string(responseBody))
+    _, err = ioutil.ReadAll(res.Body)
+    res.Body.Close()
+    //log.Println(string(responseBody))
 }
 
 func (r *RaspberryPi) fullPath() string {

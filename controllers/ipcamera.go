@@ -6,14 +6,15 @@ import (
 	"strings"
 	"time"
 
-	"github.com/pasarsakomandiri/api"
-    	"github.com/pasarsakomandiri/models"
+	"database/sql"
 	"net/http"
+	"strconv"
+
+	"github.com/fatih/structs"
+	"github.com/pasarsakomandiri/api"
+	"github.com/pasarsakomandiri/models"
 	"github.com/pasarsakomandiri/shared/response"
 	"github.com/pasarsakomandiri/shared/static"
-	"strconv"
-	"github.com/fatih/structs"
-	"database/sql"
 )
 
 var timeSaveStandard time.Duration = time.Duration(24)

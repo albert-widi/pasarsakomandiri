@@ -2,10 +2,10 @@
   "Database": {
     "Type": "MySQL",
     "MySQL": {
-      "Username": "pasar",
-      "Password": "pasar",
+      "Username": "psmandiri",
+      "Password": "PsS4k0#M4#n0nR00T",
       "Name": "pasar",
-      "Hostname": "192.168.0.100",
+      "Hostname": "localhost",
       "Port": "3306",
       "DBParam": "/pasar?charset=utf8&timeout=3s"
     }

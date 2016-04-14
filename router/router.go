@@ -6,7 +6,7 @@ import (
 	"github.com/pasarsakomandiri/router/middleware"
 )
 
-func Initialize(r *gin.Engine)  {
+func Initialize(r *gin.Engine) {
 	//GLOBAL PAGES
 	r.GET("/redirected", controllers.Redirected)
 
@@ -15,7 +15,7 @@ func Initialize(r *gin.Engine)  {
 
 	//USER PAGES
 	r.GET("/user/user_auth", middleware.DisAllowAnon(), controllers.UserSessionRedirect)
-	r.GET("/user/register",middleware.DisAllowAnon(), controllers.UserRegisterPages)
+	r.GET("/user/register", middleware.DisAllowAnon(), controllers.UserRegisterPages)
 
 	//ADMIN PAGES
 	r.GET("/admin", middleware.AllowOnlyAdministrator(), controllers.AdminPage)
@@ -41,8 +41,8 @@ func Initialize(r *gin.Engine)  {
 	r.POST("/api/user/login", middleware.DisallowAuthenticated(), controllers.LoginAPI)
 	r.GET("/api/user/logout", middleware.DisAllowAnon(), controllers.LogoutAPI)
 	r.POST("/api/user/register", middleware.DisAllowAnon(), controllers.RegisterUser)
-	r.GET("/api/user/role_list",middleware.DisAllowAnon(), controllers.UserGetAllRoleAPI)
-	r.GET("/api/user/all_user", middleware.DisAllowAnon(), controllers.UserGetAllAPI)
+	r.GET("/api/user/role_list", middleware.DisAllowAnon(), controllers.UserGetAllRoleLimitLevel)
+	r.GET("/api/user/all_user", middleware.DisAllowAnon(), controllers.UsertGetAllLimitLevel)
 	r.POST("/api/user/update", middleware.DisAllowAnon(), controllers.UserUpdateAPI)
 
 	//DEVICE API
@@ -53,12 +53,12 @@ func Initialize(r *gin.Engine)  {
 	r.POST("/api/device/create_device_group", middleware.DisAllowAnon(), controllers.DeviceGroupRegisterAPI)
 	r.GET("/api/device/device_group_list", middleware.DisAllowAnon(), controllers.DeviceGroupGetAllAPI)
 	r.GET("/api/device/check_out_device", controllers.DeviceContactCheckOut)
-	r.POST("/api/device/delete_device_group",middleware.DisAllowAnon(), controllers.DeviceGroupDeleteAPI)
+	r.POST("/api/device/delete_device_group", middleware.DisAllowAnon(), controllers.DeviceGroupDeleteAPI)
 	r.POST("/api/device/delete", middleware.DisAllowAnon(), controllers.DeleteDeviceList)
 	r.POST("/api/device/edit", middleware.DisAllowAnon(), controllers.EditDeviceList)
 
 	//PARKING API
-	r.POST("/api/parking/checkIn", controllers.ParkingCheckIn) //authenticated in controllers
+	r.POST("/api/parking/checkIn", controllers.ParkingCheckIn)   //authenticated in controllers
 	r.POST("/api/parking/checkOut", controllers.ParkingCheckOut) //authenticated in controllers
 	r.GET("/api/parking/getTicketInfo", middleware.DisAllowAnon(), controllers.ParkingGetTicketInfo)
 	r.GET("/api/parking/vehicleAll", middleware.DisAllowAnon(), controllers.VehicleGetAll)
@@ -78,9 +78,9 @@ func Initialize(r *gin.Engine)  {
 	//IPCAM API
 	r.GET("/api/ipcamera/getPictureFromDevice", middleware.DisAllowAnon(), controllers.IpCamTakePictureFromDevice)
 	r.GET("/api/ipcamera/getPictureByIp", middleware.DisAllowAnon(), controllers.IpCamTakePictureByIP)
-    
-    //RASPBERRY PI
-    r.GET("api/raspberry/checkOut", controllers.RaspberryPrintCheckOut)
+
+	//RASPBERRY PI
+	r.GET("api/raspberry/checkOut", controllers.RaspberryPrintCheckOut)
 
 	//MEMBER API
 	r.GET("/member", middleware.DisAllowAnon(), controllers.MemberPages)
@@ -90,9 +90,9 @@ func Initialize(r *gin.Engine)  {
 
 	//CAMERA API
 	//r.GET("/camera/takepicture", controllers.IpCamTakePicture)
-    
-    //TEST API
-    r.GET("/parking/testTicket", controllers.ParkingTicketPage)
+
+	//TEST API
+	r.GET("/parking/testTicket", controllers.ParkingTicketPage)
 
 	//API
 	r.GET("/api/create_super_user", controllers.SecretCreateSuperUser)

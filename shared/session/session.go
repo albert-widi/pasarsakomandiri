@@ -5,6 +5,8 @@ import (
 	"github.com/gin-gonic/gin"
     _"time"
 	"github.com/pasarsakomandiri/shared/tools"
+    "log"
+	"github.com/pasarsakomandiri/models"
 )
 
 var (
@@ -22,7 +24,11 @@ func Configure(r *gin.Engine, s Session) {
     timeKey := tools.RandomString(20)
 	store := sessions.NewCookieStore([]byte(timeKey))
 	store.Options(s.Options)
-	r.Use(sessions.Sessions("pasarsakomandiri", store))
+	r.Use(sessions.Sessions(timeKey, store))
+    err := models.UserResetLoginStatus()
+    if err != nil {
+        log.Println(err)
+    }
 }
 
 func Instance(c *gin.Context) sessions.Session {

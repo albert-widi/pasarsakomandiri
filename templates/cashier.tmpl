@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no" />
     <script src="/assets/js/jquery-2.2.0.min.js"></script>
-    <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+   <!-- <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">-->
     <link media="screen,projection" rel="stylesheet" type="text/css" href="/assets/css/materialize.css">
     <script src="/assets/js/jquery-2.2.0.min.js"></script>
     <script src="/assets/js/materialize.js"></script>
@@ -65,22 +65,29 @@
     <script>
         $(function() {
             $("#check_out").on('click', function() {
-                alert("oke kok");
+                
                 var ticketId = document.getElementById("ticket_id").value;
                 var ticketNumber = document.getElementById("ticket_number").value;
                 var vehicleNo = document.getElementById("no_kendaraan").value;
                 var dateOut = document.getElementById("dateout").value;
                 var cost = document.getElementById("cost").value;
                 var pictureOutId = document.getElementById("picture_out_id").value;
-                alert(pictureOutId);
+		var duration = document.getElementById("duration").value;
+               
                 $.post("/api/parking/checkOut", {
                                 ticket_number:ticketNumber,
                                 ticket_id:ticketId,
                                 vehicle_number:vehicleNo,
                                 ticket_date_out:dateOut,
                                 parking_cost:cost,
-                                picture_out_id:pictureOutId
+                                picture_out_id:pictureOutId,
+				parking_duration:duration
                             },function(data, status){
+				ticketNumber = "";
+				cost = "";
+				dateOut = "";
+				duration = "";
+				ticketId = "";
                               if (data.Response.Status == "Failed") {
                                 alert(data.Response.Message);
                                 return;
@@ -121,6 +128,7 @@
 
                 <div class="card-panel #0097a7 cyan darken-2">
                     <h3 class="center" style="color: white"><b>Cashier</b></h3>
+		 <a href="/api/user/logout" style="color:white">Log out</a>
                 </div>
 
                 <div class="card-content">

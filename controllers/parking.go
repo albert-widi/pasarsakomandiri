@@ -18,6 +18,7 @@ import (
 	"math"
 	"os"
     "sync"
+	"fmt"
 )
 
 type ParkingResponse struct {
@@ -58,7 +59,9 @@ func ParkingCheckIn(c *gin.Context) {
 	deviceToken := c.PostForm("token")
 
 	//get raspberry device
+	log.Println("Device IP: " + deviceIp)
 	device, err := models.DeviceGetByHost(deviceIp)
+	fmt.Printf("%+v", device)
 	//create parking response struct
 	parkingResponse := ParkingResponse{}
 	response := new(response.SimpleResponse)
@@ -112,6 +115,10 @@ func ParkingCheckIn(c *gin.Context) {
 	year = year[2:4]
 	month := date.Month().String()
 	month = month[0:3]
+        day := strconv.Itoa(date.Day())
+	hour := strconv.Itoa(date.Hour())
+    minute := strconv.Itoa(date.Minute())
+    seconds := strconv.Itoa(date.Second())
 	parkingTicket.Vehicle_id = deviceGroup.Vehicle_id
 	parkingTicket.Vehicle_type = deviceGroup.Vehicle_type
 
@@ -152,6 +159,8 @@ func ParkingCheckIn(c *gin.Context) {
     //taking picture from camera with goroutines, reducing latency
 	go saveCameraPicture(<-camChan, date,parkingTicket.Id)
 	parkingTicket.Ticket_number = "*" + parkingTicket.Ticket_number + "*"
+	parkingTicket.Created_date = day + " " + month + " " + year
+	parkingTicket.Duration = hour + ":" + minute + ":" + seconds
 	parkingResponse.Data = parkingTicket
 
 	c.JSON(http.StatusOK, parkingResponse)
@@ -336,6 +345,9 @@ func ParkingCheckOut(c *gin.Context) {
 		c.JSON(http.StatusOK, parkingResponse)
 		return
 	}
+    
+    log.Println(ticketId)
+    log.Println(ticketNumber)
 
 	parkingTicket, err := models.ParkingGetTicketByNumberAndId(ticketId, ticketNumber)
 
@@ -356,14 +368,6 @@ func ParkingCheckOut(c *gin.Context) {
 	if err != nil {
 		log.Println(err)
 	}
-    
-    raspberryPi := &api.RaspberryPi{}
-    raspberryPi.Protocol="http"
-    raspberryPi.Host = cashier.Host
-    raspberryPi.Port = "8888"
-    raspberryPi.Token = cashier.Token
-    raspberryPi.Param = ""
-    raspberryPi.RaspberryPrintTicketOut()
 
 	parkingTicket.Parking_cost = parkingCost
 	parkingTicket.Vehicle_number = vehicleNumber
@@ -372,6 +376,22 @@ func ParkingCheckOut(c *gin.Context) {
 	parkingTicket.Last_update_date = dateOut
 	parkingTicket.Updated_by = executor
 	parkingTicket.Picture_out_id = pictureOutId
+    
+    urlData := make(map[string]string)
+    urlData["cost"] = strconv.Itoa(parkingCost)
+    urlData["time_in"] = parkingTicket.Created_date
+    urlData["time_out"] = dateOut
+    urlData["duration"] = deltaTime
+    urlData["ticket_number"] = ticketNumber
+    
+    raspberryPi := &api.RaspberryPi{}
+    raspberryPi.Protocol="http"
+    raspberryPi.Host = cashier.Host
+    raspberryPi.Port = "8888"
+    raspberryPi.Token = cashier.Token
+    raspberryPi.Param = "&cost=" + strconv.Itoa(parkingTicket.Parking_cost) + "&time_in=" + parkingTicket.Created_date + "&time_out=" + dateOut + "&duration"
+    raspberryPi.Data = urlData
+    go raspberryPi.RaspberryPrintTicketOut()
 
 	err = models.ParkingUpdateTicket(parkingTicket)
 

@@ -3,15 +3,16 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no" />
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+    <!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>-->
     <script src="/assets/js/jquery-2.1.1.min.js"></script>
     <script src="/assets/js/jquery.simplePagination.js"></script>
     <script src="/assets/js/materialize.js"></script>
     <title>Materialize</title>
     <!-- CSS -->
-    <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="/assets/font/material-design-icons" rel="stylesheet">
+    <!--<link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">-->
     <link media="screen,projection" rel="stylesheet" type="text/css" href="/assets/css/materialize.css"></link>
-    <link media="screen,projection" rel="stylesheet" type="text/css" href="/assets/icons/iconfont/material-icons.css"></link>
+    <link media="screen,projection" rel="stylesheet" type="text/css" href="/assets/icon/material-design-icons/iconfont/material-icons.css"></link>
     <!-- Style -->
     <style>
         .nav-wrapper ul li a:hover{
@@ -36,7 +37,7 @@
         $(function(){
 
         $.get("/formval",function(data, status){
-            
+
             //alert("Data: " + data + "\nStatus: " + status);
             var kluar = document.getElementById("type");
             var ica = "";
@@ -46,9 +47,9 @@
                     ica += "<option value="+data[i].Device_type+">" + data[i].Device_type + "</option>";
                    }
             kluar.innerHTML = ica;
-            
+
                 });
-            
+
            });
     </script>
 
@@ -78,7 +79,7 @@
 
     <script>
         $(function(){
-            
+
         $("button").click(function(){
 
            if (confirm("Anda Yakin???") == true) {
@@ -127,7 +128,7 @@
 
 
             });
-            
+
         });
     </script>
 
@@ -175,8 +176,8 @@
         $("#pagenav").pagination({
             items: numItems,
             itemsOnPage: perPage,
-            prevText: "<li class='waves-effect'><a href='#'><i class='material-icons'>chevron_left</i></a></li>",
-            nextText: "<li class='waves-effect'><a href='#'><i class='material-icons'>chevron_right</i></a></li>",
+            prevText: "<li class='waves-effect'><a href='#'><i class='material-icons'>&#xE314;</i></a></li>",
+            nextText: "<li class='waves-effect'><a href='#'><i class='material-icons'>&#xE315;</i></a></li>",
             onPageClick: function(pageNumber) { // this is where the magic happens
                 // someone changed page, lets hide/show trs appropriately
                 var showFrom = perPage * (pageNumber - 1);
@@ -351,11 +352,10 @@
 
 
 
-    
+
 
 
 
 
 </body>
 </html>
-

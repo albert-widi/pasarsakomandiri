@@ -1,16 +1,16 @@
 /*
 This auth middlewares automatically check user sessions and redirect the users if not authenticated
- */
+*/
 
 package middleware
 
 import (
-	"github.com/gin-gonic/gin"
-	"github.com/gin-gonic/contrib/sessions"
 	"net/http"
-	"github.com/pasarsakomandiri/models"
-	"fmt"
 	"strings"
+
+	"github.com/gin-gonic/contrib/sessions"
+	"github.com/gin-gonic/gin"
+	"github.com/pasarsakomandiri/models"
 )
 
 func AllowUsingToken() gin.HandlerFunc {
@@ -30,7 +30,6 @@ func AllowUsingToken() gin.HandlerFunc {
 		}
 
 		session := sessions.Default(c)
-
 
 		if session.Get("id") == nil {
 			c.Redirect(http.StatusFound, "/redirected")
@@ -73,8 +72,8 @@ func AllowOnlyCashier() gin.HandlerFunc {
 }
 
 func AllowONlyOffice() gin.HandlerFunc {
-    return func (c *gin.Context)  {
-        //get sessions
+	return func(c *gin.Context) {
+		//get sessions
 		session := sessions.Default(c)
 
 		if session.Get("id") == nil {
@@ -92,7 +91,7 @@ func AllowONlyOffice() gin.HandlerFunc {
 
 		c.Next()
 		return
-    }
+	}
 }
 
 func AllowOnlyAdministrator() gin.HandlerFunc {
@@ -165,7 +164,7 @@ func DisAllowAnon() gin.HandlerFunc {
 		session := sessions.Default(c)
 		if session.Get("id") == nil {
 			//default redirect
-			fmt.Println("redirected kok gan")
+			//fmt.Println("redirected kok gan")
 			c.Redirect(http.StatusFound, "/redirected")
 		}
 		c.Next()
@@ -232,4 +231,3 @@ func AllowUpFrom(level int64) gin.HandlerFunc {
 		return
 	}
 }*/
-
