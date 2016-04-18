@@ -18,7 +18,7 @@ func Initialize(r *gin.Engine) {
 	r.GET("/user/register", middleware.DisAllowAnon(), controllers.UserRegisterPages)
 
 	//ADMIN PAGES
-	r.GET("/admin", middleware.AllowOnlyAdministrator(), controllers.AdminPage)
+	r.GET("/admin", middleware.AllowONlyOffice(), controllers.AdminPage)
 
 	//DEVICE PAGES
 	r.GET("/device/device_group", middleware.AllowOnlyAdministrator(), controllers.DeviceGroupPage)

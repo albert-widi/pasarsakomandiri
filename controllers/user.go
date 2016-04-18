@@ -39,7 +39,7 @@ func UserEditPages(c *gin.Context) {
 
 func UserSessionRedirect(c *gin.Context) {
 	session := session.Instance(c)
-	userlevel := session.Get("level").(int)
+	userlevel := session.Get("Level").(int)
 
 	//redirect user to cashier
 	if userlevel == models.Role_level_cashier {
@@ -54,7 +54,7 @@ func UserSessionRedirect(c *gin.Context) {
 
 func UserGetAllRoleLimitLevel(c *gin.Context) {
 	session := session.Instance(c)
-	executor := session.Get("level").(int)
+	executor := session.Get("Level").(int)
 
 	userRoles, err := models.RoleGetAllLimitByLevel(executor)
 
@@ -166,7 +166,7 @@ func UserUpdateAPI(c *gin.Context) {
 func UsertGetAllLimitLevel(c *gin.Context) {
 	//session
 	session := session.Instance(c)
-	executor := session.Get("id").(int64)
+	executor := session.Get("Level").(int)
 
 	users, err := models.UserGetAllLimitByLevel(executor)
 

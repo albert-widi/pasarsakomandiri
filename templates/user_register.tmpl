@@ -7,84 +7,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no" />
     <script src="/assets/js/jquery-2.1.1.min.js"></script>
     <script src="/assets/js/jquery.simplePagination.js"></script>
+    <script src="/assets/js/parkingapp/user_register.js"></script>
     <script src="/assets/js/materialize.js"></script>
     <!-- CSS -->
     <!--<link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">-->
+    <link media="screen,projection" rel="stylesheet" type="text/css" href="/assets/icon/material-design-icons/iconfont/material-icons.css"></link>
     <link media="screen,projection" rel="stylesheet" type="text/css" href="/assets/css/materialize.css"></link>
-
-
-
-    <script>
-
-        $(function(){
-
-            $.get("/api/user/all_user", function(data,status){
-
-                var div = document.getElementById ("display");
-                var tables = "";
-                for (var i=0; i<data.length; i++){
-                    var id = data[i].Id;
-                    tables += "<tr><td>" + data[i].Username + "</td> <td>" + data[i].Role + "</td> <td>" + data[i].Description +  "</td><td><button class='waves-effect waves-light btn' onclick='passFunc("+id+")'>Edit</button></td></tr>";
-                }
-                tables += ""
-                div.innerHTML = tables;
-            });
-
-        });
-    </script>
-
-         <script>
-
-            $(function(){
-
-               $.get ("/api/user/role_list", function (data, status){
-                    var div = document.getElementById("slctRole");
-                    var options = "";
-                    for (i=0; i<data.length; i++){
-                        options += "<option value= "+data[i].Role_name+">" +data[i].Role_name+ "</option>";
-                    }
-                    div.innerHTML = options;
-                });
-
-
-            });
-         </script>
-
-        <script>
-            $(function(){
-                $("#create").click(function(){
-                username = $("#username").val();
-                password = $("#password").val();
-                role = document.getElementById("slctRole").value;
-                desc = $("#description").val();
-
-                    $.post("/api/user/register",
-                        {
-                            username: username,
-                            password: password,
-                            role: role,
-                            description: desc
-                        },
-
-                        function(data, status) {
-                            alert(data.Message);
-
-                            if(data.Status == "Success") {
-                                $.get("/api/user/all_user", function(data,status){
-                                    var div = document.getElementById ("display");
-                                    var tables = "";
-                                    for (var i=0; i<data.length; i++){
-                                        var id = data[i].Id;
-                                        tables += "<tr><td>" + data[i].Username + "</td> <td>" + data[i].Role + "</td> <td>" + data[i].Description +  "</td><td><button class='waves-effect waves-light btn' onclick='passFunc("+id+")'>Edit</button></td></tr>";
-                                    }
-                                    tables += ""
-                                    div.innerHTML = tables;
-                                });
-                            }
-                    });
-                });
-            });
-         </script>
+    <style>
+    .bact>li a:hover{
+        background:none;
+    }
+    </style>
 
          <script>
              function passFunc(id){
@@ -100,20 +33,21 @@
 
 <!-- navbar -->
    <!-- for fixed top <div class="navbar-fixed"> -->
-        <nav class="#0097a7 cyan darken-2">
-          <div class="nav-wrapper">
-            <a href="#!" class="brand-logo" style="padding-left:50px">Pasar Sako Mandiri</a>
-            <ul class="right hide-on-med-and-down">
-              <li><a href="/device">Device List</a></li>
-              <li><a href="/device/device_group">Device Group</a></li>
-              <li class="active"><a href="/user/register">User Register</a></li>
-              <li><a href="/parking_price">Parking Price</a></li>
-              <li><a href="/parking/transactions">Parking Transaction</a></li>
-              <li><a href="/member">Member</a></li>
-              <li><a href="/api/user/logout">Logout</a></li>
-            </ul>
-          </div>
-        </nav>
+
+   <nav class="#0097a7 cyan darken-2">
+           <div class="nav-wrapper">
+             <a href="#!" class="cen brand-logo" style="padding-left:50px">Pasar Sako Mandiri</a>
+             <a href="#" data-activates="mobile-demo" class="button-collapse"><i class="material-icons">&#xE3C7;</i></a>
+             <ul class="right hide-on-med-and-down">
+                {{template "menu.tmpl" .}}
+             </ul>
+             <ul class="side-nav bact" id="mobile-demo">
+                 {{template "menu.tmpl" .}}
+              </ul>
+             </ul>
+           </div>
+         </nav>
+
    <!-- end of fixed  </div> -->
 <!-- end of navbar -->
 
@@ -240,4 +174,3 @@ Description:
 
 </body>
 </html>
-

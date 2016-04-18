@@ -1,0 +1,14 @@
+{{if eq .AuthLevel "Office"}}
+  <li><a href="/parking/transactions">Parking Transaction</a></li>
+  <li><a href="/api/user/logout">Logout</a></li>
+{{end}}
+
+{{if eq .AuthLevel "Admin"}}
+  <li><a href="/device">Device List</a></li>
+  <li class="active"><a href="/device/device_group">Device Group</a></li>
+  <li><a href="/user/register">User Register</a></li>
+  <li><a href="/parking_price">Parking Price</a></li>
+  <li><a href="/parking/transactions">Parking Transaction</a></li>
+  <li><a href="/member">Member</a></li>
+  <li><a href="/api/user/logout">Logout</a></li>
+{{end}}

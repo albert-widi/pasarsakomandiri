@@ -17,7 +17,7 @@ type Ban struct {
 }
 
 func BanFlushAttempt(ip string) error {
-	_, err := database.Db.Exec("UPDATE bans SET attempt=?, last_update_date=?", ip, time.Now().String())
+	_, err := database.Db.Exec("UPDATE bans SET attempt=?, last_update_date=? WHERE ip_address=?", 0, time.Now().String(), ip)
 	return err
 }
 

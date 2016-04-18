@@ -4,150 +4,19 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no" />
     <!--<link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">-->
-    <link media="screen,projection" rel="stylesheet" type="text/css" href="/assets/css/materialize.css">
+    <link media="screen,projection" rel="stylesheet" type="text/css" href="/assets/css/materialize.css"></link>
+    <link media="screen,projection" rel="stylesheet" type="text/css" href="/assets/icon/material-design-icons/iconfont/material-icons.css"></link>
     <!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>-->
     <script src="/assets/js/jquery-2.2.0.min.js"></script>
     <script src="/assets/js/materialize.js"></script>
-    <title>{{.title}}</title>
+    <script src="/assets/js/parkingapp/d_group.js"></script>
+    <title>Device Group</title>
     <!-- CSS -->
-
-    <script>
-    $(function (){
-        $.get("/api/device/device_group_list", function(data, status){
-            var div = document.getElementById ("display");
-            var tables = "";
-
-            for (var n=0; n<data.length; n++){
-                var id = data[n].Id;
-                tables += "<tr><td>" +data[n].Raspberry_id+ "</td> <td>" +data[n].Raspberry_ip+ "</td> <td>" +data[n].Group_type+ "</td> <td>" +data[n].Camera_id+ "</td> <td>" +data[n].Camera_ip+ "</td> <td>" +data[n].Vehicle_id+ "</td> <td>" +data[n].Vehicle_type+ "</td> <td>" +data[n].Group_name+ "</td><td><button class='waves-effect waves-light btn' onclick= 'passFunc("+id+")'>Delete</button></td></tr>";
-            }
-
-            tables += "";
-            div.innerHTML = tables;
-        });
-
-    });
-
-
-
-    </script>
-
-
-
-    <script>
-       $(function(){
-            $.get("/api/device/devices_by_type", {
-                device_type:"Raspberry"
-                    },function(data, status){
-
-                    var raspberry = document.getElementById("device_raspberry");
-                   var content = "";
-                     for (var i=0; i<data.length; i++) {
-                        content += "<option value="+data[i].Id+">" + data[i].Device_name + "</option>";
-                        }
-                    raspberry.innerHTML = content;
-            });
-           });
-    </script>
-
-    <script>
-           $(function(){
-                $.get("/api/device/devices_by_type", {
-                    device_type:"Camera"
-                },function(data, status){
-
-                        var raspberry = document.getElementById("device_camera");
-                       var content = "";
-                         for (var i=0; i<data.length; i++) {
-                            content += "<option value="+data[i].Id+">" + data[i].Device_name + "</option>";
-                            }
-                        raspberry.innerHTML = content;
-                });
-               });
-        </script>
-
-    <script>
-               $(function(){
-                    $.get("/api/parking/vehicleAll", {
-                    },function(data, status){
-                            //alert(data);
-                            var raspberry = document.getElementById("vehicle_type");
-                           var content = "";
-                             for (var i=0; i<data.length; i++) {
-                                content += "<option value="+data[i].Id+">" + data[i].Vehicle_type + "</option>";
-                                }
-                            raspberry.innerHTML = content;
-                    });
-                   });
-            </script>
-
-    <script>
-        $(function() {
-            $("#device_raspberry").on('click', function() {
-                var deviceId = document.getElementById("device_raspberry").value;
-                $.get("/api/device/device_info", {
-                                device_id:deviceId
-                            },function(data, status){
-                                   var raspberry = document.getElementById("raspberry_info");
-                                   var content = "<tr><td><b>Host</b></td><td><b>Device Type</b></td><td><b>Description</b></td></tr><tr><td>" + data.Host + "</td><td>" + data.Device_type + "</td><td>" + data.Description + "</td></tr>";
-                                    raspberry.innerHTML = content;
-                            });
-            });
-        });
-    </script>
-
-    <script>
-        $(function() {
-            $("#device_camera").on('click', function() {
-                var deviceId = document.getElementById("device_camera").value;
-                $.get("/api/device/device_info", {
-                                device_id:deviceId
-                            },function(data, status){
-                                   var raspberry = document.getElementById("camera_info");
-                                   var content = "<tr><td><b>Host</b></td><td><b>Device Type</b></td><td><b>Description</b></td></tr><tr><td>" + data.Host + "</td><td>" + data.Device_type + "</td><td>" + data.Description + "</td></tr>";
-                                    raspberry.innerHTML = content;
-                            });
-            });
-        });
-    </script>
-
-    <script>
-        $(function() {
-            $("#create_group").on('click', function() {
-                var raspberryid = document.getElementById("device_raspberry").value;
-                var cameraid = document.getElementById("device_camera").value;
-                var vehicleid = document.getElementById("vehicle_type").value;
-                var gatename = document.getElementById("gate_name").value;
-                $.post("/api/device/create_device_group",
-                {
-                    raspberry_id:raspberryid,
-                    camera_id:cameraid,
-                    vehicle_id:vehicleid,
-                    gate_name:gatename,
-                    group_type:"Gate"
-                },function(data, status) {
-                    alert(data.Message);
-
-                    if(data.Status == 'Success'){
-                       $.get("/api/device/device_group_list", function(data, status){
-                           var div = document.getElementById ("display");
-                           var tables = "";
-
-                           for (var n=0; n<data.length; n++){
-                               var id = data[n].Id;
-                               tables += "<tr><td>" +data[n].Raspberry_id+ "</td><td>" +data[n].Raspberry_ip+ "</td><td>" + "</td><td>" +data[n].Group_type+ "</td><td>" +data[n].Camera_id+ "</td> <td>" +data[n].Camera_ip+ "</td><td>" +data[n].Vehicle_id+ "</td> <td>" +data[n].Vehicle_type+ "</td><td>" +data[n].Group_name+ "</td><td><button class='waves-effect waves-light btn' onclick= 'passFunc("+id+")'>Delete</button></td></tr>";
-                           }
-
-                           tables += "";
-                           div.innerHTML = tables;
-
-                       });
-                   }
-                });
-            });
-        });
-
-    </script>
+    <style>
+        .blak>li a:hover{
+            background: none;
+        }
+    </style>
 
     <script>
     function passFunc(id){
@@ -179,141 +48,24 @@
 
     </script>
 
-    <script>
-       $(function(){
-
-        $('#munc').on('click', function(){
-            $('#ilang').removeClass('active');
-            $('#munc').addClass('active');
-            $('#devreg').css('display', 'none');
-            $('#gatereg').css({'display': 'block', 'margin-top': '-5px'});
-        });
-
-        $('#ilang').on('click', function(){
-            $('#munc').removeClass('active');
-            $('#ilang').addClass('active');
-            $('#gatereg').css('display', 'none');
-            $('#devreg').css({'display': 'block', 'margin-top': '-5px'});
-        });
-
-       });
-    </script>
-
-    <script>
-        $(function(){
-
-                //get value cashier name
-                $.get("/api/device/devices_by_type", {
-                    device_type:"Cashier"
-                        },function(data, status){
-
-                        var raspberry = document.getElementById("cashier_name");
-                       var content = "";
-                         for (var i=0; i<data.length; i++) {
-                            content += "<option value="+data[i].Id+">" + data[i].Device_name + "</option>";
-                            }
-                        raspberry.innerHTML = content;
-                });
-
-                //get value cashier camera
-                $.get("/api/device/devices_by_type", {
-                    device_type:"Camera"
-                        },function(data, status){
-
-                        var raspberry = document.getElementById("cashier_camera");
-                       var content = "";
-                         for (var i=0; i<data.length; i++) {
-                            content += "<option value="+data[i].Id+">" + data[i].Device_name + "</option>";
-                            }
-                        raspberry.innerHTML = content;
-                });
-
-                //click func on cashier name
-                $('#cashier_name').on('click', function(){
-
-                    var deviceId = document.getElementById("cashier_name").value;
-                    $.get("/api/device/device_info", {
-                                    device_id:deviceId
-                                },function(data, status){
-                                       var raspberry = document.getElementById("cashier_info");
-                                       var content = "<tr><td><b>Host</b></td><td><b>Device Type</b></td><td><b>Description</b></td></tr><tr><td>" + data.Host + "</td><td>" + data.Device_type + "</td><td>" + data.Description + "</td></tr>";
-                                        raspberry.innerHTML = content;
-                     });
-
-                });
-
-
-                //click func on camera cashier name
-                $('#cashier_camera').on('click', function(){
-
-                    var deviceId = document.getElementById("cashier_camera").value;
-                    $.get("/api/device/device_info", {
-                                    device_id:deviceId
-                                },function(data, status){
-                                       var raspberry = document.getElementById("cashier_camera_info");
-                                       var content = "<tr><td><b>Host</b></td><td><b>Device Type</b></td><td><b>Description</b></td></tr><tr><td>" + data.Host + "</td><td>" + data.Device_type + "</td><td>" + data.Description + "</td></tr>";
-                                        raspberry.innerHTML = content;
-                     });
-
-                });
-
-                //create group button cashier
-                 $("#create_group_cashier").on('click', function() {
-                    var raspberryid = document.getElementById("cashier_name").value;
-                    var cameraid = document.getElementById("cashier_camera").value;
-                    var gatename = document.getElementById("gate_name_cashier").value;
-                    $.post("/api/device/create_device_group",
-                    {
-                        raspberry_id:raspberryid,
-                        camera_id:cameraid,
-                        gate_name:gatename,
-                        group_type:"Cashier"
-                    },function(data, status) {
-                        alert(data.Message);
-
-                        if(data.Status == 'Success'){
-                           $.get("/api/device/device_group_list", function(data, status){
-                               var div = document.getElementById ("display");
-                               var tables = "";
-
-                               for (var n=0; n<data.length; n++){
-                                   var id = data[n].Id;
-                                   tables += "<tr><td>" +data[n].Raspberry_id+ "</td><td>" +data[n].Raspberry_ip+ "</td><td>" + "</td><td>" +data[n].Group_type+ "</td><td>" +data[n].Camera_id+ "</td> <td>" +data[n].Camera_ip+ "</td><td>" +data[n].Vehicle_id+ "</td> <td>" +data[n].Vehicle_type+ "</td><td>" +data[n].Group_name+ "</td><td><button class='waves-effect waves-light btn' onclick= 'passFunc("+id+")'>Delete</button></td></tr>";
-                               }
-
-                               tables += "";
-                               div.innerHTML = tables;
-
-                           });
-                       }
-                    });
-                });
-
-        });
-    </script>
 </head>
 
 <body>
 
 <!-- navbar -->
-   <!-- for fixed top <div class="navbar-fixed"> -->
-   <div class="col s12 m12 l12">
-        <nav class="#0097a7 cyan darken-2">
-          <div class="nav-wrapper">
-            <a href="#!" class="brand-logo" style="padding-left:50px">Pasar Sako Mandiri</a>
-            <ul class="right hide-on-med-and-down">
-              <li><a href="/device">Device List</a></li>
-              <li class="active"><a href="">Device Group</a></li>
-              <li><a href="/user/register">User Register</a></li>
-              <li><a href="/parking_price">Parking Price</a></li>
-              <li><a href="/parking/transactions">Parking Transaction</a></li>
-              <li><a href="/member">Member</a></li>
-              <li><a href="/api/user/logout">Logout</a></li>
-            </ul>
-          </div>
-        </nav>
-    </div>
-   <!-- end of fixed  </div> -->
+   <nav class="#0097a7 cyan darken-2">
+      <div class="nav-wrapper">
+        <a href="/admin" class="cen brand-logo" style="padding-left:50px">Pasar Sako Mandiri</a>
+        <a href="#" data-activates="mobile-demo" class="button-collapse"><i class="material-icons">&#xE3C7;</i></a>
+        <ul class="right hide-on-med-and-down">
+             {{template "menu"}}
+        </ul>
+        <ul class="side-nav blak" id="mobile-demo">
+              {{template "menu.tmpl" .}}
+         </ul>
+        </ul>
+      </div>
+    </nav>
 <!-- end of navbar -->
 
 
@@ -465,7 +217,17 @@
                  <div id="page-content">
                      <table class="responsive-table striped centered">
                         <thead>
-                        <tr> <th>Raspberry Id</th> <th>Raspberry Ip</th> <th>Group Type</th> <th>Camera Id</th> <th>Camera Ip</th> <th>Vehicle Id</th> <th>Vehicle Type</th> <th>Group Name</th></tr>
+                        <tr>
+                        <th>Raspberry Id</th>
+                        <th>Raspberry Ip</th>
+                        <th>Group Type</th>
+                        <th>Camera Id</th>
+                        <th>Camera Ip</th>
+                        <th>Vehicle Id</th>
+                        <th>Vehicle Type</th>
+                        <th>Group Name</th>
+                        <th>Delete</th>
+                        </tr>
                         </thead>
                         <tbody id="display">
 
@@ -478,5 +240,8 @@
                     </ul>
 
             </div>
+
+
+
 </body>
 </html>

@@ -1,27 +1,35 @@
 package controllers
 
 import (
-	"github.com/gin-gonic/gin"
-	"github.com/pasarsakomandiri/models"
-	"net/http"
-	"github.com/pasarsakomandiri/shared/response"
 	"database/sql"
-	"strconv"
-	"github.com/pasarsakomandiri/shared/session"
+	_ "fmt"
 	"log"
-	_"fmt"
+	"net/http"
+	"strconv"
 	"time"
+
+	"github.com/gin-gonic/gin"
 	"github.com/pasarsakomandiri/api"
+	"github.com/pasarsakomandiri/models"
+	"github.com/pasarsakomandiri/shared/response"
+	"github.com/pasarsakomandiri/shared/session"
+	"github.com/pasarsakomandiri/shared/view"
 )
 
-func DeviceListPages(c *gin.Context)  {
-	session := session.Instance(c)
-	c.HTML(http.StatusFound, "device_list.tmpl", gin.H{"title":"Cahiser", "token":session.Get("token")})
+func DeviceListPages(c *gin.Context) {
+	v := view.New(c)
+	v.Name = "device_list"
+	v.Render()
+	//session := session.Instance(c)
+	//c.HTML(http.StatusFound, "device_list.tmpl", gin.H{"title":"Cahiser", "token":session.Get("token")})
 }
 
-func DeviceListEditPages(c *gin.Context)  {
-	session := session.Instance(c)
-	c.HTML(http.StatusFound, "edit_devicelist.tmpl", gin.H{"tittle":"Edit Device List", "token":session.Get("token")})
+func DeviceListEditPages(c *gin.Context) {
+	v := view.New(c)
+	v.Name = "edit_devicelist"
+	v.Render()
+	//session := session.Instance(c)
+	//c.HTML(http.StatusFound, "edit_devicelist.tmpl", gin.H{"tittle": "Edit Device List", "token": session.Get("token")})
 }
 func GetDeviceListAPI(c *gin.Context) {
 	devices, err := models.DeviceGetAll()
@@ -35,10 +43,10 @@ func GetDeviceListAPI(c *gin.Context) {
 	return
 }
 
-func GetDeviceType(c *gin.Context)  {
+func GetDeviceType(c *gin.Context) {
 	devices, err := models.DeviceGetAllDeviceType()
 
-	if err != nil{
+	if err != nil {
 		c.JSON(http.StatusOK, response.NewSimpleResponse("Failed", err.Error()))
 		return
 	}
@@ -148,9 +156,8 @@ func DeviceContactCheckOut(c *gin.Context) {
 	api.ContactClientCheckOut()
 }
 
-
 //DELETE
-func DeleteDeviceList(c *gin.Context)  {
+func DeleteDeviceList(c *gin.Context) {
 
 	devid, err := strconv.ParseInt(c.PostForm("device_id"), 10, 64)
 
@@ -180,7 +187,7 @@ func DeleteDeviceList(c *gin.Context)  {
 }
 
 //EDIT
-func EditDeviceList(c *gin.Context)  {
+func EditDeviceList(c *gin.Context) {
 
 	iddev, err := strconv.ParseInt(c.PostForm("device_id"), 10, 64)
 

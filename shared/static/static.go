@@ -1,18 +1,21 @@
 package static
+
 import (
-	"github.com/gin-gonic/gin"
-	"net/http"
+	"html/template"
 	"io/ioutil"
 	"log"
+	"net/http"
+
+	"github.com/gin-gonic/gin"
 )
 
 type Static struct {
-	StaticAssets string		`json:"StaticAssets"`
-	AssetsURI string		`json:"AssetsURI`
-	StaticPage string  		`json:"StaticPage"`
-	PageURI string			`json:"PageURI`
-	CameraFile string 		`json:"CameraFile"`
-	CameraURI string		`json:"CameraURI"`
+	StaticAssets string `json:"StaticAssets"`
+	AssetsURI    string `json:"AssetsURI:`
+	StaticPage   string `json:"StaticPage"`
+	PageURI      string `json:"PageURI"`
+	CameraFile   string `json:"CameraFile"`
+	CameraURI    string `json:"CameraURI"`
 }
 
 var stat Static
@@ -24,6 +27,11 @@ func Configure(r *gin.Engine, s Static) {
 	r.StaticFS(s.StaticAssets, http.Dir(s.AssetsURI))
 	r.StaticFS(s.StaticPage, http.Dir(s.PageURI))
 	r.StaticFS(s.CameraFile, http.Dir(s.CameraURI))
+}
+
+func SetDefaultTemplate(r *gin.Engine) {
+	templates := template.Must(template.ParseFiles("templates/menu.tmpl"))
+	r.SetHTMLTemplate(templates)
 }
 
 func SaveFileToStaticFS(file []byte, fileFullPath string) error {

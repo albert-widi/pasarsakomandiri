@@ -1,26 +1,26 @@
 package api
 
 import (
-	"net/http"
 	"io/ioutil"
-    "time"
-    "strings"
+	"net/http"
+	"strings"
+	"time"
 )
 
 type IpCamera struct {
-	Protocol string
-	Host string
-	Param string
-	Username string
-	Password string
+	Protocol    string
+	Host        string
+	Param       string
+	Username    string
+	Password    string
 	PictureName string
-	Picture []byte
-    	Error error
+	Picture     []byte
+	Error       error
 }
 
 func IpCamGetPicture(ipcam IpCamera) ([]byte, error) {
 	var pictureByte []byte
-	completeUrl := ipcam.Protocol+"://"+ipcam.Host+"/"+ipcam.Param
+	completeUrl := ipcam.Protocol + "://" + ipcam.Host + "/" + ipcam.Param
 
 	client := http.Client{}
 	req, err := http.NewRequest("GET", completeUrl, nil)
@@ -48,9 +48,11 @@ func IpCamGetPicture(ipcam IpCamera) ([]byte, error) {
 
 func ipCamGetPicture(ipcam *IpCamera) ([]byte, error) {
 	var pictureByte []byte
-	completeUrl := ipcam.Protocol+"://"+ipcam.Host+"/"+ipcam.Param
+	completeUrl := ipcam.Protocol + "://" + ipcam.Host + "/" + ipcam.Param
 
-	client := http.Client{}
+	client := http.Client{
+		Timeout: time.Second * 1,
+	}
 	req, err := http.NewRequest("GET", completeUrl, nil)
 	req.SetBasicAuth(ipcam.Username, ipcam.Password)
 	if err != nil {
@@ -77,19 +79,19 @@ func ipCamGetPicture(ipcam *IpCamera) ([]byte, error) {
 //call this function with
 func (cam *IpCamera) GetPicture() {
 	picture, err := ipCamGetPicture(cam)
-    cam.Error = err
-    cam.Picture = picture
+	cam.Error = err
+	cam.Picture = picture
 	//generate the name
 	dateTimeName := time.Now().Format("2006-01-02 03:04:05 PM")
 	pictureName := strings.Replace(dateTimeName, ":", "", 10)
-    cam.PictureName = pictureName
+	cam.PictureName = pictureName
 }
 
 //call this function by goroutines
 func (cam *IpCamera) GetPictureWithChannel(c chan []byte) {
 	picture, err := ipCamGetPicture(cam)
-    cam.Error = err
-    cam.Picture = picture
+	cam.Error = err
+	cam.Picture = picture
 	//generate the name
 	dateTimeName := time.Now().Format("2006-01-02 03:04:05 PM")
 	pictureName := strings.Replace(dateTimeName, ":", "", 10)
@@ -98,4 +100,3 @@ func (cam *IpCamera) GetPictureWithChannel(c chan []byte) {
 	//send picture to channel
 	c <- picture
 }
-

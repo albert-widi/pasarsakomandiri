@@ -8,97 +8,8 @@
     <link media="screen,projection" rel="stylesheet" type="text/css" href="/assets/css/materialize.css">
     <script src="/assets/js/jquery-2.2.0.min.js"></script>
     <script src="/assets/js/materialize.js"></script>
+    <script src="/assets/js/parkingapp/cashier.js"></script>
     <title>Cashier</title>
-    <!-- Script -->
-    <script>
-        $(function() {
-            $("#check_ticket").on('click', function() {
-                var ticketNumber = document.getElementById("ticket_number").value;
-                $.get("/api/parking/getTicketInfo", {
-                                ticket_number:ticketNumber
-                            },function(data, status){
-                              if (data.Response.Status == "Failed") {
-                                alert(data.Response.Message);
-                                return;
-                              }
-
-                               var labelTicketNumber = document.getElementById("label_ticket_number");
-                               document.getElementById("ticketnum").value = data.Data.Ticket_number;
-                               //labelTicketNumber.innerHTML = data.Data.Ticket_number;
-                               var labelDateIn = document.getElementById("label_date_in");
-                               document.getElementById("datein").value = data.Data.Created_date;
-                               //labelDateIn.innerHTML = data.Data.Created_date;
-                               var labelDateOut = document.getElementById("label_date_out");
-                               document.getElementById("dateout").value = data.Data.Out_date;
-                               //labelDateOut.innerHTML = data.Data.Out_date;
-                               var labelDuration = document.getElementById("label_duration");
-                               document.getElementById("duration").value = data.DeltaTime;
-                               //labelDuration.innerHTML = data.DeltaTime;
-                               var labelParkingCost = document.getElementById("label_parking_cost");
-                               document.getElementById("cost").value = data.Data.Parking_cost;
-                               //labelParkingCost.innerHTML = data.Data.Parking_cost;
-                               document.getElementById("ticket_id").value = data.Data.Id;
-
-                               if(data.Data.Ticket_number != ''){
-                                   $('#check_out').removeClass("disabled");
-                               }
-
-
-                                $("#picture_in").attr("src",data.Picture_path_in);
-
-
-                                $.get("/api/ipcamera/getPictureFromDevice", {
-                                    ticket_number:ticketNumber
-                                },function(data, status){
-                                    //alert(data.Data.Id);
-                                    document.getElementById("picture_out_id").value = data.Data.Id;
-                                    $("#picture_out").attr("src",data.Data.PictureFullPath);
-                                });
-                            });
-
-
-            });
-        });
-    </script>
-
-
-    <script>
-        $(function() {
-            $("#check_out").on('click', function() {
-                
-                var ticketId = document.getElementById("ticket_id").value;
-                var ticketNumber = document.getElementById("ticket_number").value;
-                var vehicleNo = document.getElementById("no_kendaraan").value;
-                var dateOut = document.getElementById("dateout").value;
-                var cost = document.getElementById("cost").value;
-                var pictureOutId = document.getElementById("picture_out_id").value;
-		var duration = document.getElementById("duration").value;
-               
-                $.post("/api/parking/checkOut", {
-                                ticket_number:ticketNumber,
-                                ticket_id:ticketId,
-                                vehicle_number:vehicleNo,
-                                ticket_date_out:dateOut,
-                                parking_cost:cost,
-                                picture_out_id:pictureOutId,
-				parking_duration:duration
-                            },function(data, status){
-				ticketNumber = "";
-				cost = "";
-				dateOut = "";
-				duration = "";
-				ticketId = "";
-                              if (data.Response.Status == "Failed") {
-                                alert(data.Response.Message);
-                                return;
-                              }
-
-                            });
-
-
-            });
-        });
-    </script>
     <!-- CSS -->
     <style>
         .input-field input[type=text]:focus + label {
@@ -115,6 +26,10 @@
            .input-field input[type=text]{
             font-size:20px;
            }
+
+           .ubah, .ihb{
+            border-radius: 15px;
+           }
     </style>
 </head>
 
@@ -127,48 +42,48 @@
             <div class="card hoverable">
 
                 <div class="card-panel #0097a7 cyan darken-2">
-                    <h3 class="center" style="color: white"><b>Cashier</b></h3>
-		 <a href="/api/user/logout" style="color:white">Log out</a>
+                    <h3 class="center" style="color: white"><b>{{.Username}} - Cashier</b></h3>
+		            <a href="/api/user/logout" style="color:white">Log out</a>
                 </div>
 
                 <div class="card-content">
                     <div class="row">
 
-                        <div class="col s12 m12 l6">
+                        <div id="ijjk" class="col s12 m12 l6">
                             <div class="input-field col s12 m10">
-                                <input id="ticket_number" type="text">
+                                <input id="ticket_number" type="text" placeholder="Nomor Tiket">
                                 <label>Nomor Tiket</label>
                             </div>
                              <div class="input-field col s12 m10" style="margin-top:2em">
-                                 <input id="no_kendaraan" type="text">
+                                 <input id="no_kendaraan" type="text" placeholder="Nomor Kendaraan">
                                  <label>Nomor Kendaraan</label>
                              </div>
                               <div class="input-field col s12 m10" style="margin-top:10px">
-                                 <button class="waves-effect waves-light btn" id="check_ticket">Check ticket</button>
+                                 <button class="waves-effect waves-light btn ubah"  id="check_ticket">Check ticket</button>
                               </div>
                             <div class="input-field col s12 m10" style="margin-top:2em">
-                                Ticket Number<input disabled id="ticketnum" type="text" style="color:black; border-bottom: 1px solid #000; font-size:20px">
+                                Nomor Tiket<input disabled id="ticketnum" type="text" style="color:black; border-bottom: 1px solid #000; font-size:20px">
                             </div>
                             <div class="col s12 m10" style="margin-top:10px">
                                 <input id="ticket_id" type="hidden">
                                 <input id="picture_out_id" type="hidden">
-                                <button id="check_out" class="waves-effect waves-light btn disabled">Input</button>
+                                <button id="check_out" class="waves-effect waves-light btn disabled ihb">Input</button>
                             </div>
                         </div>
 
                         <div class="col s12 m12 l6">
                           <div class="ganti">
                             <div class="input-field col s12 m10" style="margin-top:5px">
-                              Date In<input disabled id="datein" type="text" style="color:black; font-size:30px;">
+                              Tanggal Masuk<input disabled id="datein" type="text" style="color:black; font-size:23px;">
                             </div>
                             <div class="input-field col s12 m10" style="margin-top:5px">
-                              Date Out<input disabled id="dateout" type="text" style="color:black; font-size:30px;">
+                              Tanggal Keluar<input disabled id="dateout" type="text" style="color:black; font-size:23px;">
                             </div>
                             <div class="input-field col s12 m10" style="margin-top:5px">
-                              Duration<input disabled id="duration" type="text" style="color:black; font-size:30px;">
+                              Durasi<input disabled id="duration" type="text" style="color:black; font-size:20px;">
                             </div>
                             <div class="input-field col s12 m10" style="margin-top:5px">
-                              Parking Cost<input disabled id="cost" type="text" style="color:red; font-size:40px; font-weight: bold;">
+                              Biaya Parkir<input disabled id="cost" type="text" style="color:red; font-size:40px; font-weight: bold;">
                             </div>
                           </div>
                         </div>
@@ -188,13 +103,13 @@
         <div class="row">
 
             <div class="col s12 m12 l13" style="margin-top: 0.6em">
-                <img id="picture_in" class="materialboxed" width="450px" height="300px" src="">
+                <img id="picture_in" width="450px" height="300px" src="">
             </div>
 
             <div class="clearfix"></div>
 
             <div class="col s12 m12 l12" style="margin-top: 2em">
-               <img id="picture_out" class="materialboxed" width="450px" height="300px" he src="">
+               <img id="picture_out" width="450px" height="300px" he src="">
             </div>
         </div>
     </div>
@@ -250,4 +165,3 @@
 
 </body>
 </html>
-

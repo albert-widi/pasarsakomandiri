@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/pasarsakomandiri/daemon"
 	"github.com/pasarsakomandiri/router"
 	"github.com/pasarsakomandiri/shared/database"
 	"github.com/pasarsakomandiri/shared/jsonconfig"
@@ -15,7 +16,7 @@ import (
 	"github.com/pasarsakomandiri/shared/session"
 	"github.com/pasarsakomandiri/shared/static"
 	"github.com/pasarsakomandiri/shared/token"
-	"github.com/pasarsakomandiri/daemon"
+	"github.com/pasarsakomandiri/shared/view"
 )
 
 func init() {
@@ -32,9 +33,13 @@ func main() {
 	session.Configure(r, config.Session)
 	token.Configure(config.Token)
 	static.Configure(r, config.Static)
+	static.SetDefaultTemplate(r)
+	view.Configure(config.View)
 	router.Initialize(r)
 	//init daemon
 	go daemon.InitPicturesDaemon()
+
+	//set default template
 
 	server.Run(r, config.Server)
 }
@@ -49,6 +54,7 @@ type configuration struct {
 	Static   static.Static     `json:"Static"`
 	Session  session.Session   `json:"Session"`
 	Token    token.Token       `json:"Token"`
+	View     view.View         `json:"View"`
 }
 
 func (c *configuration) ParseJSON(b []byte) error {

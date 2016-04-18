@@ -1,23 +1,28 @@
 package controllers
 
 import (
-	"github.com/gin-gonic/gin"
-	"strconv"
-	"github.com/pasarsakomandiri/models"
 	"database/sql"
-	"net/http"
-	"github.com/pasarsakomandiri/shared/response"
 	"log"
-	"github.com/pasarsakomandiri/shared/session"
+	"net/http"
+	"strconv"
 	"strings"
+
+	"github.com/gin-gonic/gin"
+	"github.com/pasarsakomandiri/models"
+	"github.com/pasarsakomandiri/shared/response"
+	"github.com/pasarsakomandiri/shared/session"
+	"github.com/pasarsakomandiri/shared/view"
 )
 
 func DeviceGroupPage(c *gin.Context) {
-	session := session.Instance(c)
-	c.HTML(http.StatusFound, "d_group.tmpl", gin.H{"title":"Device Group", "token":session.Get("token")})
+	v := view.New(c)
+	v.Name = "d_group"
+	v.Render()
+	//session := session.Instance(c)
+	//c.HTML(http.StatusFound, "d_group.tmpl", gin.H{"title": "Device Group", "token": session.Get("token")})
 }
 
-func DeviceGroupGetAllAPI (c *gin.Context){
+func DeviceGroupGetAllAPI(c *gin.Context) {
 	groupDevice, err := models.DeviceGroupGetAllAPI()
 
 	if err != nil {
@@ -50,8 +55,8 @@ func DeviceGroupRegisterAPI(c *gin.Context) {
 	log.Println("Compare, ", strings.Compare("Raspberry", raspberry.Device_type))
 	log.Println("Compare, ", strings.Compare("Cashier", raspberry.Device_type))
 
-	if raspberry.Device_type != "Raspberry" && raspberry.Device_type != "Cashier"  {
-	//if strings.Compare("Cashier", raspberry.Device_type) != 0 && strings.Compare("Raspberry", raspberry.Device_type) != 0 {
+	if raspberry.Device_type != "Raspberry" && raspberry.Device_type != "Cashier" {
+		//if strings.Compare("Cashier", raspberry.Device_type) != 0 && strings.Compare("Raspberry", raspberry.Device_type) != 0 {
 		c.JSON(http.StatusOK, response.NewSimpleResponse("Failed", "Device type is not Raspberry or Cashier"))
 		return
 	}
@@ -148,8 +153,8 @@ func DeviceGroupRegisterAPI(c *gin.Context) {
 	c.JSON(http.StatusOK, response.NewSimpleResponse("Success", "Device group created"))
 }
 
-func DeviceGroupDeleteAPI (c *gin.Context){
-	deviceId, err := strconv.ParseInt(c.PostForm("id"),10, 64)
+func DeviceGroupDeleteAPI(c *gin.Context) {
+	deviceId, err := strconv.ParseInt(c.PostForm("id"), 10, 64)
 
 	if err != nil {
 		log.Println(err)

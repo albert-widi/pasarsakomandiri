@@ -60,7 +60,7 @@ func AllowOnlyCashier() gin.HandlerFunc {
 			return
 		}
 
-		if session.Get("level") != models.Role_level_cashier {
+		if session.Get("Level") != models.Role_level_cashier {
 			c.Redirect(http.StatusFound, "/redirected")
 			c.Next()
 			return
@@ -83,7 +83,7 @@ func AllowONlyOffice() gin.HandlerFunc {
 			return
 		}
 
-		if session.Get("level").(int) < models.Role_level_office {
+		if session.Get("Level").(int) < models.Role_level_office {
 			c.Redirect(http.StatusFound, "/redirected")
 			c.Next()
 			return
@@ -106,7 +106,7 @@ func AllowOnlyAdministrator() gin.HandlerFunc {
 			return
 		}
 
-		if session.Get("level").(int) < models.Role_level_administrator {
+		if session.Get("Level").(int) < models.Role_level_administrator {
 			c.Redirect(http.StatusFound, "/redirected")
 			c.Next()
 			return
@@ -130,7 +130,7 @@ func AllowOnlySuperUser() gin.HandlerFunc {
 			return
 		}
 
-		if session.Get("level").(int) != models.Role_level_superuser {
+		if session.Get("Level").(int) != models.Role_level_superuser {
 			c.Redirect(http.StatusFound, "/redirected")
 			c.Next()
 			return

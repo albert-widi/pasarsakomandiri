@@ -1,23 +1,28 @@
 package controllers
+
 import (
-	"github.com/pasarsakomandiri/shared/session"
-	"github.com/gin-gonic/gin"
+	"database/sql"
+	"log"
 	"net/http"
+	"strconv"
+	"strings"
+	"time"
+
+	"github.com/gin-gonic/gin"
 	"github.com/pasarsakomandiri/models"
 	"github.com/pasarsakomandiri/shared/response"
-	"log"
-	"strconv"
-	"database/sql"
-	"time"
-	"strings"
+	"github.com/pasarsakomandiri/shared/view"
 )
 
-func MemberPages(c *gin.Context)  {
-	session := session.Instance(c)
-	c.HTML(http.StatusFound, "member.tmpl", gin.H{"tittle":"Member Pages", "token":session.Get("token")})
+func MemberPages(c *gin.Context) {
+	v := view.New(c)
+	v.Name = "member"
+	v.Render()
+	//session := session.Instance(c)
+	//c.HTML(http.StatusFound, "member.tmpl", gin.H{"tittle": "Member Pages", "token": session.Get("token")})
 }
 
-func MemberCreateNew(c *gin.Context)  {
+func MemberCreateNew(c *gin.Context) {
 
 	vehicleId, err := strconv.Atoi(c.PostForm("vehicle_id"))
 
@@ -54,11 +59,9 @@ func MemberCreateNew(c *gin.Context)  {
 
 	c.JSON(http.StatusOK, response.NewSimpleResponse("Success", "Member created"))
 
-
 }
 
-
-func MemberGetAll(c *gin.Context)  {
+func MemberGetAll(c *gin.Context) {
 	member, err := models.MemberGetAll()
 
 	if err != nil {
@@ -69,7 +72,7 @@ func MemberGetAll(c *gin.Context)  {
 	c.JSON(http.StatusOK, member)
 }
 
-func MemberDelete(c *gin.Context)  {
+func MemberDelete(c *gin.Context) {
 
 	memberId, err := strconv.Atoi(c.PostForm("member_id"))
 

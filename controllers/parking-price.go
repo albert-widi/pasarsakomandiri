@@ -1,29 +1,37 @@
 package controllers
 
 import (
-	"github.com/gin-gonic/gin"
-	"net/http"
-	"github.com/pasarsakomandiri/shared/session"
-	"strconv"
-	"github.com/pasarsakomandiri/models"
 	"database/sql"
-	"log"
-	"github.com/pasarsakomandiri/shared/response"
-	"time"
 	"fmt"
+	"log"
+	"net/http"
+	"strconv"
+	"time"
+
+	"github.com/gin-gonic/gin"
+	"github.com/pasarsakomandiri/models"
+	"github.com/pasarsakomandiri/shared/response"
+	"github.com/pasarsakomandiri/shared/session"
+	"github.com/pasarsakomandiri/shared/view"
 )
 
-func PriceConfigPage (c *gin.Context){
-	session := session.Instance(c)
-	c.HTML(http.StatusFound, "parking_price.tmpl", gin.H{"title" : "Parking Price", "token":session.Get("token")})
+func PriceConfigPage(c *gin.Context) {
+	v := view.New(c)
+	v.Name = "parking_price"
+	v.Render()
+	//session := session.Instance(c)
+	//c.HTML(http.StatusFound, "parking_price.tmpl", gin.H{"title": "Parking Price", "token": session.Get("token")})
 }
 
-func PriceUpdateConfigPage (c *gin.Context){
-	session := session.Instance(c)
-	c.HTML(http.StatusFound, "update_parking_price.tmpl", gin.H{"title": "Update Parking Price", "token":session.Get("token")})
+func PriceUpdateConfigPage(c *gin.Context) {
+	v := view.New(c)
+	v.Name = "parking_price"
+	v.Render()
+	//session := session.Instance(c)
+	//c.HTML(http.StatusFound, "update_parking_price.tmpl", gin.H{"title": "Update Parking Price", "token": session.Get("token")})
 }
 
-func PriceGetInfoAPI (c *gin.Context){
+func PriceGetInfoAPI(c *gin.Context) {
 	priceId, err := strconv.ParseInt(c.Query("id"), 10, 64)
 
 	fmt.Println(priceId)
@@ -35,7 +43,7 @@ func PriceGetInfoAPI (c *gin.Context){
 
 	if err != nil {
 		log.Println(err)
-		if err == sql.ErrNoRows{
+		if err == sql.ErrNoRows {
 			c.JSON(http.StatusOK, response.NewSimpleResponse("Failed", "Parking Price Not Found"))
 			return
 		}
@@ -46,7 +54,7 @@ func PriceGetInfoAPI (c *gin.Context){
 func PriceGetAll(c *gin.Context) {
 	price, err := models.ParkingPriceGetAllAPI()
 
-	if err != nil{
+	if err != nil {
 		log.Println("ParkingPriceGetAllApi Error", err)
 		return
 	}
@@ -87,7 +95,6 @@ func PriceRegister(c *gin.Context) {
 		return
 	}
 
-
 	price := models.ParkingPrice{}
 	price.Id = 0
 	price.Vehicle_id = vehicle.Id
@@ -115,7 +122,7 @@ func PriceRegister(c *gin.Context) {
 	c.JSON(http.StatusOK, response.NewSimpleResponse("Success", "Parking price created"))
 }
 
-func PriceUpdateAPI (c *gin.Context){
+func PriceUpdateAPI(c *gin.Context) {
 	priceId, err := strconv.ParseInt(c.PostForm("id"), 10, 64)
 	log.Println(priceId)
 

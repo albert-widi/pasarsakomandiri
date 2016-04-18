@@ -6,8 +6,9 @@
     <!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>-->
     <script src="/assets/js/jquery-2.1.1.min.js"></script>
     <script src="/assets/js/jquery.simplePagination.js"></script>
+    <script src="/assets/js/parkingapp/device_list.js"></script>
     <script src="/assets/js/materialize.js"></script>
-    <title>Materialize</title>
+    <title>Device List</title>
     <!-- CSS -->
     <link href="/assets/font/material-design-icons" rel="stylesheet">
     <!--<link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">-->
@@ -15,7 +16,7 @@
     <link media="screen,projection" rel="stylesheet" type="text/css" href="/assets/icon/material-design-icons/iconfont/material-icons.css"></link>
     <!-- Style -->
     <style>
-        .nav-wrapper ul li a:hover{
+        .blak>li a:hover{
             background:none;
         }
     </style>
@@ -32,105 +33,6 @@
         });
     </script>
 
-
-    <script>
-        $(function(){
-
-        $.get("/formval",function(data, status){
-
-            //alert("Data: " + data + "\nStatus: " + status);
-            var kluar = document.getElementById("type");
-            var ica = "";
-                 for (var i=0; i<data.length; i++) {
-                    //alert("oke gan");
-                    //alert(data[i].Device_type;
-                    ica += "<option value="+data[i].Device_type+">" + data[i].Device_type + "</option>";
-                   }
-            kluar.innerHTML = ica;
-
-                });
-
-           });
-    </script>
-
-    <script>
-        $(function(){
-            $.get("/api/device/device_list", function(data, status){
-
-
-
-
-          var div = document.getElementById("out");
-          var odong = "";
-          //alert("Data length: " + data.length)
-            for (var i=0; i<data.length; i++) {
-
-                id = data[i].Id;
-                odong += "<tr><td>" + data[i].Device_type + "</td><td>" + data[i].Device_name + "</td><td>" + data[i].Host + "</td><td>" + data[i].Token + "</td><td>" + data[i].Description + "</td><td><button class='waves-effect waves-light btn' onclick='editFunc("+id+")'>Edit</button></td><td><button class='waves-effect waves-light btn' onclick='passFunc("+id+")'>Delete</button></td></tr>";
-            }
-            odong += ""
-            div.innerHTML = odong;
-
-           });
-
-        });
-
-    </script>
-
-    <script>
-        $(function(){
-
-        $("button").click(function(){
-
-           if (confirm("Anda Yakin???") == true) {
-                  Utype = document.getElementById("type").value;//$("type").val();
-                  Uname = $("#name").val();
-                  Uhost = $("#host").val();
-                  Utoken = $("#token").val();
-                  Udescription = $("#description").val();
-
-                       $.post("/api/device/create_device",
-                            {
-                               type: Utype,
-                               name: Uname,
-                               host: Uhost,
-                               token: Utoken,
-                               description: Udescription
-                            },
-                           function(data,status){
-                            //alert("Data: " + data + "\nStatus: " + status);
-                            alert("Status" + data.Status + ", Message: " + data.Message);
-
-                                if(data.Status === 'Success') {
-                                    $.get("/api/device/device_list", function(data, status) {
-
-                                         var div = document.getElementById("out");
-                                         var odong = "<table>";
-                                         //alert("Data length: " + data.length)
-                                           for (var i=0; i<data.length; i++) {
-
-                                               id = data[i].Id;
-                                               odong += "<tr><td>" + data[i].Device_type + "</td><td>" + data[i].Device_name + "</td><td>" + data[i].Host + "</td><td>" + data[i].Token + "</td><td>" + data[i].Description + "</td><td><button class='waves-effect waves-light btn' onclick='editFunc("+id+")'>Edit</button></td><td><button class='waves-effect waves-light btn' onclick='passFunc("+id+")'>Delete</button></td></tr>";
-                                           }
-                                           odong += "</table>"
-                                           div.innerHTML = odong;
-
-                                          });
-
-                                 }
-                            });
-               } else {
-
-               }
-
-
-
-
-
-            });
-
-        });
-    </script>
 
     <script>
         function passFunc(id){
@@ -222,25 +124,13 @@
 
    <nav class="#0097a7 cyan darken-2">
            <div class="nav-wrapper">
-             <a href="#!" class="cen brand-logo">Pasar Sako Mandiri</a>
+             <a href="/admin" class="cen brand-logo" style="padding-left:50px">Pasar Sako Mandiri</a>
              <a href="#" data-activates="mobile-demo" class="button-collapse"><i class="material-icons">&#xE3C7;</i></a>
              <ul class="right hide-on-med-and-down">
-                <li class="active"><a href="device">Device List</a></li>
-                <li><a href="device/device_group">Device Group</a></li>
-                <li><a href="/user/register">User Register</a></li>
-                <li><a href="/parking_price">Parking Price</a></li>
-                <li><a href="parking/transactions">Parking Transaction</a></li>
-                <li><a href="/member">Member</a></li>
-                <li><a href="/api/user/logout">Logout</a></li>
+                {{template "menu.tmpl" .}}
              </ul>
-             <ul class="side-nav" id="mobile-demo">
-                 <li class="active"><a href="device">Device List</a></li>
-                 <li><a href="device/device_group">Device Group</a></li>
-                 <li><a href="/user/register">User Register</a></li>
-                 <li><a href="/parking_price">Parking Price</a></li>
-                 <li><a href="parking/transactions">Parking Transaction</a></li>
-                 <li><a href="/member">Member</a></li>
-                 <li><a href="/api/user/logout">Logout</a></li>
+             <ul class="side-nav blak" id="mobile-demo">
+                 {{template "menu.tmpl" .}}
               </ul>
              </ul>
            </div>

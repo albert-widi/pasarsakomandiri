@@ -4,17 +4,62 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no" />
     <script src="/assets/js/jquery-2.2.0.min.js"></script>
+    <script src="/assets/js/parkingapp/login.js"></script>
     <title>Login</title>
     <!-- CSS -->
     <link media="screen,projection" rel="stylesheet" type="text/css" href="/assets/css/materialize.css"></link>
-    <script src="assets/js/parkingapp/login.js"></script>
+    <script>
+        $(document).ready(function(){
+                        $("button").click(function(){
+                             // alert("bener kok");
+                        user_name = $("#username").val();
+                        pass = $("#password").val();
+
+                        var form_data = {
+                            username: user_name,
+                            password: pass
+                        }
+
+                        if (user_name=='' ||pass=='')
+                        {
+                            alert ("Username or Password Can't be empty");
+                            exit();
+                        }
+
+
+                        else{
+                            //alert("Masuk sini");
+                            $.post("api/user/login",
+                            {
+                                username:user_name,
+                                password:pass,
+                            },
+                        function(data,status){
+                                //alert("Data: " + data + "\nStatus: " + status);
+                                if (data.Status) {
+                                    window.location.replace("/user/user_auth");
+                                } else {
+                                    alert(data.Message);
+                                }
+
+                            });
+
+                            };
+                        });
+                    });
+    </script>
+    <script>
+        $(function(){
+            $("buts".keyup);
+        });
+    </script>
 </head>
 
 <body>
 
 <div class="container">
     <div class="row">
-        <div class="col s4 offset-s4" style="margin-top:15%">
+        <div class="col s6 offset-s3" style="margin-top:2%">
             <div class="card hoverable">
                 <div class="card-panel #0097a7 cyan darken-2">
                     <h3 class="center" style="color: white"><b>Login</b></h3>
@@ -30,7 +75,7 @@
                           <label for="last_name">Password</label>
                         </div>
                         <div class="col s12" style="margin-top:30px">
-                            <button id="btn_login" class="waves-effect waves-light btn">Login</button>
+                            <button id="buts" class="waves-effect waves-light btn">Login</button>
                         </div>
                     </div>
                 </div>
@@ -41,9 +86,10 @@
         </div>
     </div>
 </div>
-
+    
     <!-- script -->
     <script src="assets/js/jquery-2.2.0.min.js"></script>
     <script src="assets/js/materialize.js"></script>
 </body>
 </html>
+

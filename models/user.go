@@ -3,9 +3,6 @@ package models
 import (
 	"database/sql"
 
-	"fmt"
-	"log"
-
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/pasarsakomandiri/shared/database"
 )
@@ -29,11 +26,11 @@ func UserGetAll() ([]User, error) {
 }
 
 //UserGetAllLimitByLevel
-func UserGetAllLimitByLevel(level int64) ([]User, error) {
+func UserGetAllLimitByLevel(level int) ([]User, error) {
 	var user = []User{}
-	log.Println(level)
+	//log.Println(level)
 	err := database.Db.Select(&user, "SELECT id, username, password, level, role, description, created_date FROM user WHERE level <= ?", level)
-	fmt.Printf("%+v", user)
+	//fmt.Printf("%+v", user)
 	return user, err
 }
 

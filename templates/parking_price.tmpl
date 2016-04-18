@@ -5,11 +5,18 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no" />
 <!--<link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">-->
 <link media="screen,projection" rel="stylesheet" type="text/css" href="/assets/css/materialize.css">
+<link media="screen,projection" rel="stylesheet" type="text/css" href="/assets/icon/material-design-icons/iconfont/material-icons.css"></link>
 <!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>-->
 <script src="/assets/js/jquery-2.2.0.min.js"></script>
 <script src="/assets/js/materialize.js"></script>
 <!-- CSS -->
 <title>{{.title}}</title>
+
+<style>
+    .bact>li a:hover{
+        background: none;
+    }
+</style>
 
 
 <script>
@@ -93,6 +100,17 @@
     }
 </script>
 
+<script>
+        $(function(){
+            $('.button-collapse').sideNav({
+                  menuWidth: 240, // Default is 240
+                  edge: 'left', // Choose the horizontal origin
+                  closeOnClick: true // Closes side-nav on <a> clicks, useful for Angular/Meteor
+                }
+              );
+        });
+    </script>
+
 
 </head>
 
@@ -100,25 +118,20 @@
 
 
 <!-- navbar -->
-   <!-- for fixed top <div class="navbar-fixed"> -->
-   <div class="col s12 m12 l12">
-        <nav class="#0097a7 cyan darken-2">
-          <div class="nav-wrapper">
-            <a href="#!" class="brand-logo" style="padding-left:50px">Pasar Sako Mandiri</a>
-            <ul class="right hide-on-med-and-down">
-              <li><a href="/device">Device List</a></li>
-              <li><a href="/device/device_group">Device Group</a></li>
-              <li><a href="/user/register">User Register</a></li>
-              <li class="active"><a href="/parking_price">Parking Price</a></li>
-              <li><a href="parking/transactions">Parking Transaction</a></li>
-              <li><a href="/member">Member</a></li>
-              <li><a href="/api/user/logout">Logout</a></li>
-            </ul>
-          </div>
-        </nav>
-   </div>
-   <!-- end of fixed  </div> -->
-<!-- end of navbar -->
+
+<nav class="#0097a7 cyan darken-2">
+        <div class="nav-wrapper">
+          <a href="#!" class="cen brand-logo" style="padding-left:50px">Pasar Sako Mandiri</a>
+          <a href="#" data-activates="mobile-demo" class="button-collapse"><i class="material-icons">&#xE3C7;</i></a>
+          <ul class="right hide-on-med-and-down">
+             {{template "menu.tmpl" .}}
+          </ul>
+          <ul class="side-nav bact" id="mobile-demo">
+              {{template "menu.tmpl" .}}
+           </ul>
+          </ul>
+        </div>
+      </nav>
 
 
 <div class="row">

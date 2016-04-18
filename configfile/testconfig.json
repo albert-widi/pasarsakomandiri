@@ -2,8 +2,8 @@
   "Database": {
     "Type": "MySQL",
     "MySQL": {
-      "Username": "psmandiri",
-      "Password": "PsS4k0#M4#n0nR00T",
+      "Username": "root",
+      "Password": "root",
       "Name": "pasar",
       "Hostname": "localhost",
       "Port": "3306",
@@ -22,6 +22,11 @@
     "PageURI": "static",
     "CameraFile":"/campicture",
     "CameraURI": "campicture"
+  },
+  "View": {
+    "Extension": "tmpl",
+    "Folder": "template",
+    "Name": "blank"
   },
   "Session": {
     "SecretKey": "albertwidi",

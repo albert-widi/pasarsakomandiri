@@ -102,7 +102,7 @@ func accumulateAttempt(c *gin.Context) {
 	ban.Attempt += 1
 	//log.Println("Delta: ",now.MustParse(ban.Ban_time).Sub(time.Now()).Seconds())
 
-	if ban.Attempt%5 == 0 {
+	if ban.Attempt%10 == 0 {
 		ban.Ban_time = time.Now().Add(time.Minute * 5).String()
 
 		if ban.Attempt == 25 {
@@ -192,9 +192,10 @@ func LoginAPI(c *gin.Context) {
 	}
 
 	session.Set("id", user.Id)
-	session.Set("level", user.Level)
+	session.Set("Level", user.Level)
 	session.Set("role", user.Role)
-	session.Set("token", tokenString)
+	session.Set("Username", user.Username)
+	session.Set("Token", tokenString)
 	session.Save()
 
 	go flushBan(c)
@@ -214,7 +215,7 @@ func LogoutAPI(c *gin.Context) {
 		log.Println(err)
 	}
 
-	token.ClearTokenSession(s.Get("token").(string))
+	token.ClearTokenSession(s.Get("Token").(string))
 	session.Clear(s)
 
 	c.Redirect(http.StatusFound, "/")

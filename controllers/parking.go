@@ -1,47 +1,50 @@
 package controllers
+
 import (
-	"github.com/gin-gonic/gin"
-	"github.com/pasarsakomandiri/models"
 	"database/sql"
-	"net/http"
-	"github.com/pasarsakomandiri/shared/response"
-	"strings"
-	"github.com/pasarsakomandiri/shared/tools"
-	"time"
-	"github.com/pasarsakomandiri/api"
-	"github.com/jinzhu/now"
-	"github.com/pasarsakomandiri/shared/session"
-	"log"
-	"strconv"
 	"errors"
-	"io/ioutil"
-	"math"
-	"os"
-    "sync"
 	"fmt"
+	"io/ioutil"
+	"log"
+	"math"
+	"net/http"
+	"os"
+	"strconv"
+	"strings"
+	"sync"
+	"time"
+
+	"github.com/gin-gonic/gin"
+	"github.com/jinzhu/now"
+	"github.com/pasarsakomandiri/api"
+	"github.com/pasarsakomandiri/models"
+	"github.com/pasarsakomandiri/shared/response"
+	"github.com/pasarsakomandiri/shared/session"
+	"github.com/pasarsakomandiri/shared/tools"
 )
 
 type ParkingResponse struct {
-	Response *response.SimpleResponse
-	Data models.ParkingTicket
-	DeltaTime string
-	Picture_path_in string
+	Response         *response.SimpleResponse
+	Data             models.ParkingTicket
+	DeltaTime        string
+	Device_name      string
+	Picture_path_in  string
 	Picture_path_out string
 }
 
 var mux sync.Mutex
 
 func ParkingTicketPage(c *gin.Context) {
-    session := session.Instance(c)
-	c.HTML(http.StatusFound, "ticket_test.tmpl", gin.H{"title":"Ticket Test", "token":session.Get("token")})
+	session := session.Instance(c)
+	c.HTML(http.StatusFound, "ticket_test.tmpl", gin.H{"title": "Ticket Test", "token": session.Get("token")})
 }
 
-func ParkingTransTgl(c *gin.Context)  {
+func ParkingTransTgl(c *gin.Context) {
 	created_date := c.Query("created_date")
 
 	tglparking, err := models.ParkingTransGetByTgl(created_date)
 
-	if err != nil{
+	if err != nil {
 		log.Println(err)
 		c.JSON(http.StatusOK, response.NewSimpleResponse("failed", err.Error()))
 		return
@@ -61,15 +64,16 @@ func ParkingCheckIn(c *gin.Context) {
 	//get raspberry device
 	log.Println("Device IP: " + deviceIp)
 	device, err := models.DeviceGetByHost(deviceIp)
-	fmt.Printf("%+v", device)
+	//fmt.Printf("%+v", device)
 	//create parking response struct
 	parkingResponse := ParkingResponse{}
 	response := new(response.SimpleResponse)
 	parkingResponse.Response = response
 	//check if device exists
 	if err != nil {
-		if err ==  sql.ErrNoRows {
-			response.Status = "Failed"; response.Message = "Device not found"
+		if err == sql.ErrNoRows {
+			response.Status = "Failed"
+			response.Message = "Device not found"
 			c.JSON(http.StatusOK, parkingResponse)
 			return
 		}
@@ -78,14 +82,16 @@ func ParkingCheckIn(c *gin.Context) {
 		return
 	}
 	//check if device is a raspberry
-	if !strings.EqualFold("Raspberry", device.Device_type){
-		response.Status = "Failed"; response.Message = "Device is not valid"
+	if !strings.EqualFold("Raspberry", device.Device_type) {
+		response.Status = "Failed"
+		response.Message = "Device is not valid"
 		c.JSON(http.StatusOK, parkingResponse)
 		return
 	}
 	//check if device token match
 	if !strings.EqualFold(deviceToken, device.Token) {
-		response.Status = "Failed"; response.Message = "Token not match"
+		response.Status = "Failed"
+		response.Message = "Token not match"
 		c.JSON(http.StatusOK, parkingResponse)
 		return
 	}
@@ -93,7 +99,8 @@ func ParkingCheckIn(c *gin.Context) {
 	deviceGroup, err := models.DeviceGroupGetByHost("raspberry_ip", deviceIp)
 	//check if device group not found
 	if err == sql.ErrNoRows {
-		response.Status = "Failed"; response.Message = "Device group not found"
+		response.Status = "Failed"
+		response.Message = "Device group not found"
 		c.JSON(http.StatusOK, parkingResponse)
 		return
 	}
@@ -115,34 +122,35 @@ func ParkingCheckIn(c *gin.Context) {
 	year = year[2:4]
 	month := date.Month().String()
 	month = month[0:3]
-        day := strconv.Itoa(date.Day())
+	day := strconv.Itoa(date.Day())
 	hour := strconv.Itoa(date.Hour())
-    minute := strconv.Itoa(date.Minute())
-    seconds := strconv.Itoa(date.Second())
+	minute := strconv.Itoa(date.Minute())
+	seconds := strconv.Itoa(date.Second())
 	parkingTicket.Vehicle_id = deviceGroup.Vehicle_id
 	parkingTicket.Vehicle_type = deviceGroup.Vehicle_type
 
 	//generate ticket number
 	//loop until parking ticket number is not exists
-    var result sql.Result
+	var result sql.Result
 	ticketExists := true
 	for ticketExists {
-        mux.Lock()
+		mux.Lock()
 		parkingTicket.Ticket_number = tools.RandomString(10)
-		parkingTicket.Ticket_number =  parkingTicket.Ticket_number
+		//parkingTicket.Ticket_number = parkingTicket.Ticket_number
 		ticketExists = isTicketNumberExists(c, parkingTicket.Ticket_number)
-        
-        if !ticketExists {
-            result, err = models.ParkingCreateNewTicket(parkingTicket)
-            
-            if err != nil {
-                response.Status = "Failed"; response.Message = "Cannot create ticket to db"
-                c.JSON(http.StatusOK, parkingResponse)
-                return
-            }
-        }
-        
-        mux.Unlock()
+
+		if !ticketExists {
+			result, err = models.ParkingCreateNewTicket(parkingTicket)
+
+			if err != nil {
+				response.Status = "Failed"
+				response.Message = "Cannot create ticket to db"
+				c.JSON(http.StatusOK, parkingResponse)
+				return
+			}
+		}
+
+		mux.Unlock()
 	}
 
 	//save ticket and picture to database
@@ -156,12 +164,15 @@ func ParkingCheckIn(c *gin.Context) {
 	}*/
 
 	parkingTicket.Id, _ = result.LastInsertId()
-    //taking picture from camera with goroutines, reducing latency
-	go saveCameraPicture(<-camChan, date,parkingTicket.Id)
+	//taking picture from camera with goroutines, reducing latency
+	go saveCameraPicture(<-camChan, date, parkingTicket.Id)
 	parkingTicket.Ticket_number = "*" + parkingTicket.Ticket_number + "*"
 	parkingTicket.Created_date = day + " " + month + " " + year
 	parkingTicket.Duration = hour + ":" + minute + ":" + seconds
+	parkingResponse.Device_name = device.Device_name
 	parkingResponse.Data = parkingTicket
+
+	//fmt.Printf("%+v", parkingResponse)
 
 	c.JSON(http.StatusOK, parkingResponse)
 	return
@@ -179,13 +190,13 @@ func isTicketNumberExists(c *gin.Context, ticketNumber string) bool {
 }
 
 func pictureFullPath(pic models.Picture) string {
-	return pic.Filepath+string(os.PathSeparator)+pic.Filename+"."+pic.Format
+	return pic.Filepath + string(os.PathSeparator) + pic.Filename + "." + pic.Format
 }
 
 func saveCameraPicture(picture []byte, date time.Time, ticketId int64) {
 	//saving picture
 	dateTimeName := date.Format("2006-01-02 15:04:05 PM")
-	pictureName := strings.Replace(dateTimeName, ":", "", 10) + "-T" + strconv.FormatInt(ticketId, 10)//+ "-" + string(ticketId)
+	pictureName := strings.Replace(dateTimeName, ":", "", 10) + "-T" + strconv.FormatInt(ticketId, 10) //+ "-" + string(ticketId)
 	//save picture path to database
 	pic := models.Picture{}
 	pic.Filepath = "campicture"
@@ -233,13 +244,15 @@ func ParkingGetTicketInfo(c *gin.Context) {
 
 	if err != nil {
 		if err == sql.ErrNoRows {
-			response.Status = "Failed"; response.Message = "Ticket not found"
+			response.Status = "Failed"
+			response.Message = "Ticket not found"
 			c.JSON(http.StatusOK, parkingResponse)
 			return
 		}
 
 		log.Println(err)
-		response.Status = "Failed"; response.Message = "System fatal error"
+		response.Status = "Failed"
+		response.Message = "System fatal error"
 		c.JSON(http.StatusOK, parkingResponse)
 		return
 	}
@@ -269,7 +282,8 @@ func ParkingGetTicketInfo(c *gin.Context) {
 	parkingPrice, err := models.ParkingPriceGetByVehicleId(parkingTicket.Vehicle_id)
 	if err != nil {
 		log.Println(err)
-		response.Status = "Failed"; response.Message = "Parking price not found"
+		response.Status = "Failed"
+		response.Message = "Parking price not found"
 		c.JSON(http.StatusOK, parkingResponse)
 		return
 	}
@@ -297,7 +311,8 @@ func ParkingGetTicketInfo(c *gin.Context) {
 	deltaSecs := int(deltaTime.Seconds()) - (int(deltaTime.Minutes()) * 60)
 	parkingResponse.DeltaTime = strconv.Itoa(deltaHours) + "h " + strconv.Itoa(deltaMin) + "m " + strconv.Itoa(deltaSecs) + "s"
 	//log.Println("%+v", parkingResponse)
-	response.Status = "Success"; response.Message = "Thank you!"
+	response.Status = "Success"
+	response.Message = "Thank you!"
 
 	parkingResponse.Data = parkingTicket
 	c.JSON(http.StatusOK, parkingResponse)
@@ -310,7 +325,7 @@ func ParkingCheckOut(c *gin.Context) {
 	dateOut := c.PostForm("ticket_date_out")
 	parkingCost, err := strconv.Atoi(c.PostForm(("parking_cost")))
 	pictureOutId, err := strconv.ParseInt(c.PostForm("picture_out_id"), 10, 64)
-    deltaTime := c.PostForm("parking_duration") 
+	deltaTime := c.PostForm("parking_duration")
 
 	response := new(response.SimpleResponse)
 	parkingResponse := ParkingResponse{}
@@ -341,24 +356,27 @@ func ParkingCheckOut(c *gin.Context) {
 	}*/
 
 	if err != nil {
-		response.Status = "Failed"; response.Message = "Not a cashier host"
+		response.Status = "Failed"
+		response.Message = "Not a cashier host"
 		c.JSON(http.StatusOK, parkingResponse)
 		return
 	}
-    
-    log.Println(ticketId)
-    log.Println(ticketNumber)
+
+	log.Println(ticketId)
+	log.Println(ticketNumber)
 
 	parkingTicket, err := models.ParkingGetTicketByNumberAndId(ticketId, ticketNumber)
 
 	if err == sql.ErrNoRows {
-		response.Status = "Failed"; response.Message = "Ticket number not found"
+		response.Status = "Failed"
+		response.Message = "Ticket number not found"
 		c.JSON(http.StatusOK, parkingResponse)
 		return
 	}
 
 	if parkingTicket.Out_date != "" {
-		response.Status = "Failed"; response.Message = "Invalid ticket"
+		response.Status = "Failed"
+		response.Message = "Invalid ticket"
 		c.JSON(http.StatusOK, parkingResponse)
 		return
 	}
@@ -376,34 +394,36 @@ func ParkingCheckOut(c *gin.Context) {
 	parkingTicket.Last_update_date = dateOut
 	parkingTicket.Updated_by = executor
 	parkingTicket.Picture_out_id = pictureOutId
-    
-    urlData := make(map[string]string)
-    urlData["cost"] = strconv.Itoa(parkingCost)
-    urlData["time_in"] = parkingTicket.Created_date
-    urlData["time_out"] = dateOut
-    urlData["duration"] = deltaTime
-    urlData["ticket_number"] = ticketNumber
-    
-    raspberryPi := &api.RaspberryPi{}
-    raspberryPi.Protocol="http"
-    raspberryPi.Host = cashier.Host
-    raspberryPi.Port = "8888"
-    raspberryPi.Token = cashier.Token
-    raspberryPi.Param = "&cost=" + strconv.Itoa(parkingTicket.Parking_cost) + "&time_in=" + parkingTicket.Created_date + "&time_out=" + dateOut + "&duration"
-    raspberryPi.Data = urlData
-    go raspberryPi.RaspberryPrintTicketOut()
+
+	urlData := make(map[string]string)
+	urlData["cost"] = strconv.Itoa(parkingCost)
+	urlData["time_in"] = parkingTicket.Created_date
+	urlData["time_out"] = dateOut
+	urlData["duration"] = deltaTime
+	urlData["ticket_number"] = ticketNumber
+
+	raspberryPi := &api.RaspberryPi{}
+	raspberryPi.Protocol = "http"
+	raspberryPi.Host = cashier.Host
+	raspberryPi.Port = "8888"
+	raspberryPi.Token = cashier.Token
+	raspberryPi.Param = "&cost=" + strconv.Itoa(parkingTicket.Parking_cost) + "&time_in=" + parkingTicket.Created_date + "&time_out=" + dateOut + "&duration"
+	raspberryPi.Data = urlData
+	go raspberryPi.RaspberryPrintTicketOut()
 
 	err = models.ParkingUpdateTicket(parkingTicket)
 
 	if err != nil {
-		response.Status = "Failed"; response.Message = "Cannot update parking ticket"
+		response.Status = "Failed"
+		response.Message = "Cannot update parking ticket"
 		c.JSON(http.StatusOK, parkingResponse)
 		return
 	}
 
 	//send httppost to raspberry to print ticket
-    parkingResponse.DeltaTime = deltaTime 
-	response.Status = "Failed"; response.Message = "Thank you"
+	parkingResponse.DeltaTime = deltaTime
+	response.Status = "Success"
+	response.Message = "Thank you"
 	parkingResponse.Data = parkingTicket
 	c.JSON(http.StatusOK, parkingResponse)
 }
@@ -414,11 +434,13 @@ func updatePictureOut(pictureId int64, ticketId int64) {
 }
 
 func hostIsCashier(c *gin.Context, ip string) (models.Device, error) {
-    var err error
+	var err error
 	slicedIp := strings.Split(ip, ":")
 	deviceIp := slicedIp[0]
-
+	//log.Println(deviceIp)
 	device, err := models.DeviceGetByHost(deviceIp)
+
+	fmt.Printf("%+v", device)
 
 	if err != nil {
 		return device, err

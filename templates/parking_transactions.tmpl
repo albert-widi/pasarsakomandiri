@@ -12,7 +12,11 @@
     <link media="screen,projection" rel="stylesheet" type="text/css" href="/assets/css/style.css"></link>
     <link media="screen,projection" rel="stylesheet" type="text/css" href="/assets/icon/material-design-icons/iconfont/material-icons.css"></link>
     <style>
-        .nav-wrapper ul li a:hover{
+        .bact>li a:hover{
+            background:none;
+        }
+
+        .jis>li a:hover{
             background:none;
         }
     </style>
@@ -242,28 +246,16 @@
           <a href="#!" class="cen brand-logo">Pasar Sako Mandiri</a>
           <a href="#" data-activates="mobile-demo" class="button-collapse"><i class="material-icons">&#xE3C7;</i></a>
           <ul class="right hide-on-med-and-down">
-             <li><a href="/device">Device List</a></li>
-             <li><a href="/device/device_group">Device Group</a></li>
-             <li><a href="/user/register">User Register</a></li>
-             <li><a href="/parking_price">Parking Price</a></li>
-             <li class="active"><a href="/parking/transactions">Parking Transaction</a></li>
-             <li><a href="/member">Member</a></li>
-             <li><a href="/api/user/logout">Logout</a></li>
+             {{template "menu.tmpl" .}}
           </ul>
-          <ul class="side-nav fixed" id="mobile-demo">
+          <ul class="side-nav fixed bact" id="mobile-demo">
             <li class="#0097a7 cyan darken-2"><a href="#!"></a></li>
             <li id="ilang" class="active"><a href="#!">Parking Transactions</a></li>
-            <li id="munc"><a href="#usertrans">User Transactions</a></li>
+            <li id="munc"><a href="#usertrans">Cashier Transactions</a></li>
             <div class="divider"></div>
-            <ul class="hide-on-large-only">
+            <ul class="hide-on-large-only jis">
              <li class="logo #0097a7 cyan darken-2">Menu</li>
-             <li><a href="/device">Device List</a></li>
-             <li><a href="/device/device_group">Device Group</a></li>
-             <li><a href="/user/register">User Register</a></li>
-             <li><a href="/parking_price">Parking Price</a></li>
-             <li class="active"><a href="/parking/transactions">Parking Transaction</a></li>
-             <li><a href="/member">Member</a></li>
-             <li><a href="/api/user/logout">Logout</a></li>
+             {{template "menu.tmpl" .}}
             </ul>
           </ul>
         </div>
@@ -368,7 +360,7 @@
 
                         <nav class="#0097a7 cyan darken-2">
                             <div class="nav-wrapper container">
-                              <a href="#" class="brand-logo center">User Transactions</a>
+                              <a href="#" class="brand-logo center">Cashier Transactions</a>
                             </div>
                         </nav>
 
